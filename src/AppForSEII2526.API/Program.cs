@@ -53,7 +53,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1",
     new OpenApiInfo {
-        Title = "AppForMovies.API",
+        Title = "AppForSEII2526.API",
         Version = "v1",
         Description = "This API provides services for renting and purchasing movies",
         License = new OpenApiLicense { Name = "MIT License", Url = new Uri("https://opensource.org/license/mit/") },
