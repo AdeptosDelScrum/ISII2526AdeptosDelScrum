@@ -29,19 +29,12 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Valoración general")]
         public rate valoracion { get; set; }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Resenya resenya &&
-                   id == resenya.id &&
-                   descripcion == resenya.descripcion &&
-                   fechaPublicacion == resenya.fechaPublicacion &&
-                   nombreUsuario == resenya.nombreUsuario &&
-                   titulo == resenya.titulo;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(id, descripcion, fechaPublicacion, nombreUsuario, titulo);
+        public enum rate { 
+            Una,
+            Dos,
+            Tres,
+            Cuatro,
+            Cinco
         }
     }
 }
