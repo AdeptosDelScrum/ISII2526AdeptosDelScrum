@@ -1,0 +1,27 @@
+﻿
+namespace AppForSEII2526.API.Models
+{
+    public class TipoPan
+    {
+        public TipoPan() { }
+
+        [Key]
+        public int PanId { get; set; }
+
+        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
+        public string Nombre { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is TipoPan pan &&
+                   PanId == pan.PanId &&
+                   Nombre == pan.Nombre;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PanId, Nombre);
+        }
+    }
+}
