@@ -10,11 +10,11 @@ namespace AppForSEII2526.API.Models
         [Key]
         public int CompraId { get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Apellido_1Cliente {  get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Apellido_2Cliente { get; set; }
 
@@ -25,7 +25,7 @@ namespace AppForSEII2526.API.Models
         [Required]
         public int nBocadillos {  get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String NombreCliente {  get; set; }
 
