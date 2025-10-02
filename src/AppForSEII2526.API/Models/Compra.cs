@@ -33,6 +33,9 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Total")]
         public float PrecioTotal {  get; set; }
 
+        [Required]
+        public MetodoPago MetodoPago { get; set; }
+
         public override bool Equals(object? obj)
         {
             return obj is Compra compra &&
@@ -42,12 +45,13 @@ namespace AppForSEII2526.API.Models
                    FechaCompra == compra.FechaCompra &&
                    nBocadillos == compra.nBocadillos &&
                    NombreCliente == compra.NombreCliente &&
-                   PrecioTotal == compra.PrecioTotal;
+                   PrecioTotal == compra.PrecioTotal &&
+                   EqualityComparer<MetodoPago>.Default.Equals(MetodoPago, compra.MetodoPago);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(CompraId, Apellido_1Cliente, Apellido_2Cliente, FechaCompra, nBocadillos, NombreCliente, PrecioTotal);
+            return HashCode.Combine(CompraId, Apellido_1Cliente, Apellido_2Cliente, FechaCompra, nBocadillos, NombreCliente, PrecioTotal, MetodoPago);
         }
     }
 }
