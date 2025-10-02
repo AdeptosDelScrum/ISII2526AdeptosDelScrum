@@ -30,7 +30,7 @@ namespace AppForSEII2526.API.Models
         [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Tipopan {  get; set; }
-
+        
         /*
          [Required]
         public Bocadillo Bocadillo {  get; set; }
