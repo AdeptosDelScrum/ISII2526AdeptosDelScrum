@@ -36,6 +36,11 @@ namespace AppForSEII2526.API.Models
         [Required]
         public MetodoPago MetodoPago { get; set; }
 
+        /*
+        [Required]
+        public List<CompraBocadillo> BocadillosComprados { get; set; }
+        */
+
         public override bool Equals(object? obj)
         {
             return obj is Compra compra &&
