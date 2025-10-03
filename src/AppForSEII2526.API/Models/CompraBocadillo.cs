@@ -31,13 +31,13 @@ namespace AppForSEII2526.API.Models
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Tipopan {  get; set; }
         
-        /*
+        
          [Required]
         public Bocadillo Bocadillo {  get; set; }
          
         [Required]
         public Compra Compra {  get; set; }
-         */
+         
 
         public override bool Equals(object? obj)
         {

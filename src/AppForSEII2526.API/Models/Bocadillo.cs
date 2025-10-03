@@ -24,14 +24,14 @@ namespace AppForSEII2526.API.Models
         [Required]
         public float Tamanyo {  get; set; }
 
-        /*
+        
         [Required]
         public TipoPan TipoPan {  get; set; }
 
         [Required]
-        public List<CompraBocadillo> ComprasDelBocadillo {  get; set; }
+        public IList<CompraBocadillo> ComprasDelBocadillo {  get; set; }
+        
          
-         */
 
         public override bool Equals(object? obj)
         {
