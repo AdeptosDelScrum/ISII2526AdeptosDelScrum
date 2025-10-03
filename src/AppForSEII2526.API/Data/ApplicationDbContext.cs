@@ -14,6 +14,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Paypal> Paypal { get; set; }
     public DbSet<GPay> GPay { get; set; }
     public DbSet<Tarjeta> Tarjeta { get; set; }
+    public DbSet<Tamanyo> Tamanyos { get; set; }
+    public DbSet<Pequenyo> Pequenyos { get; set; }
+    public DbSet<Normal> Normales { get; set; }
+    protected override void OnModelCreating(ModelBuilder
+builder)
+    {
+        base.OnModelCreating(builder);
 
+        builder.Entity<Tamanyo>()
+                   .HasDiscriminator<string>("Tamanyos")
+                   .HasValue<Pequenyo>("Pequenyo")
+                   .HasValue<Normal>("Normal");
+    }
 
 }

@@ -39,7 +39,6 @@ namespace AppForSEII2526.API.Models
         
         [Required]
         public IList<CompraBocadillo> BocadillosComprados { get; set; }
-        
 
         public override bool Equals(object? obj)
         {
@@ -51,12 +50,23 @@ namespace AppForSEII2526.API.Models
                    nBocadillos == compra.nBocadillos &&
                    NombreCliente == compra.NombreCliente &&
                    PrecioTotal == compra.PrecioTotal &&
-                   EqualityComparer<MetodoPago>.Default.Equals(MetodoPago, compra.MetodoPago);
+                   EqualityComparer<MetodoPago>.Default.Equals(MetodoPago, compra.MetodoPago) &&
+                   EqualityComparer<IList<CompraBocadillo>>.Default.Equals(BocadillosComprados, compra.BocadillosComprados);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(CompraId, Apellido_1Cliente, Apellido_2Cliente, FechaCompra, nBocadillos, NombreCliente, PrecioTotal, MetodoPago);
+            HashCode hash = new HashCode();
+            hash.Add(CompraId);
+            hash.Add(Apellido_1Cliente);
+            hash.Add(Apellido_2Cliente);
+            hash.Add(FechaCompra);
+            hash.Add(nBocadillos);
+            hash.Add(NombreCliente);
+            hash.Add(PrecioTotal);
+            hash.Add(MetodoPago);
+            hash.Add(BocadillosComprados);
+            return hash.ToHashCode();
         }
     }
 }

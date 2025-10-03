@@ -22,7 +22,7 @@ namespace AppForSEII2526.API.Models
         public int Stock {  get; set; }
 
         [Required]
-        public float Tamanyo {  get; set; }
+        public Tamanyo Tamanyo {  get; set; }
 
         
         [Required]
