@@ -2,6 +2,8 @@
 
 namespace AppForSEII2526.API.Models
 {
+    [PrimaryKey(nameof(BocadilloId),
+    nameof(CompraId))]
     public class CompraBocadillo
     {
 
@@ -29,15 +31,14 @@ namespace AppForSEII2526.API.Models
 
         [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String Tipopan {  get; set; }
+        public String TipoPan {  get; set; }
         
-        /*
-         [Required]
+        
+        [Required]
         public Bocadillo Bocadillo {  get; set; }
          
         [Required]
         public Compra Compra {  get; set; }
-         */
 
         public override bool Equals(object? obj)
         {
@@ -46,12 +47,15 @@ namespace AppForSEII2526.API.Models
                    Cantidad == bocadillo.Cantidad &&
                    CompraId == bocadillo.CompraId &&
                    NombreBocadillo == bocadillo.NombreBocadillo &&
-                   Precio == bocadillo.Precio;
+                   Precio == bocadillo.Precio &&
+                   TipoPan == bocadillo.TipoPan &&
+                   EqualityComparer<Bocadillo>.Default.Equals(Bocadillo, bocadillo.Bocadillo) &&
+                   EqualityComparer<Compra>.Default.Equals(Compra, bocadillo.Compra);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BocadilloId, Cantidad, CompraId, NombreBocadillo, Precio);
+            return HashCode.Combine(BocadilloId, Cantidad, CompraId, NombreBocadillo, Precio, TipoPan, Bocadillo, Compra);
         }
     }
 }

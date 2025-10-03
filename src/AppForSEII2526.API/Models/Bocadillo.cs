@@ -22,16 +22,16 @@ namespace AppForSEII2526.API.Models
         public int Stock {  get; set; }
 
         [Required]
-        public float Tamanyo {  get; set; }
+        public Tamanyo Tamanyo {  get; set; }
 
-        /*
+        
         [Required]
         public TipoPan TipoPan {  get; set; }
 
         [Required]
-        public List<CompraBocadillo> ComprasDelBocadillo {  get; set; }
+        public IList<CompraBocadillo> ComprasDelBocadillo {  get; set; }
+        
          
-         */
 
         public override bool Equals(object? obj)
         {

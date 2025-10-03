@@ -12,12 +12,12 @@ namespace AppForSEII2526.API.Models
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Nombre { get; set; }
 
-        /*
+        
          
         [Required]
         public List<Bocadillo> Bocadillos { get; set; }
 
-         */
+         
 
         public override bool Equals(object? obj)
         {
