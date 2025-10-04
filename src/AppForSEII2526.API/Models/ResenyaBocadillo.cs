@@ -10,5 +10,11 @@
         [Display(Name = "Puntuación del bocadillo")]
         public int Puntuacion { get; set; }
 
+        [Required]
+        public Resenya Resenya { get; set; }
+
+        [Required]
+        public Bocadillo Bocadillo { get; set; }
+
     }
 }
