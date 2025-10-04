@@ -17,7 +17,6 @@ namespace AppForSEII2526.API.Models
         [Required]
         public List<Bocadillo> Bocadillos { get; set; }
 
-         */
 
         public override bool Equals(object? obj)
         {

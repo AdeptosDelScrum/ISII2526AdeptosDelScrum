@@ -17,6 +17,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Tamanyo> Tamanyos { get; set; }
     public DbSet<Pequenyo> Pequenyos { get; set; }
     public DbSet<Normal> Normales { get; set; }
+    public DbSet<Resenya> resenyas { get; set; }
+    public DbSet<ResenyaBocadillo> resenyaBocadillos { get; set; }
     protected override void OnModelCreating(ModelBuilder
 builder)
     {
@@ -27,10 +29,6 @@ builder)
                    .HasValue<Pequenyo>("Pequenyo")
                    .HasValue<Normal>("Normal");
     }
-
-    public DbSet<Resenya> resenyas { get; set; }
-    public DbSet<ResenyaBocadillo> resenyaBocadillos { get; set; }
-    public DbSet<Bocadillo> bocadillos { get; set; }
 
 
 }
