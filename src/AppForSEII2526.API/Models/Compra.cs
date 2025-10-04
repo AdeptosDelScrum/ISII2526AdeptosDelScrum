@@ -14,9 +14,9 @@ namespace AppForSEII2526.API.Models
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Apellido_1Cliente {  get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
+        [StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String Apellido_2Cliente { get; set; }
+        public String? Apellido_2Cliente { get; set; }
 
         [Required, DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
