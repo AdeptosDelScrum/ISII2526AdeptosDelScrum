@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace AppForSEII2526.Models  // <-- cambia al namespace real
 {
    
-     Entidad BonoBocadillo (primera pasada: sin relaciones).
+//     Entidad BonoBocadillo (primera pasada: sin relaciones).
    
     public class BonoBocadillo : IValidatableObject
     {
