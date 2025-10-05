@@ -3,11 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
-namespace AppForSEII2526.Models  // <-- cambia al namespace real
+namespace AppForSEII2526.Models
 {
-   
-//     Entidad BonoBocadillo (primera pasada: sin relaciones).
-   
+    // Entidad BonoBocadillo (con relaciones)
     public class BonoBocadillo : IValidatableObject
     {
         [Key]
@@ -34,7 +32,15 @@ namespace AppForSEII2526.Models  // <-- cambia al namespace real
         [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "PVP must be >= 0")]
         public decimal PVP { get; set; }
 
-       
+        // ---------- RELACIONES ----------
+        [Display(Name = "Id Tipo")]
+        public int IdTipo { get; set; }                        // FK -> TipoBocadillo
+
+        public TipoBocadillo TipoBocadillo { get; set; } = null!;  // N:1
+
+        public ICollection<BonosComprados> BonosComprados { get; set; } = new List<BonosComprados>(); // 1:N
+
+        // ---------- Validaciones cruzadas ----------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
         {
             if (CantidadDisponible > NBocadillos)
