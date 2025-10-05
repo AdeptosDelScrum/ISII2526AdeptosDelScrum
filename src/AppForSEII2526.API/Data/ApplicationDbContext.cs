@@ -19,6 +19,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Normal> Normales { get; set; }
     public DbSet<Resenya> resenyas { get; set; }
     public DbSet<ResenyaBocadillo> resenyaBocadillos { get; set; }
+    public DbSet<TipoBocadillo> TipoBocadillos { get; set; }
+    public DbSet<BonoBocadillo> BonoBocadillos { get; set; }
+    public DbSet<BonosComprados> BonosComprados { get; set; }
+    public DbSet<CompraBono> ComprasBono { get; set; }
+
     protected override void OnModelCreating(ModelBuilder
 builder)
     {
