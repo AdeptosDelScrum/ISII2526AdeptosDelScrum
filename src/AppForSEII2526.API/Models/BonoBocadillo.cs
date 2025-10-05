@@ -32,13 +32,7 @@ namespace AppForSEII2526.Models
         [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "PVP must be >= 0")]
         public decimal PVP { get; set; }
 
-        // ---------- RELACIONES ----------
-        [Display(Name = "Id Tipo")]
-        public int IdTipo { get; set; }                        // FK -> TipoBocadillo
-
-        public TipoBocadillo TipoBocadillo { get; set; } = null!;  // N:1
-
-        public ICollection<BonosComprados> BonosComprados { get; set; } = new List<BonosComprados>(); // 1:N
+     
 
         // ---------- Validaciones cruzadas ----------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
