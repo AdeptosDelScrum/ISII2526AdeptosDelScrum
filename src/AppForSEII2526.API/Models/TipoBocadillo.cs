@@ -1,6 +1,7 @@
 // /Models/TipoBocadillo.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace AppForSEII2526.Models  // <-- cambia a tu namespace real
 {
@@ -20,5 +21,6 @@ namespace AppForSEII2526.Models  // <-- cambia a tu namespace real
         public string NombreTipo { get; set; } = string.Empty;
 
         // First pass: no navigation properties, no FKs
+        public ICollection<BonoBocadillo> Bonos { get; set; } = new List<BonoBocadillo>();
     }
 }
