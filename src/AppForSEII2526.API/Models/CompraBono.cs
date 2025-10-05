@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
-namespace AppForSEII2526.Models 
+namespace AppForSEII2526.Models
 {
-   
     public class CompraBono : IValidatableObject
     {
         [Key]
@@ -30,9 +29,11 @@ namespace AppForSEII2526.Models
         [Display(Name = "Fecha Compra")]
         public DateTime FechaCompraBono { get; set; } = DateTime.UtcNow;
 
-        [Required]
+        // --------- RELACION con MetodoPago ---------
         [Display(Name = "Metodo de Pago")]
-        public MetodoPago MetodoPago { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "MetodoPagoId must be >= 1")]
+        public int MetodoPagoId { get; set; }                 // FK -> MetodoPago (entidad)
+        public MetodoPago MetodoPago { get; set; } = null!;   // N:1
 
         [Display(Name = "Numero de Bonos")]
         [Range(1, int.MaxValue, ErrorMessage = "nBonos must be >= 1")]
@@ -44,7 +45,10 @@ namespace AppForSEII2526.Models
                ErrorMessage = "PrecioTotalBono must be >= 0")]
         public decimal PrecioTotalBono { get; set; }
 
-        
+        // --------- RELACION con BonosComprados (1:N) ---------
+        public ICollection<BonosComprados> BonosComprados { get; set; } = new List<BonosComprados>();
+
+        // --------- Validaciones ---------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
         {
             if (NBonos < 1)
@@ -52,14 +56,6 @@ namespace AppForSEII2526.Models
 
             if (PrecioTotalBono < 0)
                 yield return new ValidationResult("PrecioTotalBono must be >= 0", new[] { nameof(PrecioTotalBono) });
-        }
-
-       
-        public enum MetodoPago
-        {
-            Tarjeta = 0,
-            Paypal = 1,
-            GooglePay = 2
         }
     }
 }
