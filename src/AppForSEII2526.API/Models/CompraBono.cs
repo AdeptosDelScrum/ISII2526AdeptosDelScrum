@@ -45,8 +45,7 @@ namespace AppForSEII2526.Models
                ErrorMessage = "PrecioTotalBono must be >= 0")]
         public decimal PrecioTotalBono { get; set; }
 
-        // --------- RELACION con BonosComprados (1:N) ---------
-        public ICollection<BonosComprados> BonosComprados { get; set; } = new List<BonosComprados>();
+      
 
         // --------- Validaciones ---------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
