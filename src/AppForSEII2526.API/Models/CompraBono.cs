@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-// Alias para evitar ambigüedad con DataType
-using DataTypeAttribute = System.ComponentModel.DataAnnotations.DataTypeAttribute;
-using DataTypeEnum = System.ComponentModel.DataAnnotations.DataType;
-
 namespace AppForSEII2526.Models
 {
     public class CompraBono : IValidatableObject
@@ -30,9 +26,11 @@ namespace AppForSEII2526.Models
         [Display(Name = "Apellido 2")]
         public string? ApellidoBono2 { get; set; }
 
-        [DataTypeAttribute(DataTypeEnum.DateTime)]
+        // ✅ Usamos nombre completamente cualificado para evitar ambigüedad
+        [System.ComponentModel.DataAnnotations.DataType(
+            System.ComponentModel.DataAnnotations.DataType.DateTime)]
         [Display(Name = "Fecha Compra")]
-        public DateTime FechaCompraBono { get; set; } = DateTime.UtcNow;
+        public DateTime FechaCompraBono { get; set; } = System.DateTime.UtcNow;
 
         [Display(Name = "Numero de Bonos")]
         [Range(1, int.MaxValue, ErrorMessage = "nBonos must be >= 1")]
@@ -44,14 +42,23 @@ namespace AppForSEII2526.Models
                ErrorMessage = "PrecioTotalBono must be >= 0")]
         public decimal PrecioTotalBono { get; set; }
 
-        // --------- Validaciones ---------
+        // --------- Validaciones personalizadas ---------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
         {
             if (NBonos < 1)
-                yield return new ValidationResult("nBonos must be >= 1", new[] { nameof(NBonos) });
+            {
+                yield return new ValidationResult(
+                    "nBonos must be >= 1",
+                    new[] { nameof(NBonos) });
+            }
 
             if (PrecioTotalBono < 0)
-                yield return new ValidationResult("PrecioTotalBono must be >= 0", new[] { nameof(PrecioTotalBono) });
+            {
+                yield return new ValidationResult(
+                    "PrecioTotalBono must be >= 0",
+                    new[] { nameof(PrecioTotalBono) });
+            }
         }
     }
 }
+
