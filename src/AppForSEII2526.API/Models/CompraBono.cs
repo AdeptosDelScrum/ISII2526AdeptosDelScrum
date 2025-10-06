@@ -26,7 +26,7 @@ namespace AppForSEII2526.Models
         [Display(Name = "Apellido 2")]
         public string? ApellidoBono2 { get; set; }
 
-        // ✅ Usamos nombre completamente cualificado para evitar ambigüedad
+        // ✅ Solución definitiva: DataType totalmente cualificado
         [System.ComponentModel.DataAnnotations.DataType(
             System.ComponentModel.DataAnnotations.DataType.DateTime)]
         [Display(Name = "Fecha Compra")]
@@ -61,4 +61,5 @@ namespace AppForSEII2526.Models
         }
     }
 }
+
 
