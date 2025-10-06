@@ -1,8 +1,12 @@
-using System; 
+// Models/CompraBono.cs
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
 
+// Alias para evitar ambigüedad con DataType
+using DataTypeAttribute = System.ComponentModel.DataAnnotations.DataTypeAttribute;
+using DataTypeEnum = System.ComponentModel.DataAnnotations.DataType;
 
 namespace AppForSEII2526.Models
 {
@@ -26,15 +30,9 @@ namespace AppForSEII2526.Models
         [Display(Name = "Apellido 2")]
         public string? ApellidoBono2 { get; set; }
 
-        [DataType(DataType.DateTime)]
+        [DataTypeAttribute(DataTypeEnum.DateTime)]
         [Display(Name = "Fecha Compra")]
         public DateTime FechaCompraBono { get; set; } = DateTime.UtcNow;
-
-        // --------- RELACION con MetodoPago ---------
-        [Display(Name = "Metodo de Pago")]
-        [Range(1, int.MaxValue, ErrorMessage = "MetodoPagoId must be >= 1")]
-        public int MetodoPagoId { get; set; }                 // FK -> MetodoPago (entidad)
-        public MetodoPago MetodoPago { get; set; } = null!;   // N:1
 
         [Display(Name = "Numero de Bonos")]
         [Range(1, int.MaxValue, ErrorMessage = "nBonos must be >= 1")]
@@ -45,8 +43,6 @@ namespace AppForSEII2526.Models
         [Range(typeof(decimal), "0", "79228162514264337593543950335",
                ErrorMessage = "PrecioTotalBono must be >= 0")]
         public decimal PrecioTotalBono { get; set; }
-
-      
 
         // --------- Validaciones ---------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
