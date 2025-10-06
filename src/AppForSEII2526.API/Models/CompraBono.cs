@@ -1,7 +1,8 @@
 // Models/CompraBono.cs
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
 
 namespace AppForSEII2526.Models
 {
@@ -25,11 +26,13 @@ namespace AppForSEII2526.Models
         [Display(Name = "Apellido 2")]
         public string? ApellidoBono2 { get; set; }
 
-        [DataType(DataType.DateTime)]
+        // ✅ Solución definitiva: DataType totalmente cualificado
+        [System.ComponentModel.DataAnnotations.DataType(
+            System.ComponentModel.DataAnnotations.DataType.DateTime)]
         [Display(Name = "Fecha Compra")]
-        public DateTime FechaCompraBono { get; set; } = DateTime.UtcNow;
+        public DateTime FechaCompraBono { get; set; } = System.DateTime.UtcNow;
 
-        // --------- RELACION con MetodoPago ---------
+        // --------- RELACIÓN con MetodoPago ---------
         [Display(Name = "Metodo de Pago")]
         [Range(1, int.MaxValue, ErrorMessage = "MetodoPagoId must be >= 1")]
         public int MetodoPagoId { get; set; }                 // FK -> MetodoPago (entidad)
@@ -45,7 +48,7 @@ namespace AppForSEII2526.Models
                ErrorMessage = "PrecioTotalBono must be >= 0")]
         public decimal PrecioTotalBono { get; set; }
 
-        // --------- RELACION con BonosComprados (1:N) ---------
+        // --------- RELACIÓN con BonosComprados (1:N) ---------
         public ICollection<BonosComprados> BonosComprados { get; set; } = new List<BonosComprados>();
 
         // --------- Validaciones ---------
