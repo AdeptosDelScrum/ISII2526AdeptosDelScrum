@@ -16,7 +16,7 @@ namespace AppForSEII2526.API.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime fechaPublicacion { get; set; }
 
-        [Required,StringLength(20, ErrorMessage = "El nombre de usuario debe tener máximo 20 caracteres")]
+        [StringLength(20, ErrorMessage = "El nombre de usuario debe tener máximo 20 caracteres")]
         [Display(Name = "Nombre de usuario")]
         public string? nombreUsuario {  get; set; }
 
