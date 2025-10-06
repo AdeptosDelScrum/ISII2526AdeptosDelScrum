@@ -23,27 +23,6 @@
       <Property Name="Bocadillos" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="AppForSEII2526.API.Models.Paypal" Collapsed="true">
-    <Position X="10.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Paypal.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="AppForSEII2526.API.Models.Tarjeta" Collapsed="true">
-    <Position X="14.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Tarjeta.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="AppForSEII2526.API.Models.GPay" Collapsed="true">
-    <Position X="12.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\GPay.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="AppForSEII2526.API.Models.Resenya">
     <Position X="12.25" Y="1.25" Width="1.5" />
     <Compartments>
