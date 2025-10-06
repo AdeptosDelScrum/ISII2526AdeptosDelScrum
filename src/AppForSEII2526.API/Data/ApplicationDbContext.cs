@@ -1,34 +1,63 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using AppForSEII2526.API.Models;
+// Models/CompraBono.cs
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AppForSEII2526.API.Data;
-
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options) {
-
-    public DbSet<Compra> Compra { get; set; }
-    public DbSet<Bocadillo> Bocadillo { get; set; }
-    public DbSet<TipoPan> TipoPan { get; set; }
-    public DbSet<CompraBocadillo> CompraBocadillo { get; set; }
-    public DbSet<MetodoPago> MetodoPago { get; set; }
-    public DbSet<Paypal> Paypal { get; set; }
-    public DbSet<GPay> GPay { get; set; }
-    public DbSet<Tarjeta> Tarjeta { get; set; }
-    public DbSet<Tamanyo> Tamanyos { get; set; }
-    public DbSet<Pequenyo> Pequenyos { get; set; }
-    public DbSet<Normal> Normales { get; set; }
-    public DbSet<Resenya> resenyas { get; set; }
-    public DbSet<ResenyaBocadillo> resenyaBocadillos { get; set; }
-    protected override void OnModelCreating(ModelBuilder
-builder)
+namespace AppForSEII2526.Models
+{
+    public class CompraBono : IValidatableObject
     {
-        base.OnModelCreating(builder);
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Range(1, int.MaxValue, ErrorMessage = "CompraBonoId must be > 0")]
+        [Display(Name = "Id Compra Bono")]
+        public int CompraBonoId { get; set; }
 
-        builder.Entity<Tamanyo>()
-                   .HasDiscriminator<string>("Tamanyos")
-                   .HasValue<Pequenyo>("Pequenyo")
-                   .HasValue<Normal>("Normal");
+        [Required, StringLength(120, MinimumLength = 2)]
+        [Display(Name = "Nombre Cliente")]
+        public string NombreCliente { get; set; } = string.Empty;
+
+        [Required, StringLength(120, MinimumLength = 2)]
+        [Display(Name = "Apellido 1")]
+        public string ApellidoBono1 { get; set; } = string.Empty;
+
+        [StringLength(120)]
+        [Display(Name = "Apellido 2")]
+        public string? ApellidoBono2 { get; set; }
+
+        // ✅ Solución definitiva: DataType totalmente cualificado
+        [System.ComponentModel.DataAnnotations.DataType(
+            System.ComponentModel.DataAnnotations.DataType.DateTime)]
+        [Display(Name = "Fecha Compra")]
+        public DateTime FechaCompraBono { get; set; } = System.DateTime.UtcNow;
+
+        [Display(Name = "Numero de Bonos")]
+        [Range(1, int.MaxValue, ErrorMessage = "nBonos must be >= 1")]
+        public int NBonos { get; set; }
+
+        [Display(Name = "Precio Total Bono")]
+        [Column(TypeName = "decimal(10,2)")]
+        [Range(typeof(decimal), "0", "79228162514264337593543950335",
+               ErrorMessage = "PrecioTotalBono must be >= 0")]
+        public decimal PrecioTotalBono { get; set; }
+
+        // --------- Validaciones personalizadas ---------
+        public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
+        {
+            if (NBonos < 1)
+            {
+                yield return new ValidationResult(
+                    "nBonos must be >= 1",
+                    new[] { nameof(NBonos) });
+            }
+
+            if (PrecioTotalBono < 0)
+            {
+                yield return new ValidationResult(
+                    "PrecioTotalBono must be >= 0",
+                    new[] { nameof(PrecioTotalBono) });
+            }
+        }
     }
-
-
 }
