@@ -24,7 +24,10 @@ namespace AppForSEII2526.Models
         [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "PrecioBono must be >= 0")]
         public decimal PrecioBono { get; set; }
 
-     
+        // --------- RELACIONES ---------
+        public BonoBocadillo Bono { get; set; } = null!;   // N:1
+        public CompraBono Compra { get; set; } = null!;    // N:1
+
         // --------- Validaciones ---------
         public IEnumerable<ValidationResult> Validate(ValidationContext ctx)
         {
@@ -35,4 +38,3 @@ namespace AppForSEII2526.Models
         }
     }
 }
-
