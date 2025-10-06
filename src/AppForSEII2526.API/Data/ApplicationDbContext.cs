@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using AppForSEII2526.API.Models;
+using AppForSEII2526.Models;
 
 namespace AppForSEII2526.API.Data;
 
