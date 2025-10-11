@@ -11,7 +11,6 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Descripción")]
         public string descripcion { get; set; }
 
-        [Required]
         [DataType(DataType.Date), Display(Name = "Fecha de publicación")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime fechaPublicacion { get; set; }
