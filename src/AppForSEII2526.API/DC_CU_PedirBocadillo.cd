@@ -2,21 +2,25 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="AppForSEII2526.API.Models.Bocadillo">
     <Position X="5.75" Y="1" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="AppForSEII2526.API.Models.Bocadillo.Tamanyo" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\Bocadillo.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAACACAAAAAAgAAQgAAggAAAgAAAAIAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAACACAAAAAAAAAQgAAggAAAgAAAAIAAAAAQAAAAAAA=</HashCode>
       <FileName>Models\Bocadillo.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="TipoPan" />
     </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="ComprasDelBocadillo" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="AppForSEII2526.API.Models.CompraBocadillo">
     <Position X="9" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAwAAEAAIAAAAAQgAAAAAAQAAAAAIAAAAAEAAIAAAA=</HashCode>
+      <HashCode>AAAQAAEAAAAAAAAQgAAAAAAQAAAAAIAAAAAEAAIAAAA=</HashCode>
       <FileName>Models\CompraBocadillo.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -27,15 +31,12 @@
   <Class Name="AppForSEII2526.API.Models.Compra">
     <Position X="12.25" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAgAAAAAAAAECAAgBAAAAACAAAAAIIAAAAAAAAAEAA=</HashCode>
+      <HashCode>AIAgAAAAAAAAACAAgBAAAAACAAAAAIIAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Compra.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="MetodoPago" />
     </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="BocadillosComprados" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="AppForSEII2526.API.Models.TipoPan">
     <Position X="2.75" Y="1" Width="1.5" />
@@ -43,9 +44,6 @@
       <HashCode>AAAAAAAAAAAAAAAAgAAAkAAAAAAAAIAgAAAAAAAAAAA=</HashCode>
       <FileName>Models\TipoPan.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Bocadillos" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="AppForSEII2526.API.Models.MetodoPago">
     <Position X="12.25" Y="4.75" Width="1.5" />

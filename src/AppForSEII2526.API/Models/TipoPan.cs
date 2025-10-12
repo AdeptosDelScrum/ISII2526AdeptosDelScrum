@@ -8,13 +8,12 @@ namespace AppForSEII2526.API.Models
         [Key]
         public int PanId { get; set; }
 
-        [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Nombre { get; set; }
 
         
          
-        [Required]
         public List<Bocadillo> Bocadillos { get; set; }
 
 

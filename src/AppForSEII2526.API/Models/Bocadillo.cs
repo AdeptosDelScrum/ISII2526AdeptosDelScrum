@@ -27,7 +27,7 @@ namespace AppForSEII2526.API.Models
         }
 
         
-        [Required]
+        
         public TipoPan TipoPan {  get; set; }
         public IList<CompraBocadillo> ComprasDelBocadillo {  get; set; }
         
