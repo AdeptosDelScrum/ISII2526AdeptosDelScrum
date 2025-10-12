@@ -25,11 +25,11 @@ namespace AppForSEII2526.API.Models
         [Required]
         public int nBocadillos {  get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
+        [StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String NombreCliente {  get; set; }
 
-        [Required, DataType(DataType.Currency)]
+        [DataType(DataType.Currency)]
         [Display(Name = "Total")]
         public float PrecioTotal {  get; set; }
 
