@@ -28,6 +28,7 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Valoración general")]
         public rate valoracion { get; set; }
 
+
         [Required]
         [Display(Name = "Líneas de reseña")]
         public List<ResenyaBocadillo> ResenyaBocadillo { get; set; }
