@@ -15,6 +15,9 @@ namespace AppForSEII2526.API.Data
         public DbSet<Paypal> Paypal { get; set; }
         public DbSet<GPay> GPay { get; set; }
         public DbSet<Tarjeta> Tarjeta { get; set; }
+        public DbSet<Tamanyo> Tamanyos { get; set; }
+        public DbSet<Pequenyo> Pequenyos { get; set; }
+        public DbSet<Normal> Normales { get; set; }
         public DbSet<Resenya> Resenyas { get; set; }
         public DbSet<ResenyaBocadillo> ResenyaBocadillos { get; set; }
         public DbSet<TipoBocadillo> TipoBocadillos { get; set; }
@@ -52,6 +55,14 @@ namespace AppForSEII2526.API.Data
                 .WithMany() // o .WithMany(mp => mp.Compras) si tu entidad lo soporta
                 .HasForeignKey(c => c.MetodoPagoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // --------- Herencia Tamanyo ---------
+            base.OnModelCreating(builder);
+
+            builder.Entity<Tamanyo>()
+                .HasDiscriminator<string>("Tamanyos")
+                .HasValue<Pequenyo>("Pequenyo")
+                .HasValue<Normal>("Normal");
         }
     }
 }
