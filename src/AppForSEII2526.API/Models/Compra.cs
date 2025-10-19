@@ -9,27 +9,15 @@ namespace AppForSEII2526.API.Models
 
         [Key]
         public int CompraId { get; set; }
-
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String Apellido_1Cliente {  get; set; }
-
-        [StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String? Apellido_2Cliente { get; set; }
-
-        [Required, DataType(DataType.Date)]
+        
+        [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaCompra {  get; set; }
 
-        [Required]
+        
         public int nBocadillos {  get; set; }
 
-        [Required, StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String NombreCliente {  get; set; }
-
-        [Required, DataType(DataType.Currency)]
+        [DataType(DataType.Currency)]
         [Display(Name = "Total")]
         public float PrecioTotal {  get; set; }
 
@@ -37,18 +25,15 @@ namespace AppForSEII2526.API.Models
         public MetodoPago MetodoPago { get; set; }
 
         
-        [Required]
+        
         public IList<CompraBocadillo> BocadillosComprados { get; set; }
 
         public override bool Equals(object? obj)
         {
             return obj is Compra compra &&
                    CompraId == compra.CompraId &&
-                   Apellido_1Cliente == compra.Apellido_1Cliente &&
-                   Apellido_2Cliente == compra.Apellido_2Cliente &&
                    FechaCompra == compra.FechaCompra &&
                    nBocadillos == compra.nBocadillos &&
-                   NombreCliente == compra.NombreCliente &&
                    PrecioTotal == compra.PrecioTotal &&
                    EqualityComparer<MetodoPago>.Default.Equals(MetodoPago, compra.MetodoPago) &&
                    EqualityComparer<IList<CompraBocadillo>>.Default.Equals(BocadillosComprados, compra.BocadillosComprados);
@@ -58,11 +43,8 @@ namespace AppForSEII2526.API.Models
         {
             HashCode hash = new HashCode();
             hash.Add(CompraId);
-            hash.Add(Apellido_1Cliente);
-            hash.Add(Apellido_2Cliente);
             hash.Add(FechaCompra);
             hash.Add(nBocadillos);
-            hash.Add(NombreCliente);
             hash.Add(PrecioTotal);
             hash.Add(MetodoPago);
             hash.Add(BocadillosComprados);

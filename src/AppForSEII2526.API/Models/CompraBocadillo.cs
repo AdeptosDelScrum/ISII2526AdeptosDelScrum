@@ -12,32 +12,31 @@ namespace AppForSEII2526.API.Models
 
         }
 
-        [Key]
+        
         public int BocadilloId { get; set; }
 
-        [Required]
+        
         public int Cantidad { get; set; }
 
-        [Required]
+        
         public int CompraId {  get; set; }
 
-        [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String NombreBocadillo { get; set; }
 
-        [Required, DataType(DataType.Currency)]
+        [DataType(DataType.Currency)]
         [Display(Name = "Total")]
         public float Precio {  get; set; }
 
-        [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String TipoPan {  get; set; }
         
         
-        [Required]
         public Bocadillo Bocadillo {  get; set; }
          
-        [Required]
+        
         public Compra Compra {  get; set; }
 
         public override bool Equals(object? obj)

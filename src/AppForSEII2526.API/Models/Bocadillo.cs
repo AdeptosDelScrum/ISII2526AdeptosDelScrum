@@ -10,22 +10,25 @@ namespace AppForSEII2526.API.Models
         [Key]
         public int Id { get; set; }
 
-        [Required, StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
+        [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public String Nombre { get; set; }
 
-        [Required, DataType(DataType.Currency)]
+        [DataType(DataType.Currency)]
         [Display(Name = "Total")]
         public float PVP {  get; set; }
 
         [Required]
         public int Stock {  get; set; }
 
-        [Required]
-        public Tamanyo Tamanyo {  get; set; }
+   
+        public enum Tamanyo {  
+            Normal,
+            Pequenyo
+        }
 
         
-        [Required]
+        
         public TipoPan TipoPan {  get; set; }
         public IList<CompraBocadillo> ComprasDelBocadillo {  get; set; }
         
@@ -41,12 +44,14 @@ namespace AppForSEII2526.API.Models
                    Nombre == bocadillo.Nombre &&
                    PVP == bocadillo.PVP &&
                    Stock == bocadillo.Stock &&
-                   Tamanyo == bocadillo.Tamanyo;
+                   EqualityComparer<TipoPan>.Default.Equals(TipoPan, bocadillo.TipoPan) &&
+                   EqualityComparer<IList<CompraBocadillo>>.Default.Equals(ComprasDelBocadillo, bocadillo.ComprasDelBocadillo) &&
+                   EqualityComparer<List<ResenyaBocadillo>>.Default.Equals(ResenyaBocadillo, bocadillo.ResenyaBocadillo);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Nombre, PVP, Stock, Tamanyo);
+            return HashCode.Combine(Id, Nombre, PVP, Stock, TipoPan, ComprasDelBocadillo, ResenyaBocadillo);
         }
     }
 }
