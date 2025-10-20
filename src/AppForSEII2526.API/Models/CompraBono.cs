@@ -33,6 +33,7 @@ namespace AppForSEII2526.Models
         public DateTime FechaCompraBono { get; set; } = System.DateTime.UtcNow;
 
         // --------- RELACIÓN con MetodoPago ---------
+        [Required(ErrorMessage = "El Metodo de Pago es obligatorio.")]
         [Display(Name = "Metodo de Pago")]
         [Range(1, int.MaxValue, ErrorMessage = "MetodoPagoId must be >= 1")]
         public int MetodoPagoId { get; set; }                 // FK -> MetodoPago (entidad)
