@@ -11,7 +11,7 @@ namespace AppForSEII2526.API.DTOs
 
         public enum tamanyo { Normal, Pequenyo }
 
-        public TipoPan TipoPan { get; set; }
+        public String TipoPan { get; set; }
 
         [DataType(DataType.Currency)]
         [Display(Name = "Total")]
