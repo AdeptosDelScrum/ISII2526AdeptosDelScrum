@@ -26,5 +26,14 @@ namespace AppForSEII2526.API.DTOs
 
         public Tamanyo TamanyoBocadillo { get; set; }
 
+
+        public override bool Equals(object? obj)
+        {
+            return obj is BocadilloDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   TipoPan == dTO.TipoPan &&
+                   PVP == dTO.PVP;
+        }
     }
 }
