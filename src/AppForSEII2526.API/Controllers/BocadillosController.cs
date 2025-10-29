@@ -19,19 +19,19 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(BocadilloDTO), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetBocadillosParaResenyar(string? nombre, float? PVP)
+        [ProducesResponseType(typeof (IList<Bocadillo>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetBocadillosParaCompra(Tamanyo? TamanyoBocadillo, string?TipoPanBocadillo)
         {
-            if (PVP < 0)
-            {
-
-            }
-            var bocadillos = await _context.Bocadillo
-                .Where(b=>(b.Nombre.Contains(nombre) && b.PVP.Equals(PVP)))
-                .Select(b=>new BocadilloDTO(b.Id,b.Nombre,b.TipoPan.Nombre,b.PVP))
+            IList<Bocadillo> bocadillos = (IList<Bocadillo>)await _context.Bocadillo
+                .Include(b => b.ComprasDelBocadillo)
+                .Where(b =>
+                (TipoPanBocadillo == null || b.TipoPan.Nombre.Contains(TipoPanBocadillo)) &&
+                TamanyoBocadillo == null || b.TamanyoBocadillo.Equals(TamanyoBocadillo))
+                .OrderBy(b=> b.Nombre)
+                .Select(b=>new BocadilloDTO(b.Nombre, b.TamanyoBocadillo,b.TipoPan.Nombre, b.PVP))
                 .ToListAsync();
             return Ok(bocadillos);
         }
-        
+
     }
 }
