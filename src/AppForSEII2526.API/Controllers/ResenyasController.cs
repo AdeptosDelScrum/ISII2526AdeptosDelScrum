@@ -106,10 +106,7 @@ namespace AppForSEII2526.API.Controllers
 
             }
 
-            return Ok("Ole");
-
-
-
+            return Ok("Reseña creada");
         }
     }
 }
