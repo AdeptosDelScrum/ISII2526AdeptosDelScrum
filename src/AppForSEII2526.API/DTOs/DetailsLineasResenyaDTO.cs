@@ -3,6 +3,10 @@ namespace AppForSEII2526.API.DTOs
 {
     public class DetailsLineasResenyaDTO
     {
+        public DetailsLineasResenyaDTO()
+        {
+        }
+
         public DetailsLineasResenyaDTO(string nombre, float precio, Tamanyo tamanyo, int puntuacion)
         {
             this.nombre = nombre;
