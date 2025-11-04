@@ -4,7 +4,7 @@ namespace AppForSEII2526.API.DTOs
 {
     /// <summary>
     /// Peticion de compra de bonos de bocadillo.
-    /// El backend calculara precios y totales a partir de la BD.
+    /// El backend calculara precios y totales desde la BD.
     /// </summary>
     public class CrearCompraDTO
     {
@@ -16,8 +16,11 @@ namespace AppForSEII2526.API.DTOs
         [StringLength(120)]
         public string Apellidos { get; set; } = "";
 
+        /// <summary>
+        /// Identificador del metodo de pago existente (tabla/clase de metodos de pago).
+        /// </summary>
         [Required]
-        public MetodoPago MetodoPago { get; set; }
+        public long MetodoPagoId { get; set; }
 
         /// <summary>
         /// Bonos seleccionados con la cantidad deseada.
@@ -27,9 +30,6 @@ namespace AppForSEII2526.API.DTOs
         public List<CrearCompraItemDTO> Items { get; set; } = new();
     }
 
-    /// <summary>
-    /// Linea de compra: bono + cantidad.
-    /// </summary>
     public class CrearCompraItemDTO
     {
         [Required]
@@ -37,16 +37,5 @@ namespace AppForSEII2526.API.DTOs
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser al menos 1.")]
         public int Cantidad { get; set; }
-    }
-
-    /// <summary>
-    /// Enum de metodos de pago (ajusta a tu dominio si usas otros).
-    /// </summary>
-    public enum MetodoPago
-    {
-        Tarjeta = 0,
-        Paypal = 1,
-        GooglePay = 2
-        // Efectivo = 3, Bizum = 4, etc. si los necesitas
     }
 }
