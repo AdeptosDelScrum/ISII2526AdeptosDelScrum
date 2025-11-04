@@ -21,20 +21,11 @@ namespace AppForSEII2526.API.Models
         [Required]
         public int Stock {  get; set; }
 
-   
-        public enum Tamanyo {  
-            Normal,
-            Pequenyo
-        }
-
-        
+        public Tamanyo TamanyoBocadillo { get; set; }
         
         public TipoPan TipoPan {  get; set; }
         public IList<CompraBocadillo> ComprasDelBocadillo {  get; set; }
         
-         
-        
-
         public List<ResenyaBocadillo> ResenyaBocadillo { get; set; }
 
         public override bool Equals(object? obj)
@@ -44,6 +35,7 @@ namespace AppForSEII2526.API.Models
                    Nombre == bocadillo.Nombre &&
                    PVP == bocadillo.PVP &&
                    Stock == bocadillo.Stock &&
+                   TamanyoBocadillo == bocadillo.TamanyoBocadillo &&
                    EqualityComparer<TipoPan>.Default.Equals(TipoPan, bocadillo.TipoPan) &&
                    EqualityComparer<IList<CompraBocadillo>>.Default.Equals(ComprasDelBocadillo, bocadillo.ComprasDelBocadillo) &&
                    EqualityComparer<List<ResenyaBocadillo>>.Default.Equals(ResenyaBocadillo, bocadillo.ResenyaBocadillo);
@@ -51,7 +43,13 @@ namespace AppForSEII2526.API.Models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Nombre, PVP, Stock, TipoPan, ComprasDelBocadillo, ResenyaBocadillo);
+            return HashCode.Combine(Id, Nombre, PVP, Stock, TamanyoBocadillo, TipoPan, ComprasDelBocadillo, ResenyaBocadillo);
         }
+    }
+
+    public enum Tamanyo
+    {
+        Normal,
+        Pequenyo
     }
 }
