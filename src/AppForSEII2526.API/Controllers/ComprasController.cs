@@ -18,7 +18,7 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(CompraForCreateDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CompraBocadilloForCreateDTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> GetCompra(int id)
         {
@@ -33,7 +33,7 @@ namespace AppForSEII2526.API.Controllers
                  .Include(c => c.BocadillosComprados) 
                     .ThenInclude(ci => ci.Bocadillo) 
                         .ThenInclude(c => c.TipoPan) 
-             .Select(r => new CompraForCreateDTO())
+             .Select(r => new CompraBocadilloForCreateDTO())
              .ToListAsync();
 
 

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
     
-    public class CompraDetailDTO : CompraForCreateDTO
+    public class CompraBocadilloDetailDTO : CompraBocadilloForCreateDTO
     {
-        CompraDetailDTO() { }
+        CompraBocadilloDetailDTO() { }
 
 
     }
