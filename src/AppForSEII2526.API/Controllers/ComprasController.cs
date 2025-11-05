@@ -33,8 +33,15 @@ namespace AppForSEII2526.API.Controllers
                  .Include(c => c.BocadillosComprados) 
                     .ThenInclude(ci => ci.Bocadillo) 
                         .ThenInclude(c => c.TipoPan) 
-             .Select(r => new CompraBocadilloForCreateDTO())
-             .ToListAsync();
+             .Select(c => new CompraBocadilloDetailDTO(c.CompraId,c.FechaCompra, c.PrecioTotal,
+                                                        c.NombreCliente, c.Apellido1_Cliente, 
+                                                        c.Apellido2_Cliente, c.MetodoPago, 
+                                                        c.BocadillosComprados
+                                                        .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre, 
+                                                                                                ci.Precio, ci.TipoPan, 
+                                                                                                ci.Cantidad)).ToList<CompraBocadilloItemDTO>()
+                                                        ))
+             .FirstOrDefaultAsync();
 
 
             if (rental == null)
