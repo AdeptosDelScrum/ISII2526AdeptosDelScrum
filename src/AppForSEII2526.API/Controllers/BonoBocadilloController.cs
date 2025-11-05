@@ -1,13 +1,15 @@
+using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 using AppForSEII2526.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace AppForSEII2526.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BonosBocadilloController : ControllerBase
+    public partial class BonosBocadilloController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BonosBocadilloController> _logger;
@@ -51,13 +53,10 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible, // no se muestra en UI, pero disponible
+                    CantidadDisponible = b.CantidadDisponible, // si no quieres exponerlo, quitalo
                     Pvp = b.Pvp,
-                    Tipo = b.TipoBocadillo == null ? null : new TipoBocadilloDTO
-                    {
-                        IdTipo = b.TipoBocadillo.IdTipo,
-                        NombreTipo = b.TipoBocadillo.NombreTipo
-                    }
+                    IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
+                    NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
                 .ToListAsync();
 
@@ -65,3 +64,4 @@ namespace AppForSEII2526.API.Controllers
         }
     }
 }
+
