@@ -3,7 +3,7 @@ namespace AppForSEII2526.API.DTOs
 {
     public class DetailsResenyaDTO
     {
-        public DetailsResenyaDTO(string nombreU, string titulo, string descripcion, DateTime fecha, int rate, IList<DetailsLineasResenyaDTO> bocadillos)
+        public DetailsResenyaDTO(string nombreU, string titulo, string descripcion, DateTime fecha, int rate, List<DetailsLineasResenyaDTO> bocadillos)
         {
             this.nombreU = nombreU;
             this.titulo = titulo;
@@ -18,7 +18,7 @@ namespace AppForSEII2526.API.DTOs
         public string descripcion { get; set; }
         public DateTime fecha { get; set; }
         public int rate { get; set; }
-        public IList<DetailsLineasResenyaDTO> bocadillos { get; set; }
+        public List<DetailsLineasResenyaDTO> bocadillos { get; set; }
 
         public override bool Equals(object? obj)
         {

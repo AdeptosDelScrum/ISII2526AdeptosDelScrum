@@ -9,7 +9,13 @@ namespace AppForSEII2526.API.Models
 
         [Key]
         public int CompraId { get; set; }
+        [Required]
+        public string NombreCliente { get; set; }
+        [Required]
+        public string Apellido1_Cliente { get; set; }
         
+        public string? Apellido2_Cliente { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaCompra {  get; set; }
