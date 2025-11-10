@@ -1,13 +1,20 @@
+using System.Linq;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+
 using AppForSEII2526.API.DTOs;
+using AppForSEII2526.API.Models;   // entidades: BonoBocadillo, TipoBocadillo
+using AppForSEII2526.Web.Data;     // tu ApplicationDbContext (cambia el using si esta en otro namespace)
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace AppForSEII2526.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BonosBocadilloController : ControllerBase
+    public partial class BonosBocadilloController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BonosBocadilloController> _logger;
@@ -19,13 +26,13 @@ namespace AppForSEII2526.API.Controllers
         }
 
         // GET: api/bonosbocadillo/GetBonosDisponiblesSelect?tipo=vegano&search=mixto
-        // Devuelve solo bonos con stock (>0) mostrando nombre, pvp, nBocadillos y tipo.
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<BonoBocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBonosDisponiblesSelect(string? tipo = null, string? search = null)
         {
-            var q = _context.BonoBocadillo
+            // usar Set<T>() evita depender del nombre exacto del DbSet en el contexto
+            IQueryable<BonoBocadillo> q = _context.Set<BonoBocadillo>()
                 .AsNoTracking()
                 .Include(b => b.TipoBocadillo)
                 .Where(b => b.CantidadDisponible > 0);
@@ -42,6 +49,7 @@ namespace AppForSEII2526.API.Controllers
             {
                 var s = search.Trim();
                 q = q.Where(b => b.Nombre.Contains(s));
+                // alternativa: q = q.Where(b => EF.Functions.Like(b.Nombre, $"%{s}%"));
             }
 
             var bonos = await q
@@ -51,13 +59,10 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible, // no se muestra en UI, pero disponible
+                    CantidadDisponible = b.CantidadDisponible, // quita si no quieres exponerlo
                     Pvp = b.Pvp,
-                    Tipo = b.TipoBocadillo == null ? null : new TipoBocadilloDTO
-                    {
-                        IdTipo = b.TipoBocadillo.IdTipo,
-                        NombreTipo = b.TipoBocadillo.NombreTipo
-                    }
+                    IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
+                    NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
                 .ToListAsync();
 
