@@ -100,9 +100,5 @@ namespace AppForSEII2526.UT.BocadillosController_test
 
         }
 
-        [Fact]
-        [Trait("LevelTesting", "Unit Testing")]
-        [Trait("Database", "WithoutFixture")]
-
     }
 }
