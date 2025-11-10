@@ -103,6 +103,23 @@ namespace AppForSEII2526.UT.BocadillosController_test
         [Fact]
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
+        public async Task GetBocadillosParaResenya_BadRequest_Test()
+        {
+            // Arrange
+            var mock = new Mock<ILogger<BocadillosController>>();
+            ILogger<BocadillosController> logger = mock.Object;
+            var controller = new BocadillosController(_context, logger);
+
+            // Act
+            var result = await controller.GetBocadillosParaResenya("",(float)-10);
+
+            //Assert
+            //we check that the response type is OK and obtain the list of movies
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var problemDetails = Assert.IsType<string>(badRequestResult.Value);
+
+            Assert.Equal("El PVP no puede ser negativo", problemDetails);
+        }
 
     }
 }
