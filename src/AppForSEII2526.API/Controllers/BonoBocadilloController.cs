@@ -1,7 +1,12 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
+
 using AppForSEII2526.API.DTOs;
+using AppForSEII2526.API.Models;   // entidades: BonoBocadillo, TipoBocadillo
+using AppForSEII2526.Web.Data;     // ApplicationDbContext
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,13 +26,11 @@ namespace AppForSEII2526.API.Controllers
         }
 
         // GET: api/bonosbocadillo/GetBonosDisponiblesSelect?tipo=vegano&search=mixto
-        // Devuelve solo bonos con stock (>0) mostrando nombre, pvp, nBocadillos y tipo.
-        [HttpGet]
-        [Route("[action]")]
+        [HttpGet("[action]")]
         [ProducesResponseType(typeof(IList<BonoBocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBonosDisponiblesSelect(string? tipo = null, string? search = null)
         {
-            var q = _context.BonoBocadillo
+            IQueryable<BonoBocadillo> q = _context.Set<BonoBocadillo>()
                 .AsNoTracking()
                 .Include(b => b.TipoBocadillo)
                 .Where(b => b.CantidadDisponible > 0);
@@ -37,13 +40,13 @@ namespace AppForSEII2526.API.Controllers
                 var t = tipo.Trim().ToLower();
                 q = q.Where(b => b.TipoBocadillo != null &&
                                  b.TipoBocadillo.NombreTipo.ToLower() == t);
-                // valores esperados: vegano | vegetariano | sin gluten | normal
             }
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var s = search.Trim();
                 q = q.Where(b => b.Nombre.Contains(s));
+                // alternativa: q = q.Where(b => EF.Functions.Like(b.Nombre, $"%{s}%"));
             }
 
             var bonos = await q
@@ -53,7 +56,7 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible, // si no quieres exponerlo, quitalo
+                    CantidadDisponible = b.CantidadDisponible, // quita si no quieres exponerlo
                     Pvp = b.Pvp,
                     IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
@@ -64,4 +67,3 @@ namespace AppForSEII2526.API.Controllers
         }
     }
 }
-
