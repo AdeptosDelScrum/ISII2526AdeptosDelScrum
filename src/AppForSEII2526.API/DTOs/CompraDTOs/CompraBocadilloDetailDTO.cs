@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
-
+    
     public class CompraBocadilloDetailDTO : CompraBocadilloForCreateDTO
     {
         public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente,int cantidad, MetodoPago metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
          : base(nombre_cliente,
                    apellido1_cliente,
                    apellido2_cliente,
-                   metodoPago, 
+                   metodoPago,
                    bocadillosComprados
                    )
         {

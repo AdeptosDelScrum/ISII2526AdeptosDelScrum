@@ -10,12 +10,14 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
             Nombre = nombre;
             Precio = precio;
             TipoPan = tipoPan;
+            Cantidad = cantidad;
 
         }
 
         public string Nombre { get; set; }
-        public float Precio { get; set; }
+        public float Precio { get; set; } 
         public string TipoPan { get; set; }
+        public int Cantidad { get; set; }
 
         public override bool Equals(object? obj)
         {

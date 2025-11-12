@@ -32,14 +32,14 @@ namespace AppForSEII2526.API.Controllers
 
             var compra = await _context.Compra
              .Where(c => c.CompraId == id)
-                 .Include(c => c.BocadillosComprados)
-                    .ThenInclude(ci => ci.Bocadillo)
-                        .ThenInclude(c => c.TipoPan)
+                 .Include(c => c.BocadillosComprados) 
+                    .ThenInclude(ci => ci.Bocadillo) 
+                        .ThenInclude(c => c.TipoPan) 
              .Select(c => new CompraBocadilloDetailDTO(c.CompraId, c.FechaCompra, c.PrecioTotal,
                                                         c.User.NombreCliente, c.User.Apellido1_Cliente,
                                                         c.User.Apellido2_Cliente, c.nBocadillos,c.MetodoPago,
                                                         c.BocadillosComprados
-                                                        .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre,
+                                                        .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre, 
                                                                                                 ci.Precio, ci.TipoPan)).ToList<CompraBocadilloItemDTO>()
                                                         ))
              .FirstOrDefaultAsync();
@@ -69,7 +69,7 @@ namespace AppForSEII2526.API.Controllers
 
             if (compraForCreate.MetodoPago.Id == 0)
                 ModelState.AddModelError("MetodoPago", "El cliente debe escoger un método de pago");
-            
+
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == compraForCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("CompraApplicationUser", "El usuario no está registrado");

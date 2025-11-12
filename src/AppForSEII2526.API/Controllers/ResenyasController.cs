@@ -74,6 +74,7 @@ namespace AppForSEII2526.API.Controllers
 
             var bocadillos = _context.Bocadillo.ToList();
             List<ResenyaBocadillo> lineasResenyaObj = new List<ResenyaBocadillo>();
+            List<DetailsLineasResenyaDTO> detailsLineasDTOs = new List<DetailsLineasResenyaDTO>();
             foreach (var linea in resenya.Lineas)
             {
                 var bocadillo = bocadillos.FirstOrDefault(b => b.Id==linea.bocadillo.Id);
@@ -84,10 +85,18 @@ namespace AppForSEII2526.API.Controllers
                     return BadRequest("La puntuación debe ser un valor numérico entre 0 y 10");
                 }
                 var lineaResenyaObj = new ResenyaBocadillo();
+                var detailsLineasDTO = new DetailsLineasResenyaDTO();
+
                 lineaResenyaObj.Resenya = resenyaObj;
                 lineaResenyaObj.Bocadillo = bocadillo;
                 lineaResenyaObj.Puntuacion = linea.Puntuacion;
                 lineasResenyaObj.Add(lineaResenyaObj);
+
+                detailsLineasDTO.nombre = lineaResenyaObj.Bocadillo.Nombre;
+                detailsLineasDTO.precio = lineaResenyaObj.Bocadillo.PVP;
+                detailsLineasDTO.tamanyo = lineaResenyaObj.Bocadillo.TamanyoBocadillo;
+                detailsLineasDTO.puntuacion = lineaResenyaObj.Puntuacion;
+                detailsLineasDTOs.Add(detailsLineasDTO);
             }
 
             resenyaObj.ResenyaBocadillo = lineasResenyaObj;
@@ -106,7 +115,42 @@ namespace AppForSEII2526.API.Controllers
 
             }
 
-            return Ok("Reseña creada");
+            var detailresenya = 
+                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion, detailsLineasDTOs);
+
+
+            return CreatedAtAction("GetResenya", new { id = resenyaObj.Id }, detailresenya);
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(DetailsResenyaDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult> GetResenya(int id) 
+        {
+            if(_context.Resenyas == null)
+            {
+                _logger.LogError("Error: la tabla resenya no existe");
+                return NotFound();
+            }
+
+            var resenya = await _context.Resenyas
+                .Where(r => r.Id == id)
+                .Include(r => r.ResenyaBocadillo)
+                    .ThenInclude(r => r.Bocadillo)
+                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion),
+                            r.ResenyaBocadillo.Select( lr => new DetailsLineasResenyaDTO(lr.Bocadillo.Nombre, lr.Bocadillo.PVP, lr.Bocadillo.TamanyoBocadillo, lr.Puntuacion)).ToList()))
+                .FirstOrDefaultAsync();
+            
+            if(resenya == null)
+            {
+                _logger.LogError("Error: la reseña no existe");
+                return NotFound();
+            }
+
+            return Ok(resenya);
+                
+        }
+
     }
 }
