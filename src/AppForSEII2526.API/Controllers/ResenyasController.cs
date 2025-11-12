@@ -10,9 +10,9 @@ namespace AppForSEII2526.API.Controllers
     public class ResenyasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<BocadillosController> _logger;
+        private readonly ILogger<ResenyasController> _logger;
 
-        public ResenyasController(ApplicationDbContext context, ILogger<BocadillosController> logger)
+        public ResenyasController(ApplicationDbContext context, ILogger<ResenyasController> logger)
         {
             _context = context;
             _logger = logger;
