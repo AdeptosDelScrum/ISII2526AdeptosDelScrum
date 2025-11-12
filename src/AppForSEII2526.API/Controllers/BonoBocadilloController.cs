@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using AppForSEII2526.API.DTOs;
 using AppForSEII2526.API.Models;   // entidades: BonoBocadillo, TipoBocadillo
-using AppForSEII2526.Web.Data;     // tu ApplicationDbContext (cambia el using si esta en otro namespace)
+    
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +60,7 @@ namespace AppForSEII2526.API.Controllers
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
                     CantidadDisponible = b.CantidadDisponible, // quita si no quieres exponerlo
-                    Pvp = b.Pvp,
+                    Pvp = b.PVP,
                     IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
