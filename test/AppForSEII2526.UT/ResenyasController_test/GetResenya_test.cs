@@ -31,7 +31,7 @@ namespace AppForSEII2526.UT.ResenyasController_test
             var resenya = new Resenya();
             resenya.Id = 102;
             resenya.descripcion = "Me ha gustado";
-            resenya.fechaPublicacion = DateTime.Today;
+            resenya.fechaPublicacion = DateTime.Parse("2025-11-12T00:00:00.0000000");
             resenya.nombreUsuario = "Pepe";
             resenya.titulo = "Resenya1";
             resenya.valoracion = Resenya.rate.Cinco;
@@ -42,6 +42,9 @@ namespace AppForSEII2526.UT.ResenyasController_test
             linea.Puntuacion = 3;
             resenya.ResenyaBocadillo.Add(linea);
 
+            _context.Add(tipopan0);
+            _context.Add(bocadillo0);
+            _context.Add(linea);
             _context.Add(resenya);
             _context.SaveChanges();
         }
@@ -70,7 +73,7 @@ namespace AppForSEII2526.UT.ResenyasController_test
         [Fact]
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
-        public async Task GetRental_Found_test()
+        public async Task GetResenya_Found_test()
         {
             // Arrange
             var mock = new Mock<ILogger<ResenyasController>>();
@@ -82,10 +85,10 @@ namespace AppForSEII2526.UT.ResenyasController_test
             var expectedBocadillos = new List<DetailsLineasResenyaDTO>();
             expectedBocadillos.Add(new DetailsLineasResenyaDTO("Focata", 10, Tamanyo.Normal, 3));
 
-            var expectedResenya = new DetailsResenyaDTO("Pepe","Resenya1","Me ha gustado",DateTime.Today,5,expectedBocadillos);
+            var expectedResenya = new DetailsResenyaDTO("Pepe","Resenya1","Me ha gustado", DateTime.Parse("2025-11-12T00:00:00.0000000"),5,expectedBocadillos);
 
             // Act 
-            var result = await controller.GetResenya(1);
+            var result = await controller.GetResenya(102);
 
             //Assert
             //we check that the response type is OK and obtain the rental
