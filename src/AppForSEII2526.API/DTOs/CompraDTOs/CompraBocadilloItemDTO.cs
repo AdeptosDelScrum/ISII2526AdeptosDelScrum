@@ -1,11 +1,12 @@
 ﻿
 
 
+
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
     public class CompraBocadilloItemDTO
     {
-        public CompraBocadilloItemDTO(string nombre, float precio, string tipoPan)
+        public CompraBocadilloItemDTO(string nombre, float precio, string tipoPan, int cantidad)
         {
             Nombre = nombre;
             Precio = precio;
@@ -24,12 +25,13 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
             return obj is CompraBocadilloItemDTO dTO &&
                    Nombre == dTO.Nombre &&
                    Precio == dTO.Precio &&
-                   TipoPan == dTO.TipoPan;
+                   TipoPan == dTO.TipoPan &&
+                   Cantidad == dTO.Cantidad;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Nombre, Precio, TipoPan);
+            return HashCode.Combine(Nombre, Precio, TipoPan, Cantidad);
         }
     }
 }

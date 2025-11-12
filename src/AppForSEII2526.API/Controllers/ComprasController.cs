@@ -40,7 +40,7 @@ namespace AppForSEII2526.API.Controllers
                                                         c.User.Apellido2_Cliente, c.nBocadillos,c.MetodoPago,
                                                         c.BocadillosComprados
                                                         .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre, 
-                                                                                                ci.Precio, ci.TipoPan)).ToList<CompraBocadilloItemDTO>()
+                                                                                                ci.Precio, ci.TipoPan, ci.Cantidad)).ToList<CompraBocadilloItemDTO>()
                                                         ))
              .FirstOrDefaultAsync();
 
