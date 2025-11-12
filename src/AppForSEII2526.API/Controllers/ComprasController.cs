@@ -29,30 +29,29 @@ namespace AppForSEII2526.API.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Compra
+            var compra = await _context.Compra
              .Where(c => c.CompraId == id)
                  .Include(c => c.BocadillosComprados)
                     .ThenInclude(ci => ci.Bocadillo)
                         .ThenInclude(c => c.TipoPan)
              .Select(c => new CompraBocadilloDetailDTO(c.CompraId, c.FechaCompra, c.PrecioTotal,
-                                                        c.NombreCliente, c.Apellido1_Cliente,
-                                                        c.Apellido2_Cliente, c.MetodoPago,
+                                                        c.User.NombreCliente, c.User.Apellido1_Cliente,
+                                                        c.User.Apellido2_Cliente, c.nBocadillos,c.MetodoPago,
                                                         c.BocadillosComprados
                                                         .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre,
-                                                                                                ci.Precio, ci.TipoPan,
-                                                                                                ci.Cantidad)).ToList<CompraBocadilloItemDTO>()
+                                                                                                ci.Precio, ci.TipoPan)).ToList<CompraBocadilloItemDTO>()
                                                         ))
              .FirstOrDefaultAsync();
 
 
-            if (rental == null)
+            if (compra == null)
             {
                 _logger.LogError($"Error: La compra con Id {id} no existe");
                 return NotFound();
             }
 
 
-            return Ok(rental);
+            return Ok(compra);
         }
         [HttpPost]
         [Route("[action]")]
@@ -67,12 +66,8 @@ namespace AppForSEII2526.API.Controllers
             if (compraForCreate.Apellido1_cliente.IsNullOrEmpty())
                 ModelState.AddModelError("Apellido1Cliente", "El cliente debe ingrsar su primer apellido");
 
-            if (compraForCreate.MetodoPago.Id.Equals(0))
+            if (compraForCreate.MetodoPago.Id == 0)
                 ModelState.AddModelError("MetodoPago", "El cliente debe escoger un método de pago");
-
-            if (compraForCreate.BocadillosComprados.Count == 0)
-                ModelState.AddModelError("BocadillosComprados", "Error! Debes incluir como mínimo un bocadillo para continuar");
-
             
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == compraForCreate.NombreCliente);
             if (user == null)
@@ -82,29 +77,25 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
 
-            var bocadillos = compraForCreate.BocadillosComprados.Select(ci => ci.Nombre).ToList<string>();
+            var nombresBocadillos = compraForCreate.BocadillosComprados.Select(ci => ci.Nombre).ToList<string>();
 
-            var movies = _context.Bocadillo.Include(m => m.ComprasDelBocadillo)
+            var bocadillos = _context.Bocadillo.Include(m => m.ComprasDelBocadillo)
                 .ThenInclude(ci => ci.Compra)
-                .Where(b => bocadillos.Contains(b.Nombre))
+                .Where(c => nombresBocadillos.Contains(c.Nombre))
 
                 
-                .Select(b => new {
-                    b.Id,
-                    b.Nombre,
-                    b.ComprasDelBocadillo,
-                    b.PVP,
-                    //we count the number of rentalItems that are within the rental period
-                    NumberOfRentedItems = b.ComprasDelBocadillo.Count(ci => ci.Compra.BocadillosComprados <= compraForCreate.BocadillosComprados
-                            && ci.Compra.FechaCompra >= compraForCreate.)
+                .Select(c => new {
+                    c.Id,
+                    c.Nombre,
+                    c.ComprasDelBocadillo,
+                    c.PVP,
+                    NumberOfRentedItems = 0/*c.ComprasDelBocadillo.Add(ci => ci.Compra.nBocadillos <= ci.)*/
                 })
                 .ToList();
 
-
+            /*
             Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,
-                  DateTime.Now,
-                compraForCreate.MetodoPago,
-                rentalForCreate.RentalDateFrom, rentalForCreate.RentalDateTo, new List<RentalItem>());
+                  DateTime.Now, compraForCreate., compraForCreate.MetodoPago, new List<RentalItem>());
 
 
             compra.TotalPrice = 0;
@@ -157,7 +148,7 @@ namespace AppForSEII2526.API.Controllers
                 rental.RentalDateFrom, rental.RentalDateTo,
                 rentalForCreate.RentalItems);
 
-            return CreatedAtAction("GetRental", new { id = rental.Id }, rentalDetail);
+            return CreatedAtAction("GetRental", new { id = rental.Id }, rentalDetail);*/
         }
     }
 }
