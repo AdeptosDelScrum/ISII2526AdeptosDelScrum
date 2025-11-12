@@ -128,7 +128,8 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> GetResenya(int id) 
         {
-            if(_context.Resenyas == null)
+            _logger.LogError("Error: Nova");
+            if (_context.Resenyas == null)
             {
                 _logger.LogError("Error: la tabla resenya no existe");
                 return NotFound();
