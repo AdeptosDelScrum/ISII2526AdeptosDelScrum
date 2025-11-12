@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AppForSEII2526.API.DTOs.CompraDTOs;
 using Microsoft.IdentityModel.Tokens;
+using AppForSEII2526.API.DTOs;
 namespace AppForSEII2526.API.Controllers
 {
     [Route("api/[controller]")]
@@ -89,35 +90,36 @@ namespace AppForSEII2526.API.Controllers
                     c.Nombre,
                     c.ComprasDelBocadillo,
                     c.PVP,
-                    NumberOfRentedItems = 0/*c.ComprasDelBocadillo.Add(ci => ci.Compra.nBocadillos <= ci.)*/
+                    NumeroCompras = c.ComprasDelBocadillo.Count()
                 })
                 .ToList();
+            
+            float PrecioTotal = 0;
+            
 
-            /*
             Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,
-                  DateTime.Now, compraForCreate., compraForCreate.MetodoPago, new List<RentalItem>());
+                  DateTime.Now, compraForCreate.BocadillosComprados.Count, PrecioTotal,compraForCreate.MetodoPago, new List<CompraBocadillo>());
+            compra.PrecioTotal = compra.BocadillosComprados.Sum(ri => ri.Precio);
 
 
-            compra.TotalPrice = 0;
-            var numDays = (rental.RentalDateTo - rental.RentalDateFrom).TotalDays;
 
 
-            foreach (var item in rentalForCreate.RentalItems)
+            foreach (var item in compraForCreate.BocadillosComprados)
             {
-                var movie = movies.FirstOrDefault(m => m.Title == item.Title);
+                var bocadillo = bocadillos.FirstOrDefault(m => m.Nombre == item.Nombre);
                 //we must check that there is enough quantity to be rented in the database
-                if ((movie == null) || (movie.NumberOfRentedItems >= movie.QuantityForRenting))
+                if ((bocadillo == null) || (bocadillo.NumeroCompras >= bocadillo.ComprasDelBocadillo.Count))
                 {
-                    ModelState.AddModelError("RentalItems", $"Error! Movie titled '{item.Title}' is not available for being rented from {rentalForCreate.RentalDateFrom.ToShortDateString()} to {rentalForCreate.RentalDateTo.ToShortDateString()}");
+                    ModelState.AddModelError("ItemsCompra", $"El bocadillo '{item.Nombre}' no está disponible");
                 }
                 else
                 {
                     // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    rental.RentalItems.Add(new RentalItem(movie.Id, rental, movie.PriceForRenting, item.Description));
-                    item.PriceForRenting = movie.PriceForRenting;
+                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo.Id, bocadillo.ComprasDelBocadillo.Count, compra.CompraId, bocadillo.Nombre, bocadillo.PVP, compra));
+                    item.Precio = bocadillo.PVP;
                 }
             }
-            rental.TotalPrice = rental.RentalItems.Sum(ri => ri.PriceForRenting * numDays);
+           
 
 
             //if there is any problem because of the available quantity of movies or because the movie does not exist
@@ -126,7 +128,7 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
-            _context.Add(rental);
+            _context.Add(compra);
 
             try
             {
@@ -142,13 +144,13 @@ namespace AppForSEII2526.API.Controllers
             }
 
             //it returns rentalDetail
-            var rentalDetail = new RentalDetailDTO(rental.Id, rental.RentalDate,
-                rental.CustomerUserName, rental.CustomerNameSurname,
-                rental.DeliveryAddress, rentalForCreate.PaymentMethod,
-                rental.RentalDateFrom, rental.RentalDateTo,
-                rentalForCreate.RentalItems);
+            var compraDetail = new CompraBocadilloDetailDTO(compra.CompraId, compra.FechaCompra,
+                compra.PrecioTotal, compra.User.NombreCliente,
+                compra.User.Apellido1_Cliente, compra.User.Apellido2_Cliente, compra.nBocadillos, compraForCreate.MetodoPago,
+                
+                compraForCreate.BocadillosComprados);
 
-            return CreatedAtAction("GetRental", new { id = rental.Id }, rentalDetail);*/
+            return CreatedAtAction("GetRental", new { id = compra.CompraId }, compraDetail);
         }
     }
 }
