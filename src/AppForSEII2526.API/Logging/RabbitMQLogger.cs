@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ;
@@ -13,7 +12,7 @@ public class RabbitMQLogger : ILogger, IDisposable
     private readonly string _name;
     private readonly RabbitMQLoggerConfiguration _config;
     private readonly IConnection _connection;
-    private readonly IModel _channel;
+    private readonly RabbitMQ.Client.IModel _channel;
     private readonly IBasicProperties _properties;
 
     public RabbitMQLogger(string name, RabbitMQLoggerConfiguration config)
@@ -86,7 +85,7 @@ public class RabbitMQLogger : ILogger, IDisposable
                 Message = formatter(state, exception),
                 Exception = exception?.ToString()
             };
-            byte[] body = byte.Parse(logEntry.ToString());
+            byte[] body = Encoding.UTF8.GetBytes(logEntry.ToString());
 
             _channel.BasicPublish(
              exchange: _config.Exchange,
