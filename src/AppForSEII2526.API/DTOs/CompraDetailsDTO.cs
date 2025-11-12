@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+//Quitar esto
+using DataType = System.ComponentModel.DataAnnotations.DataType;
 
 namespace AppForSEII2526.API.DTOs
 {
