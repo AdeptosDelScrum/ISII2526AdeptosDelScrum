@@ -80,15 +80,14 @@ namespace AppForSEII2526.API.Controllers
 
             var nombresBocadillos = compraForCreate.BocadillosComprados.Select(ci => ci.Nombre).ToList<string>();
 
-            var bocadillos = _context.Bocadillo.Include(m => m.ComprasDelBocadillo)
+            var bocadillos = _context.Bocadillo.Include(c => c.ComprasDelBocadillo)
                 .ThenInclude(ci => ci.Compra)
                 .Where(c => nombresBocadillos.Contains(c.Nombre))
 
-                
                 .Select(c => new {
                     c.Id,
                     c.Nombre,
-                    c.ComprasDelBocadillo,
+                    c.Stock,
                     c.PVP,
                     NumeroCompras = c.ComprasDelBocadillo.Count()
                 })
@@ -99,8 +98,8 @@ namespace AppForSEII2526.API.Controllers
 
             Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,
                   DateTime.Now, compraForCreate.BocadillosComprados.Count, PrecioTotal,compraForCreate.MetodoPago, new List<CompraBocadillo>());
-            compra.PrecioTotal = compra.BocadillosComprados.Sum(ri => ri.Precio);
-
+            
+            
 
 
 
@@ -108,18 +107,19 @@ namespace AppForSEII2526.API.Controllers
             {
                 var bocadillo = bocadillos.FirstOrDefault(m => m.Nombre == item.Nombre);
                 //we must check that there is enough quantity to be rented in the database
-                if ((bocadillo == null) || (bocadillo.NumeroCompras >= bocadillo.ComprasDelBocadillo.Count))
+                if ((bocadillo == null) || (bocadillo.NumeroCompras >= bocadillo.Stock))
                 {
                     ModelState.AddModelError("ItemsCompra", $"El bocadillo '{item.Nombre}' no está disponible");
                 }
                 else
                 {
                     // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo.Id, bocadillo.ComprasDelBocadillo.Count, compra.CompraId, bocadillo.Nombre, bocadillo.PVP, compra));
+                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo.Id, bocadillo.NumeroCompras, compra.CompraId, bocadillo.Nombre, bocadillo.PVP, compra));
                     item.Precio = bocadillo.PVP;
                 }
             }
-           
+
+            compra.PrecioTotal = compra.BocadillosComprados.Sum(ci => (ci.Precio * ci.Cantidad));
 
 
             //if there is any problem because of the available quantity of movies or because the movie does not exist
@@ -146,7 +146,7 @@ namespace AppForSEII2526.API.Controllers
             //it returns rentalDetail
             var compraDetail = new CompraBocadilloDetailDTO(compra.CompraId, compra.FechaCompra,
                 compra.PrecioTotal, compra.User.NombreCliente,
-                compra.User.Apellido1_Cliente, compra.User.Apellido2_Cliente, compra.nBocadillos, compraForCreate.MetodoPago,
+                compra.User.Apellido1_Cliente, compra.User.Apellido2_Cliente, compraForCreate.BocadillosComprados.Count(), compraForCreate.MetodoPago,
                 
                 compraForCreate.BocadillosComprados);
 
