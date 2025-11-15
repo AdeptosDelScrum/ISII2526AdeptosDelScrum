@@ -34,10 +34,6 @@ namespace AppForSEII2526.API.Controllers
             {
                 return BadRequest("El campo descripción está vacío");
             }
-            if (resenya.Rate == null)
-            {
-                return BadRequest("Tienes que aportar una valoración general");
-            }
             if (resenya.Lineas.Count == 0)
             {
                 return BadRequest("No se puede crear una reseña sin bocadillos");
@@ -116,7 +112,7 @@ namespace AppForSEII2526.API.Controllers
             }
 
             var detailresenya = 
-                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion, detailsLineasDTOs);
+                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion + 1, detailsLineasDTOs);
 
 
             return CreatedAtAction("GetResenya", new { id = resenyaObj.Id }, detailresenya);
