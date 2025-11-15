@@ -34,8 +34,8 @@ namespace AppForSEII2526.API.Controllers
                     .ThenInclude(ci => ci.Bocadillo) 
                         .ThenInclude(c => c.TipoPan) 
              .Select(c => new CompraBocadilloDetailDTO(c.CompraId,c.FechaCompra, c.PrecioTotal,
-                                                        c.NombreCliente, c.Apellido1_Cliente, 
-                                                        c.Apellido2_Cliente, c.MetodoPago, 
+                                                        c.User.NombreCliente, c.User.Apellido1_Cliente, 
+                                                        c.User.Apellido2_Cliente, c.MetodoPago, 
                                                         c.BocadillosComprados
                                                         .Select(ci => new CompraBocadilloItemDTO(ci.Bocadillo.Nombre, 
                                                                                                 ci.Precio, ci.TipoPan, 
