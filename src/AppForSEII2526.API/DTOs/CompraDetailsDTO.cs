@@ -12,12 +12,11 @@ namespace AppForSEII2526.API.DTOs
         public string NombreCompleto { get; set; } = "";
         public string Apellidos { get; set; } = "";
         public string MetodoPago { get; set; } = "";
-
-        // atributo totalmente calificado + alias para el enum
-        [System.ComponentModel.DataAnnotations.DataTypeAttribute(DT.DateTime)]
+        // ERROR RESUELTO: Se especifica el namespace completo
+        [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.DateTime)]
         public DateTime Fecha { get; set; }
-
-        [System.ComponentModel.DataAnnotations.DataTypeAttribute(DT.Currency)]
+        // ERROR RESUELTO: Se especifica el namespace completo
+        [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
         public decimal PrecioTotal { get; set; }
 
         public IList<CompraBonoItemDTO> Items { get; set; } = new List<CompraBonoItemDTO>();
@@ -27,11 +26,10 @@ namespace AppForSEII2526.API.DTOs
     {
         public long BonoId { get; set; }
         public string Nombre { get; set; } = "";
-        public string? Tipo { get; set; } // vegano | vegetariano | sin gluten | normal
-
-        [System.ComponentModel.DataAnnotations.DataTypeAttribute(DT.Currency)]
-        public decimal Pvp { get; set; } // precio individual
-
+        public string? Tipo { get; set; }       // vegano | vegetariano | sin gluten | normal
+        // ERROR RESUELTO: Se especifica el namespace completo
+        [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
+        public decimal Pvp { get; set; }        // precio individual
         public int Cantidad { get; set; }
     }
 }
