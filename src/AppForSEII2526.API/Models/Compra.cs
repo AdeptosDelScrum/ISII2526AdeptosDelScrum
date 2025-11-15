@@ -6,10 +6,23 @@ namespace AppForSEII2526.API.Models
     {
 
         public Compra() { }
+        public Compra(string nombre, string apellido1, string apellido2, DateTime fecha, int cantidad, float precio, MetodoPago metodoPago, IList<CompraBocadillo> bocadillosComprados) 
+        { 
+            User.NombreCliente = nombre;
+            User.Apellido1_Cliente = apellido1;
+            User.Apellido2_Cliente = apellido2;
+            FechaCompra = fecha;
+            nBocadillos = cantidad;
+            PrecioTotal = precio;
+            MetodoPago = metodoPago;
+            BocadillosComprados = bocadillosComprados;
+        }
 
         [Key]
         public int CompraId { get; set; }
-        
+        [Required]
+        public ApplicationUser User { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaCompra {  get; set; }

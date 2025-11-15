@@ -11,8 +11,17 @@ namespace AppForSEII2526.API.Models
         {
 
         }
+        public CompraBocadillo(int id, int cantidad, int compraId, string nombre, float precio, Compra compra)
+        {
+            BocadilloId = id;   
+            Cantidad = cantidad;
+            CompraId = compraId;
+            NombreBocadillo = nombre;
+            Precio = precio;
+            Compra = compra;
+        }
 
-        
+
         public int BocadilloId { get; set; }
 
         

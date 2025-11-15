@@ -20,6 +20,11 @@ namespace AppForSEII2526.API.Controllers
 
         public BonosBocadilloController(
             ApplicationDbContext context,
+        private readonly DbContext _context;
+        private readonly ILogger<BonosBocadilloController> _logger;
+
+        public BonosBocadilloController(
+            DbContext context,                              // <- genérico
             ILogger<BonosBocadilloController> logger)
         {
             _context = context;
@@ -43,7 +48,6 @@ namespace AppForSEII2526.API.Controllers
                 var t = tipo.Trim().ToLower();
                 q = q.Where(b => b.TipoBocadillo != null &&
                                  b.TipoBocadillo.NombreTipo.ToLower() == t);
-                // valores esperados: vegano | vegetariano | sin gluten | normal
             }
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -60,9 +64,9 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible,   // quítalo del DTO si no quieres exponer stock
-                    Pvp = b.PVP,                                  // en la entidad es PVP (mayúsculas)
-                    IdTipo = b.IdTipo,                            // puedes tomarlo de la FK directa
+                    CantidadDisponible = b.CantidadDisponible,   // quita si no quieres exponer stock
+                    Pvp = b.PVP,                                 // en la entidad es PVP (mayúsculas)
+                    IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
                 .ToListAsync();

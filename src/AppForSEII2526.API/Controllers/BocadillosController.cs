@@ -46,7 +46,7 @@ namespace AppForSEII2526.API.Controllers
             var bocadillos = await _context.Bocadillo
                 .Where(b =>
                 (nombre == null || b.Nombre.Contains(nombre)) &&
-                PVP == null || b.PVP.Equals(PVP))
+                (PVP == null || b.PVP.Equals(PVP)))
                 .OrderBy(b => b.Nombre)
                 .Select(b => new BocadilloDTO(b.Nombre, b.TamanyoBocadillo, b.TipoPan.Nombre, b.PVP))
                 .ToListAsync();
