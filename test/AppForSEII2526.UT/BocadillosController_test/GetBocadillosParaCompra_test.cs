@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs;
-using AppForSEII2526.Models;
 
 namespace AppForSEII2526.UT.BocadillosController_test
 {
@@ -82,7 +81,6 @@ namespace AppForSEII2526.UT.BocadillosController_test
             var result = await controller.GetBocadillosParaCompra(tamanyo, tipoPan);
 
             //Assert
-            
             var okResult = Assert.IsType<OkObjectResult>(result);
             
             var bocadillosActual = Assert.IsType<List<BocadilloDTO>>(okResult.Value);
@@ -91,5 +89,25 @@ namespace AppForSEII2526.UT.BocadillosController_test
         }
 
 
+        [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
+        public async Task GetBocadillosParaCompra_badrequest_test()
+        {
+            // Arrange
+            var mock = new Mock<ILogger<BocadillosController>>();
+            ILogger<BocadillosController> logger = mock.Object;
+            var controller = new BocadillosController(_context, logger);
+
+            // Act
+            var result = await controller.GetBocadillosParaCompra(null, "Cosas");
+
+            //Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
+            var problem = problemDetails.Errors.First().Value[0];
+
+            Assert.Equal("No se ha encontrado ese tipo de pan", problem);
+        }
     }
 }
