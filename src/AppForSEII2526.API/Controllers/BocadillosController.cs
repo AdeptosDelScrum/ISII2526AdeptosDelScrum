@@ -22,7 +22,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof (IList<Bocadillo>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBocadillosParaCompra(Tamanyo? TamanyoBocadillo, string?TipoPanBocadillo)
         {
-            IList<Bocadillo> bocadillos = (IList<Bocadillo>)await _context.Bocadillo
+            IList<BocadilloDTO> bocadillos = await _context.Bocadillo
                 .Include(b => b.ComprasDelBocadillo)
                 .Where(b =>
                 (TipoPanBocadillo == null || b.TipoPan.Nombre.Contains(TipoPanBocadillo)) &&
