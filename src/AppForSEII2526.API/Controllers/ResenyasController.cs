@@ -10,9 +10,9 @@ namespace AppForSEII2526.API.Controllers
     public class ResenyasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<BocadillosController> _logger;
+        private readonly ILogger<ResenyasController> _logger;
 
-        public ResenyasController(ApplicationDbContext context, ILogger<BocadillosController> logger)
+        public ResenyasController(ApplicationDbContext context, ILogger<ResenyasController> logger)
         {
             _context = context;
             _logger = logger;
@@ -33,10 +33,6 @@ namespace AppForSEII2526.API.Controllers
             if (resenya.Description.IsNullOrEmpty())
             {
                 return BadRequest("El campo descripción está vacío");
-            }
-            if (resenya.Rate == null)
-            {
-                return BadRequest("Tienes que aportar una valoración general");
             }
             if (resenya.Lineas.Count == 0)
             {
@@ -116,7 +112,7 @@ namespace AppForSEII2526.API.Controllers
             }
 
             var detailresenya = 
-                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion, detailsLineasDTOs);
+                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion + 1, detailsLineasDTOs);
 
 
             return CreatedAtAction("GetResenya", new { id = resenyaObj.Id }, detailresenya);
@@ -138,7 +134,7 @@ namespace AppForSEII2526.API.Controllers
                 .Where(r => r.Id == id)
                 .Include(r => r.ResenyaBocadillo)
                     .ThenInclude(r => r.Bocadillo)
-                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion),
+                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion) + 1,
                             r.ResenyaBocadillo.Select( lr => new DetailsLineasResenyaDTO(lr.Bocadillo.Nombre, lr.Bocadillo.PVP, lr.Bocadillo.TamanyoBocadillo, lr.Puntuacion)).ToList()))
                 .FirstOrDefaultAsync();
             
