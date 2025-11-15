@@ -5,6 +5,7 @@ namespace AppForSEII2526.API.DTOs
 {
     public class BocadilloDTO
     {
+        public BocadilloDTO() { }
         public BocadilloDTO(string nombre, Tamanyo tamanyo,String tipopan, float precio) { 
             Name = nombre;
             TamanyoBocadillo = tamanyo;
