@@ -1,11 +1,12 @@
 ﻿
 
 
+
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
     public class CompraBocadilloItemDTO
     {
-        public CompraBocadilloItemDTO(string nombre, float precio, string tipoPan, int cantidad) 
+        public CompraBocadilloItemDTO(string nombre, float precio, string tipoPan, int cantidad)
         {
             Nombre = nombre;
             Precio = precio;
