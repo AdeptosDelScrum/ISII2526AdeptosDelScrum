@@ -1,4 +1,5 @@
 ﻿
+
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
     public class CompraBocadilloForCreateDTO
@@ -20,15 +21,15 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
         public MetodoPago MetodoPago { get; set; }
         public IList<CompraBocadilloItemDTO> BocadillosComprados { get; set; }
 
-
         public override bool Equals(object? obj)
         {
             return obj is CompraBocadilloForCreateDTO dTO &&
                    NombreCliente == dTO.NombreCliente &&
                    Apellido1_cliente == dTO.Apellido1_cliente &&
-                   Apellido2_cliente == dTO.Apellido2_cliente && 
-                   MetodoPago == dTO.MetodoPago &&
-                   EqualityComparer<IList<CompraBocadilloItemDTO>>.Default.Equals(BocadillosComprados, dTO.BocadillosComprados);
+                   Apellido2_cliente == dTO.Apellido2_cliente &&
+                   MetodoPago?.GetType() == dTO.MetodoPago?.GetType() &&
+                   //EqualityComparer<MetodoPago>.Default.Equals(MetodoPago, dTO.MetodoPago) &&
+                   BocadillosComprados.SequenceEqual(dTO.BocadillosComprados);
         }
 
         public override int GetHashCode()

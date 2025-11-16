@@ -12,7 +12,7 @@ namespace AppForSEII2526.API.Models
             User.NombreCliente = nombre;
             User.Apellido1_Cliente = apellido1;
             User.Apellido2_Cliente = apellido2;
-            
+
             FechaCompra = fecha;
             nBocadillos = cantidad;
             PrecioTotal = bocadillosComprados.Sum(ci => ci.Precio * ci.Cantidad);

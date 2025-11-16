@@ -2,10 +2,17 @@
 
 
 
+
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
-    public class CompraBocadilloItemDTO
+    public class CompraBocadilloItemDTO:IEquatable<CompraBocadilloItemDTO>
     {
+        public CompraBocadilloItemDTO(
+            )
+        {
+
+
+        }
         public CompraBocadilloItemDTO(string nombre, float precio, string tipoPan, int cantidad)
         {
             Nombre = nombre;
@@ -16,22 +23,24 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
         }
 
         public string Nombre { get; set; }
-        public float Precio { get; set; } 
+        public float Precio { get; set; }
         public string TipoPan { get; set; }
         public int Cantidad { get; set; }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object? obj) => Equals(obj as CompraBocadilloItemDTO);
+
+        public bool Equals(CompraBocadilloItemDTO? other)
         {
-            return obj is CompraBocadilloItemDTO dTO &&
-                   Nombre == dTO.Nombre &&
-                   Precio == dTO.Precio &&
-                   TipoPan == dTO.TipoPan &&
-                   Cantidad == dTO.Cantidad;
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Nombre == other.Nombre
+                && Precio == other.Precio
+                && TipoPan == other.TipoPan
+                && Cantidad == other.Cantidad;
         }
 
         public override int GetHashCode()
-        {
-            return HashCode.Combine(Nombre, Precio, TipoPan, Cantidad);
-        }
+            => HashCode.Combine(Nombre, Precio, TipoPan, Cantidad);
     }
 }
