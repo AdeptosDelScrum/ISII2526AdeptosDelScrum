@@ -17,7 +17,6 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
         
         public string Apellido1_cliente { get; set; }
         public string? Apellido2_cliente { get; set; }
-        [Required]
         public MetodoPago MetodoPago { get; set; }
         public IList<CompraBocadilloItemDTO> BocadillosComprados { get; set; }
 
