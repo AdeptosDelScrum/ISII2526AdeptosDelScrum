@@ -44,6 +44,8 @@ namespace AppForSEII2526.UT.ResenyasController_test
             tipopans.Add(tipopan1);
             tipopans.Add(tipopan0);
 
+            ApplicationUser applicationUser = new ApplicationUser(1,"Paco", "Salazar", "Mendoza");
+            _context.Add(applicationUser);
             _context.AddRange(tipopans);
             _context.AddRange(bocadillos);
             _context.SaveChanges();
@@ -60,25 +62,25 @@ namespace AppForSEII2526.UT.ResenyasController_test
             bocadillos.Add(new LineasResenyaDTO(bocadillo0, 3));
 
 
-            var resenyaSinTíitulo= new ResenyaDTO(1,"Pedro","","Descripcion",3,bocadillos);
+            var resenyaSinTíitulo= new ResenyaDTO(1,"Pedro","","Descripcion",3,bocadillos, "Paco", "Salazar", "Mendoza");
 
-            var resenyaSinDescripcion = new ResenyaDTO(1, "Pedro", "Titulo", "", 3, bocadillos);
+            var resenyaSinDescripcion = new ResenyaDTO(1, "Pedro", "Titulo", "", 3, bocadillos, "Paco", "Salazar", "Mendoza");
 
-            var resenyaSinBocadillos = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, new List<LineasResenyaDTO>());
+            var resenyaSinBocadillos = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, new List<LineasResenyaDTO>(), "Paco", "Salazar", "Mendoza");
 
-            var resenyaRateNoValido = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", -10, bocadillos);
+            var resenyaRateNoValido = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", -10, bocadillos, "Paco", "Salazar", "Mendoza");
 
             var bocadillo1= new BocadilloDTO("Focata", Tamanyo.Normal, "sandwitch", 10);
             bocadillo1.Id = 100;
             var bocadillos0 = new List<LineasResenyaDTO>();
             bocadillos0.Add(new LineasResenyaDTO(bocadillo1, 3));
 
-            var resenyaBocadilloNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos0);
+            var resenyaBocadilloNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos0, "Paco", "Salazar", "Mendoza");
 
             var bocadillos1 = new List<LineasResenyaDTO>();
             bocadillos1.Add(new LineasResenyaDTO(bocadillo0, -10));
 
-            var resenyaPuntBocadilloNoValida = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos1);
+            var resenyaPuntBocadilloNoValida = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos1, "Paco", "Salazar", "Mendoza");
 
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
@@ -136,12 +138,12 @@ namespace AppForSEII2526.UT.ResenyasController_test
             lineasResenyaDTOs.Add(new LineasResenyaDTO(bocadillo,3));
 
 
-            var detailsLineasResenyaDTO = new List<DetailsLineasResenyaDTO>();
-            detailsLineasResenyaDTO.Add(new DetailsLineasResenyaDTO(bocadillo.Name,bocadillo.PVP,bocadillo.TamanyoBocadillo,3));
-            var resenyaDetailsExpected = new DetailsResenyaDTO("Paco","resenya1","Me ha gustado",DateTime.Today,3,detailsLineasResenyaDTO);
+            var detailsLineasResenyaDTO = new List<LineasResenyaDTO>();
+            detailsLineasResenyaDTO.Add(new LineasResenyaDTO(bocadillo,3));
+            var resenyaDetailsExpected = new DetailsResenyaDTO(1 ,"Paco","resenya1","Me ha gustado",DateTime.Today,3,detailsLineasResenyaDTO, "Paco", "Salazar", "Mendoza");
 
             // Act
-            var result = await controller.PostResenya(new ResenyaDTO(3,"Paco","resenya1","Me ha gustado",3,lineasResenyaDTOs));
+            var result = await controller.PostResenya(new ResenyaDTO(3,"Paco","resenya1","Me ha gustado",3,lineasResenyaDTOs, "Paco", "Salazar", "Mendoza"));
 
             //Assert
             //we check that the response type is OK and obtain the list of movies
