@@ -11,14 +11,20 @@ namespace AppForSEII2526.API.Models
         {
 
         }
-        public CompraBocadillo(int id, int cantidad, int compraId, string nombre, float precio, Compra compra)
+
+        public CompraBocadillo(Bocadillo bocadillo,Compra compra)
         {
-            BocadilloId = id;   
-            Cantidad = cantidad;
-            CompraId = compraId;
-            NombreBocadillo = nombre;
-            Precio = precio;
+            Bocadillo = bocadillo;
             Compra = compra;
+        }
+        public CompraBocadillo(Bocadillo bocadillo, int cantidad, Compra compra):this(bocadillo, compra)
+        {
+            BocadilloId = bocadillo.Id;
+            Cantidad = cantidad;    
+            CompraId = compra.CompraId;
+            NombreBocadillo = bocadillo.Nombre;
+            Precio = bocadillo.PVP;
+            TipoPan = bocadillo.TipoPan.Nombre;
         }
 
 
