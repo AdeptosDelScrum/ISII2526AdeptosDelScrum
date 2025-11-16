@@ -102,7 +102,7 @@ namespace AppForSEII2526.UT.ResenyasController_test
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
         [MemberData(nameof(TestCasesFor_PostResenya))]
-        public async Task CreateRental_Error_test(ResenyaDTO resenyaDTO, string errorExpected)
+        public async Task PostResenya_Error_test(ResenyaDTO resenyaDTO, string errorExpected)
         {
             // Arrange
             var mock = new Mock<ILogger<ResenyasController>>();
