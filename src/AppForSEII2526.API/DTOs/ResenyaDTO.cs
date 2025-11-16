@@ -3,7 +3,7 @@ namespace AppForSEII2526.API.DTOs
 {
     public class ResenyaDTO
     {
-        public ResenyaDTO(int id, string name, string title, string description, int rate, IList<LineasResenyaDTO> lineas)
+        public ResenyaDTO(int id, string name, string title, string description, int rate, IList<LineasResenyaDTO> lineas, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente)
         {
             Id = id;
             Name = name;
@@ -11,9 +11,16 @@ namespace AppForSEII2526.API.DTOs
             Description = description;
             Rate = rate;
             Lineas = lineas;
+            NombreCliente = nombre_cliente ?? throw new ArgumentNullException(nameof(nombre_cliente)); ;
+            Apellido1_cliente = apellido1_cliente ?? throw new ArgumentNullException(nameof(apellido1_cliente)); ;
+            Apellido2_cliente = apellido2_cliente;
         }
 
         public int Id { get; set; }
+        public string NombreCliente { get; set; }
+
+        public string Apellido1_cliente { get; set; }
+        public string? Apellido2_cliente { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
