@@ -1,39 +1,31 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-
+using AppForSEII2526.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-using AppForSEII2526.API.DTOs;   // BonoBocadilloDTO
-using AppForSEII2526.Models;     // BonoBocadillo, TipoBocadillo
+using System.Net;
 
 namespace AppForSEII2526.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public partial class BonosBocadilloController : ControllerBase
+    public class BonosBocadilloController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BonosBocadilloController> _logger;
 
-        public BonosBocadilloController(
-            ApplicationDbContext context,
-            ILogger<BonosBocadilloController> logger)
+        public BonosBocadilloController(ApplicationDbContext context, ILogger<BonosBocadilloController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
         // GET: api/bonosbocadillo/GetBonosDisponiblesSelect?tipo=vegano&search=mixto
-        // Devuelve solo bonos con stock (>0) mostrando nombre, PVP, NBocadillos y tipo.
-        [HttpGet("[action]")]
+        // Devuelve solo bonos con stock (>0) mostrando nombre, pvp, nBocadillos y tipo.
+        [HttpGet]
+        [Route("[action]")]
         [ProducesResponseType(typeof(IList<BonoBocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBonosDisponiblesSelect(string? tipo = null, string? search = null)
         {
-            // Usamos Set<BonoBocadillo>() porque tu ApplicationDbContext no tiene DbSet<BonoBocadillo> público
-            IQueryable<BonoBocadillo> q = _context.Set<BonoBocadillo>()
+            var q = _context.BonoBocadillo
                 .AsNoTracking()
                 .Include(b => b.TipoBocadillo)
                 .Where(b => b.CantidadDisponible > 0);
@@ -50,7 +42,6 @@ namespace AppForSEII2526.API.Controllers
             {
                 var s = search.Trim();
                 q = q.Where(b => b.Nombre.Contains(s));
-                // Alternativa: q = q.Where(b => EF.Functions.Like(b.Nombre, $"%{s}%"));
             }
 
             var bonos = await q
@@ -60,10 +51,13 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible,   // quítalo del DTO si no quieres exponer stock
-                    Pvp = b.PVP,                                  // en la entidad es PVP (mayúsculas)
-                    IdTipo = b.IdTipo,                            // puedes tomarlo de la FK directa
-                    NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
+                    CantidadDisponible = b.CantidadDisponible, // no se muestra en UI, pero disponible
+                    Pvp = b.Pvp,
+                    Tipo = b.TipoBocadillo == null ? null : new TipoBocadilloDTO
+                    {
+                        IdTipo = b.TipoBocadillo.IdTipo,
+                        NombreTipo = b.TipoBocadillo.NombreTipo
+                    }
                 })
                 .ToListAsync();
 
@@ -71,5 +65,4 @@ namespace AppForSEII2526.API.Controllers
         }
     }
 }
-
 
