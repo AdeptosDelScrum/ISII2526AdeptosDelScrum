@@ -4,6 +4,11 @@ namespace AppForSEII2526.API.Models
     public class TipoPan
     {
         public TipoPan() { }
+        public TipoPan(int id, string nombre)
+        {
+            PanId = id;
+            Nombre = nombre;
+        }
 
         [Key]
         public int PanId { get; set; }
