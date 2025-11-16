@@ -27,7 +27,7 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
 
         public GetBonosDisponiblesSelect_test()
         {
-            // ----- Semilla mÃ­nima de datos -----
+            // ----- Semilla mínima de datos -----
             var tNormal = new TipoBocadillo { IdTipo = 10, NombreTipo = "normal" };
             var tVegano = new TipoBocadillo { IdTipo = 20, NombreTipo = "vegano" };
             _context.AddRange(tNormal, tVegano);
@@ -82,11 +82,11 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
         {
             // Orden esperado por Nombre ASC:
             // "Bono Mixto 10" (ID_B1), "Mixto Especial" (ID_B4), "Pack Vegano 8" (ID_B3)
-            yield return new object[] { null,       null,        new[] { ID_B1, ID_B4, ID_B3 } }; // todos con stock
-            yield return new object[] { "vegano",   null,        new[] { ID_B3 } };               // solo veganos con stock
-            yield return new object[] { "NORMAL",   null,        new[] { ID_B1, ID_B4 } };        // case-insensitive
-            yield return new object[] { null,       "Mixto",     new[] { ID_B1, ID_B4 } };        // search por nombre
-            yield return new object[] { "vegano",   "Mixto",     Array.Empty<int>() };             // combinaciÃ³n sin resultados
+            yield return new object[] { null, null, new[] { ID_B1, ID_B4, ID_B3 } }; // todos con stock
+            yield return new object[] { "vegano", null, new[] { ID_B3 } };               // solo veganos con stock
+            yield return new object[] { "NORMAL", null, new[] { ID_B1, ID_B4 } };        // case-insensitive
+            yield return new object[] { null, "Mixto", new[] { ID_B1, ID_B4 } };        // search por nombre
+            yield return new object[] { "vegano", "Mixto", Array.Empty<int>() };             // combinación sin resultados
         }
 
         [Theory]
@@ -144,7 +144,7 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
             Assert.Equal(3.50m, dto.Pvp);
 
             // nombre del tipo puede venir en dto.NombreTipo o en dto.Tipo.NombreTipo (segun tu DTO)
-            var nombreTipo = GetProp<string>(dto, "NombreTipo") 
+            var nombreTipo = GetProp<string>(dto, "NombreTipo")
                              ?? GetProp<string>(dto, "Tipo.NombreTipo");
             Assert.Equal("normal", nombreTipo);
         }
