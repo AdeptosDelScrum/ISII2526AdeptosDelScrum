@@ -30,6 +30,13 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Apellido1_Cliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Apellido2_Cliente")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -46,6 +53,10 @@ namespace AppForSEII2526.API.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NombreCliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -106,7 +117,7 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<int>("TamanyoId")
+                    b.Property<int>("TamanyoBocadillo")
                         .HasColumnType("int");
 
                     b.Property<int>("TipoPanPanId")
@@ -114,11 +125,9 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TamanyoId");
-
                     b.HasIndex("TipoPanPanId");
 
-                    b.ToTable("Bocadillo", (string)null);
+                    b.ToTable("Bocadillo");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.Compra", b =>
@@ -129,28 +138,18 @@ namespace AppForSEII2526.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompraId"));
 
-                    b.Property<string>("Apellido_1Cliente")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Apellido_2Cliente")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<DateTime>("FechaCompra")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MetodoPagoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("NombreCliente")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<float>("PrecioTotal")
                         .HasColumnType("real");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("nBocadillos")
                         .HasColumnType("int");
@@ -159,7 +158,9 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("MetodoPagoId");
 
-                    b.ToTable("Compra", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Compra");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.CompraBocadillo", b =>
@@ -190,7 +191,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("CompraId");
 
-                    b.ToTable("CompraBocadillo", (string)null);
+                    b.ToTable("CompraBocadillo");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.MetodoPago", b =>
@@ -208,7 +209,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MetodoPago", (string)null);
+                    b.ToTable("MetodoPago");
 
                     b.HasDiscriminator().HasValue("MetodoPago");
 
@@ -222,6 +223,10 @@ namespace AppForSEII2526.API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("descripcion")
                         .IsRequired()
@@ -245,7 +250,9 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Resenyas", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Resenyas");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.ResenyaBocadillo", b =>
@@ -263,29 +270,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("ResenyaId");
 
-                    b.ToTable("ResenyaBocadillos", (string)null);
-                });
-
-            modelBuilder.Entity("AppForSEII2526.API.Models.Tamanyo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Tamanyos")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tamanyos", (string)null);
-
-                    b.HasDiscriminator<string>("Tamanyos").HasValue("Tamanyo");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("ResenyaBocadillos");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.TipoPan", b =>
@@ -303,7 +288,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("PanId");
 
-                    b.ToTable("TipoPan", (string)null);
+                    b.ToTable("TipoPan");
                 });
 
             modelBuilder.Entity("AppForSEII2526.Models.BonoBocadillo", b =>
@@ -332,7 +317,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("IdTipo");
 
-                    b.ToTable("BonoBocadillos", (string)null);
+                    b.ToTable("BonoBocadillos");
                 });
 
             modelBuilder.Entity("AppForSEII2526.Models.BonosComprados", b =>
@@ -353,7 +338,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("BonoId");
 
-                    b.ToTable("BonosComprados", (string)null);
+                    b.ToTable("BonosComprados");
                 });
 
             modelBuilder.Entity("AppForSEII2526.Models.CompraBono", b =>
@@ -391,7 +376,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasIndex("MetodoPagoId");
 
-                    b.ToTable("ComprasBono", (string)null);
+                    b.ToTable("ComprasBono");
                 });
 
             modelBuilder.Entity("AppForSEII2526.Models.TipoBocadillo", b =>
@@ -406,7 +391,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("IdTipo");
 
-                    b.ToTable("TipoBocadillos", (string)null);
+                    b.ToTable("TipoBocadillos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -563,35 +548,13 @@ namespace AppForSEII2526.API.Migrations
                     b.HasDiscriminator().HasValue("Tarjeta");
                 });
 
-            modelBuilder.Entity("AppForSEII2526.API.Models.Normal", b =>
-                {
-                    b.HasBaseType("AppForSEII2526.API.Models.Tamanyo");
-
-                    b.HasDiscriminator().HasValue("Normal");
-                });
-
-            modelBuilder.Entity("AppForSEII2526.API.Models.Pequenyo", b =>
-                {
-                    b.HasBaseType("AppForSEII2526.API.Models.Tamanyo");
-
-                    b.HasDiscriminator().HasValue("Pequenyo");
-                });
-
             modelBuilder.Entity("AppForSEII2526.API.Models.Bocadillo", b =>
                 {
-                    b.HasOne("AppForSEII2526.API.Models.Tamanyo", "Tamanyo")
-                        .WithMany()
-                        .HasForeignKey("TamanyoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AppForSEII2526.API.Models.TipoPan", "TipoPan")
                         .WithMany("Bocadillos")
                         .HasForeignKey("TipoPanPanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Tamanyo");
 
                     b.Navigation("TipoPan");
                 });
@@ -604,7 +567,15 @@ namespace AppForSEII2526.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("AppForSEII2526.API.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("MetodoPago");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.CompraBocadillo", b =>
@@ -624,6 +595,17 @@ namespace AppForSEII2526.API.Migrations
                     b.Navigation("Bocadillo");
 
                     b.Navigation("Compra");
+                });
+
+            modelBuilder.Entity("AppForSEII2526.API.Models.Resenya", b =>
+                {
+                    b.HasOne("AppForSEII2526.API.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AppForSEII2526.API.Models.ResenyaBocadillo", b =>
