@@ -6,6 +6,15 @@ namespace AppForSEII2526.API.Models
     {
 
         public Bocadillo() { }
+        public Bocadillo(int id, string nombre, float pvp, int stock, Tamanyo tamanyo, TipoPan tipoPan)
+        {
+            Id = id;
+            Nombre = nombre;
+            PVP = pvp;
+            Stock = stock;
+            TamanyoBocadillo = tamanyo;
+            TipoPan = tipoPan;
+        }
 
         [Key]
         public int Id { get; set; }

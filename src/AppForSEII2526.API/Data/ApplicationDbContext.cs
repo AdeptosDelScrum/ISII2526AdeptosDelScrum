@@ -21,6 +21,7 @@ namespace AppForSEII2526.API.Data
         public DbSet<BonoBocadillo> BonoBocadillos { get; set; }
         public DbSet<BonosComprados> BonosComprados { get; set; }
         public DbSet<CompraBono> ComprasBono { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

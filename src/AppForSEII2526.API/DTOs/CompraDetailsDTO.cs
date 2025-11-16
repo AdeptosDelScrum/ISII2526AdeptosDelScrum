@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+// alias para el enum DataType de DataAnnotations
+using DT = System.ComponentModel.DataAnnotations.DataType;
 
 namespace AppForSEII2526.API.DTOs
 {
@@ -14,6 +18,7 @@ namespace AppForSEII2526.API.DTOs
         // ERROR RESUELTO: Se especifica el namespace completo
         [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
         public decimal PrecioTotal { get; set; }
+
         public IList<CompraBonoItemDTO> Items { get; set; } = new List<CompraBonoItemDTO>();
     }
 

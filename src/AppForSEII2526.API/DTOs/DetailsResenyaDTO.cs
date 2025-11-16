@@ -28,7 +28,7 @@ namespace AppForSEII2526.API.DTOs
                    descripcion == dTO.descripcion &&
                    fecha == dTO.fecha &&
                    rate == dTO.rate &&
-                   EqualityComparer<IList<DetailsLineasResenyaDTO>>.Default.Equals(bocadillos, dTO.bocadillos);
+                   bocadillos.SequenceEqual(dTO.bocadillos);
         }
 
         public override int GetHashCode()

@@ -1,6 +1,7 @@
 ﻿using AppForSEII2526.API.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AppForSEII2526.API.Controllers
 {
@@ -22,7 +23,16 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof (IList<Bocadillo>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBocadillosParaCompra(Tamanyo? TamanyoBocadillo, string?TipoPanBocadillo)
         {
-            IList<Bocadillo> bocadillos = (IList<Bocadillo>)await _context.Bocadillo
+
+            if (!string.IsNullOrEmpty(TipoPanBocadillo) && !_context.Bocadillo.Any(c => c.TipoPan.Nombre.ToLower() == TipoPanBocadillo.ToLower()))
+            {
+                ModelState.AddModelError("TipoPan", "No se ha encontrado ese tipo de pan");
+                _logger.LogError($"{DateTime.Now} Error: No se ha encontrado ese tipo de pan");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+                //return BadRequest("No se ha encontrado ese tipo de pan");
+            }
+
+            IList<BocadilloDTO> bocadillos = await _context.Bocadillo
                 .Include(b => b.ComprasDelBocadillo)
                 .Where(b =>
                 (TipoPanBocadillo == null || b.TipoPan.Nombre.Contains(TipoPanBocadillo)) &&
@@ -46,7 +56,7 @@ namespace AppForSEII2526.API.Controllers
             var bocadillos = await _context.Bocadillo
                 .Where(b =>
                 (nombre == null || b.Nombre.Contains(nombre)) &&
-                PVP == null || b.PVP.Equals(PVP))
+                (PVP == null || b.PVP.Equals(PVP)))
                 .OrderBy(b => b.Nombre)
                 .Select(b => new BocadilloDTO(b.Nombre, b.TamanyoBocadillo, b.TipoPan.Nombre, b.PVP))
                 .ToListAsync();
