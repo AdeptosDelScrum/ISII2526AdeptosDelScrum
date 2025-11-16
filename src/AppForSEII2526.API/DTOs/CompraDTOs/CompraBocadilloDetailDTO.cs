@@ -30,10 +30,10 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            // primero comparamos la parte base
+            
             if (!base.Equals(other)) return false;
 
-            // luego las propiedades añadidas
+            
             return Id == other.Id
                 && Fecha == other.Fecha
                 && Precio == other.Precio;
