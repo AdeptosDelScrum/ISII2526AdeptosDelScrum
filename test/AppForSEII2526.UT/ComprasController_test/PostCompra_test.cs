@@ -46,7 +46,7 @@ namespace AppForSEII2526.UT.ComprasController_test
             _context.Add(compra);
             _context.SaveChanges();
         }
-        public static MetodoPago MetodoPagoNoSeleccionado() => null!;
+
         public static IEnumerable<object[]> TestCasesFor_CrearCompra()
         {
 
