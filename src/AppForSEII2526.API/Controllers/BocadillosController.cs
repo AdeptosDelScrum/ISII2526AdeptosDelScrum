@@ -58,7 +58,7 @@ namespace AppForSEII2526.API.Controllers
                 (nombre == null || b.Nombre.Contains(nombre)) &&
                 (PVP == null || b.PVP.Equals(PVP)))
                 .OrderBy(b => b.Nombre)
-                .Select(b => new BocadilloDTO(b.Nombre, b.TamanyoBocadillo, b.TipoPan.Nombre, b.PVP))
+                .Select(b => new BocadilloDTO(b.Id,b.Nombre, b.TamanyoBocadillo, b.TipoPan.Nombre, b.PVP))
                 .ToListAsync();
             return Ok(bocadillos);
         }
