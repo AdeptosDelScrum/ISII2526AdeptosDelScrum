@@ -28,7 +28,9 @@ namespace AppForSEII2526.UT.ResenyasController_test
             bocadillo0.TamanyoBocadillo = Tamanyo.Normal;
             bocadillo0.TipoPan = tipopan0;
 
-            var resenya = new Resenya();
+
+            ApplicationUser applicationUser = new ApplicationUser(1, "Paco", "Salazar", "Mendoza");
+            var resenya = new Resenya("Paco", "Salazar", "Mendoza", applicationUser);
             resenya.Id = 102;
             resenya.descripcion = "Me ha gustado";
             resenya.fechaPublicacion = DateTime.Parse("2025-11-12T00:00:00.0000000");
@@ -42,6 +44,7 @@ namespace AppForSEII2526.UT.ResenyasController_test
             linea.Puntuacion = 3;
             resenya.ResenyaBocadillo.Add(linea);
 
+            _context.Add(applicationUser);   
             _context.Add(tipopan0);
             _context.Add(bocadillo0);
             _context.Add(linea);
@@ -82,10 +85,10 @@ namespace AppForSEII2526.UT.ResenyasController_test
 
 
 
-            var expectedBocadillos = new List<DetailsLineasResenyaDTO>();
-            expectedBocadillos.Add(new DetailsLineasResenyaDTO("Focata", 10, Tamanyo.Normal, 3));
+            var expectedBocadillos = new List<LineasResenyaDTO>();
+            expectedBocadillos.Add(new LineasResenyaDTO(new BocadilloDTO("Focata", Tamanyo.Normal, "sandwitch",10),3));
 
-            var expectedResenya = new DetailsResenyaDTO("Pepe","Resenya1","Me ha gustado", DateTime.Parse("2025-11-12T00:00:00.0000000"),5,expectedBocadillos);
+            var expectedResenya = new DetailsResenyaDTO(0,"Pepe","Resenya1","Me ha gustado", DateTime.Parse("2025-11-12T00:00:00.0000000"),5,expectedBocadillos, "Paco", "Salazar", "Mendoza");
 
             // Act 
             var result = await controller.GetResenya(102);
