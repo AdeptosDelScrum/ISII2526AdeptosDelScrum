@@ -1,4 +1,5 @@
-﻿using DataType = System.ComponentModel.DataAnnotations.DataType;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+using DataType = System.ComponentModel.DataAnnotations.DataType;
 
 namespace AppForSEII2526.API.Models
 {
@@ -11,14 +12,19 @@ namespace AppForSEII2526.API.Models
         {
 
         }
-        public CompraBocadillo(int id, int cantidad, int compraId, string nombre, float precio, Compra compra)
+        public CompraBocadillo(Bocadillo bocadillo, Compra compra)
         {
-            BocadilloId = id;   
-            Cantidad = cantidad;
-            CompraId = compraId;
-            NombreBocadillo = nombre;
-            Precio = precio;
+            Bocadillo = bocadillo;
             Compra = compra;
+        }
+        public CompraBocadillo(Bocadillo bocadillo, int cantidad, Compra compra) : this(bocadillo, compra)
+        {
+            BocadilloId = bocadillo.Id;
+            Cantidad = cantidad;
+            CompraId = compra.CompraId;
+            NombreBocadillo = bocadillo.Nombre;
+            Precio = bocadillo.PVP;
+            TipoPan = bocadillo.TipoPan.Nombre;
         }
 
 
@@ -32,7 +38,7 @@ namespace AppForSEII2526.API.Models
 
         [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String NombreBocadillo { get; set; }
+        public string NombreBocadillo { get; set; }
 
         [DataType(DataType.Currency)]
         [Display(Name = "Total")]
@@ -40,7 +46,7 @@ namespace AppForSEII2526.API.Models
 
         [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-        public String TipoPan {  get; set; }
+        public string TipoPan {  get; set; }
         
         
         public Bocadillo Bocadillo {  get; set; }

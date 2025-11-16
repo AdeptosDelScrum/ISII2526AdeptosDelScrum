@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
-    
+
     public class CompraBocadilloDetailDTO : CompraBocadilloForCreateDTO
     {
-        public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente,int cantidad, MetodoPago metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
+        public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente, int cantidad, MetodoPago metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
          : base(nombre_cliente,
                    apellido1_cliente,
                    apellido2_cliente,
@@ -23,18 +23,23 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
         public DateTime Fecha { get; set; }
         public float Precio { get; set; }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object? obj) => Equals(obj as CompraBocadilloDetailDTO);
+
+        public bool Equals(CompraBocadilloDetailDTO? other)
         {
-            return obj is CompraBocadilloDetailDTO dTO &&
-                   base.Equals(obj) &&
-                   Precio == dTO.Precio &&
-                   Id == dTO.Id &&
-                   Fecha == dTO.Fecha;
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            // primero comparamos la parte base
+            if (!base.Equals(other)) return false;
+
+            // luego las propiedades añadidas
+            return Id == other.Id
+                && Fecha == other.Fecha
+                && Precio == other.Precio;
         }
 
         public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), Id, Fecha, Precio);
-        }
+            => HashCode.Combine(base.GetHashCode(), Id, Fecha, Precio);
     }
 }
