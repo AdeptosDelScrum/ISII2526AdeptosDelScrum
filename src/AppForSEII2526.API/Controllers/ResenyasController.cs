@@ -134,7 +134,7 @@ namespace AppForSEII2526.API.Controllers
                 .Where(r => r.Id == id)
                 .Include(r => r.ResenyaBocadillo)
                     .ThenInclude(r => r.Bocadillo)
-                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion) + 1,
+                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion + 1),
                             r.ResenyaBocadillo.Select( lr => new DetailsLineasResenyaDTO(lr.Bocadillo.Nombre, lr.Bocadillo.PVP, lr.Bocadillo.TamanyoBocadillo, lr.Puntuacion)).ToList()))
                 .FirstOrDefaultAsync();
             
