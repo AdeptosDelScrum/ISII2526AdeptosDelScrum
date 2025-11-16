@@ -45,7 +45,7 @@ namespace AppForSEII2526.API.Controllers
 
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.NombreCliente);
             if (user == null)
-                ModelState.AddModelError("CompraApplicationUser", "El usuario no está registrado");
+                return BadRequest("Tienes que iniciar sesión para hacer una reseña");
 
             var resenyaObj = new Resenya(user.NombreCliente, user.Apellido1_Cliente,user.Apellido2_Cliente, user);
             resenyaObj.descripcion = resenya.Description;
