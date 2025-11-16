@@ -1,33 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Xunit;
-using Moq;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-using AppForSEII2526.UT;                      // Base AppForSEII25264SqliteUT
-using AppForSEII2526.API.Controllers;        // BonosBocadilloController
+using AppForSEII2526.UT;                      // AppForSEII25264SqliteUT
 using AppForSEII2526.API.DTOs;               // CrearCompraDTO, CrearCompraItemDTO, CompraDetailsDTO
 using AppForSEII2526.Models;                 // BonoBocadillo, TipoBocadillo, MetodoPago
 
-namespace AppForSEII2526.UT.BonosBocadilloController_test
+namespace AppForSEII2526.UT.Bonobocadillo_test
 {
     public class PostCompra_test : AppForSEII25264SqliteUT
     {
         public PostCompra_test()
         {
-            // ----- Semilla mínima de datos para los tests -----
-            // Tipos
+            // ----- Semilla minima -----
             var tNormal = new TipoBocadillo { IdTipo = 1, NombreTipo = "normal" };
             var tVegano = new TipoBocadillo { IdTipo = 2, NombreTipo = "vegano" };
 
-            // Bonos con stock (PVP en la entidad)
             var bono1 = new BonoBocadillo
             {
                 BonoId = 1,
@@ -50,41 +46,106 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
                 TipoBocadillo = tVegano
             };
 
-            // Metodo de pago (la impl del controller espera _context.MetodosPago con propiedad Id)
-            var mp = new MetodoPago { };
-            TrySetSilent(mp, "Id", 1);
-            TrySetSilent(mp, "Nombre", "Tarjeta"); // por si tu Compra guarda string de nombre
+            _context.AddRange(tNormal, tVegano, bono1, bono2);
 
-            _context.AddRange(tNormal, tVegano, bono1, bono2, mp);
+            // Siembra MetodoPago buscando el tipo concreto mapeado por EF
+            SeedMetodoPagoConcreto(id: 1L, nombre: "Tarjeta");
+
             _context.SaveChanges();
         }
 
-        // -------------------------
+        // ======================= Helpers de siembra / reflexion =======================
+
+        /// Busca en el modelo EF un tipo concreto asignable a MetodoPago, lo instancia incluso sin ctor publico,
+        /// y rellena Id/Nombre (o alias MetodoPagoId/Descripcion) por refleccion.
+        private void SeedMetodoPagoConcreto(long id, string nombre)
+        {
+            var entityTypeClr = _context.Model
+                .GetEntityTypes()
+                .Select(et => et.ClrType)
+                .FirstOrDefault(t => typeof(MetodoPago).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+
+            if (entityTypeClr == null)
+            {
+                // No hay entidad MetodoPago en el modelo -> los tests de BadRequest por metodo pago inexistente seguiran pasando.
+                return;
+            }
+
+            object mp;
+
+            // Intentar ctor vacio publico o no publico; si no, usar objeto sin inicializar
+            var ctor = entityTypeClr.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                                                    binder: null, types: Type.EmptyTypes, modifiers: null);
+            if (ctor != null)
+                mp = ctor.Invoke(null);
+            else
+                mp = FormatterServices.GetUninitializedObject(entityTypeClr);
+
+            // Id (o MetodoPagoId)
+            if (!TrySet(mp, "Id", id))
+                TrySet(mp, "MetodoPagoId", id);
+
+            // Nombre (o Descripcion)
+            if (!TrySet(mp, "Nombre", nombre))
+                TrySet(mp, "Descripcion", nombre);
+
+            _context.Add(mp);
+        }
+
+        /// Setter silencioso y tolerante a nulos/convertibles
+        private static bool TrySet(object obj, string prop, object? value)
+        {
+            var p = obj.GetType().GetProperty(prop, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (p == null || !p.CanWrite) return false;
+            try
+            {
+                var target = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                var converted = value == null ? null : Convert.ChangeType(value, target);
+                p.SetValue(obj, converted);
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// Localiza el controller en singular o plural y lo instancia con (DbContext, ILogger) -> pasamos null al logger.
+        private dynamic CreateController()
+        {
+            var apiAsm = typeof(CrearCompraDTO).Assembly.GetName().Name; // AppForSEII2526.API
+            var t = Type.GetType($"AppForSEII2526.API.Controllers.BonosBocadilloController, {apiAsm}")
+                    ?? Type.GetType($"AppForSEII2526.API.Controllers.BonoBocadilloController, {apiAsm}");
+            if (t == null)
+                throw new InvalidOperationException("No se encontro el controlador BonosBocadilloController/BonoBocadilloController.");
+
+            var instance = Activator.CreateInstance(t, _context, null);
+            if (instance == null)
+                throw new InvalidOperationException("No se pudo instanciar el controlador.");
+            return instance;
+        }
+
+        // =================================== TESTS ===================================
+
         // Casos de BadRequest (400)
-        // -------------------------
         public static IEnumerable<object[]> TestCases_BadRequest()
         {
             yield return new object[]
             {
-                // Sin items -> "Debe incluir al menos un bono."
                 new CrearCompraDTO
                 {
                     NombreCompleto = "Ana",
                     Apellidos = "Diaz",
                     MetodoPagoId = 1L,
-                    Items = new List<CrearCompraItemDTO>() // vacío
+                    Items = new List<CrearCompraItemDTO>() // vacio
                 },
                 "Debe incluir al menos un bono."
             };
 
             yield return new object[]
             {
-                // Metodo de pago inexistente -> "Metodo de pago invalido."
                 new CrearCompraDTO
                 {
                     NombreCompleto = "Ana",
                     Apellidos = "Diaz",
-                    MetodoPagoId = 999L,
+                    MetodoPagoId = 999L, // inexistente
                     Items = new List<CrearCompraItemDTO>
                     {
                         new CrearCompraItemDTO { BonoId = 1, Cantidad = 1 }
@@ -95,7 +156,6 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
 
             yield return new object[]
             {
-                // Bono inexistente -> "Bono(s) inexistente(s):"
                 new CrearCompraDTO
                 {
                     NombreCompleto = "Ana",
@@ -103,7 +163,7 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
                     MetodoPagoId = 1L,
                     Items = new List<CrearCompraItemDTO>
                     {
-                        new CrearCompraItemDTO { BonoId = 123, Cantidad = 1 }
+                        new CrearCompraItemDTO { BonoId = 123, Cantidad = 1 } // bono inexistente
                     }
                 },
                 "Bono(s) inexistente(s):"
@@ -111,7 +171,6 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
 
             yield return new object[]
             {
-                // Cantidad invalida (0) -> "Cantidad invalida para bono {id}."
                 new CrearCompraDTO
                 {
                     NombreCompleto = "Ana",
@@ -119,7 +178,7 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
                     MetodoPagoId = 1L,
                     Items = new List<CrearCompraItemDTO>
                     {
-                        new CrearCompraItemDTO { BonoId = 1, Cantidad = 0 }
+                        new CrearCompraItemDTO { BonoId = 1, Cantidad = 0 } // cantidad invalida
                     }
                 },
                 "Cantidad invalida para bono"
@@ -132,32 +191,23 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
         [MemberData(nameof(TestCases_BadRequest))]
         public async Task PostCompra_BadRequest_Test(CrearCompraDTO dto, string errorExpectedStartsWith)
         {
-            // Arrange
-            var mock = new Mock<ILogger<BonosBocadilloController>>();
-            var logger = mock.Object;
-            var controller = new BonosBocadilloController(_context, logger);
+            dynamic controller = CreateController();
 
-            // Act
             var result = await controller.PostCompra(dto, CancellationToken.None);
 
-            // Assert
             var bad = Assert.IsType<BadRequestObjectResult>(result);
             var msg = Assert.IsType<string>(bad.Value);
             Assert.StartsWith(errorExpectedStartsWith, msg);
         }
 
-        // --------------------------
-        // Caso de Conflict (409)
-        // --------------------------
+        // Conflict (409) por stock insuficiente
         [Fact]
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
         public async Task PostCompra_Conflict_StockInsuficiente()
         {
-            // Arrange
-            var controller = new BonosBocadilloController(_context, new Mock<ILogger<BonosBocadilloController>>().Object);
+            dynamic controller = CreateController();
 
-            // BonoId=2 tiene CantidadDisponible = 2 (semilla). Pedimos 3.
             var dto = new CrearCompraDTO
             {
                 NombreCompleto = "Carlos",
@@ -165,29 +215,24 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
                 MetodoPagoId = 1L,
                 Items = new List<CrearCompraItemDTO>
                 {
-                    new CrearCompraItemDTO { BonoId = 2, Cantidad = 3 }
+                    new CrearCompraItemDTO { BonoId = 2, Cantidad = 3 } // stock = 2
                 }
             };
 
-            // Act
             var result = await controller.PostCompra(dto, CancellationToken.None);
 
-            // Assert
             var conflict = Assert.IsType<ConflictObjectResult>(result);
             var msg = Assert.IsType<string>(conflict.Value);
             Assert.Contains("Stock insuficiente", msg);
         }
 
-        // --------------------------
-        // Caso OK (201 Created)
-        // --------------------------
+        // OK (201) crea compra y actualiza stock
         [Fact]
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
         public async Task PostCompra_Ok_CreaCompra_DisminuyeStock()
         {
-            // Arrange
-            var controller = new BonosBocadilloController(_context, new Mock<ILogger<BonosBocadilloController>>().Object);
+            dynamic controller = CreateController();
 
             var dto = new CrearCompraDTO
             {
@@ -196,15 +241,13 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
                 MetodoPagoId = 1L,
                 Items = new List<CrearCompraItemDTO>
                 {
-                    new CrearCompraItemDTO { BonoId = 1, Cantidad = 2 }, // 2 * 3.50 = 7.00
-                    new CrearCompraItemDTO { BonoId = 2, Cantidad = 1 }  // 1 * 4.00 = 4.00
+                    new CrearCompraItemDTO { BonoId = 1, Cantidad = 2 }, // 7.00
+                    new CrearCompraItemDTO { BonoId = 2, Cantidad = 1 }  // 4.00
                 }
             };
 
-            // Act
             var result = await controller.PostCompra(dto, CancellationToken.None);
 
-            // Assert
             var created = Assert.IsType<CreatedAtActionResult>(result);
             var details = Assert.IsType<CompraDetailsDTO>(created.Value);
 
@@ -215,26 +258,10 @@ namespace AppForSEII2526.UT.BonosBocadilloController_test
             var totalEsperado = (3.50m * 2) + (4.00m * 1);
             Assert.Equal(totalEsperado, details.PrecioTotal);
 
-            // Stock actualizado
             var b1 = await _context.Set<BonoBocadillo>().SingleAsync(b => b.BonoId == 1);
             var b2 = await _context.Set<BonoBocadillo>().SingleAsync(b => b.BonoId == 2);
             Assert.Equal(48, b1.CantidadDisponible); // 50 - 2
-            Assert.Equal(1,  b2.CantidadDisponible); //  2 - 1
-        }
-
-        // -------- Helpers (reflexion segura) --------
-        private static bool TrySetSilent(object entity, string propName, object? value)
-        {
-            var p = entity.GetType().GetProperty(propName);
-            if (p == null || !p.CanWrite) return false;
-            try
-            {
-                var targetType = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
-                var converted = value == null ? null : Convert.ChangeType(value, targetType);
-                p.SetValue(entity, converted);
-                return true;
-            }
-            catch { return false; }
+            Assert.Equal(1, b2.CantidadDisponible); //  2 - 1
         }
     }
 }
