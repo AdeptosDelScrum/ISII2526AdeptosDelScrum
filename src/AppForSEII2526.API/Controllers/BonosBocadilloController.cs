@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using AppForSEII2526.API.DTOs;   // BonoBocadilloDTO
 using AppForSEII2526.Models;     // BonoBocadillo, TipoBocadillo
@@ -15,16 +16,11 @@ namespace AppForSEII2526.API.Controllers
     [ApiController]
     public partial class BonosBocadilloController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;                 // usa tu DbContext real
         private readonly ILogger<BonosBocadilloController> _logger;
 
         public BonosBocadilloController(
             ApplicationDbContext context,
-        private readonly DbContext _context;
-        private readonly ILogger<BonosBocadilloController> _logger;
-
-        public BonosBocadilloController(
-            DbContext context,                              // <- genérico
             ILogger<BonosBocadilloController> logger)
         {
             _context = context;
@@ -32,12 +28,10 @@ namespace AppForSEII2526.API.Controllers
         }
 
         // GET: api/bonosbocadillo/GetBonosDisponiblesSelect?tipo=vegano&search=mixto
-        // Devuelve solo bonos con stock (>0) mostrando nombre, PVP, NBocadillos y tipo.
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IList<BonoBocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBonosDisponiblesSelect(string? tipo = null, string? search = null)
         {
-            // Usamos Set<BonoBocadillo>() porque tu ApplicationDbContext no tiene DbSet<BonoBocadillo> público
             IQueryable<BonoBocadillo> q = _context.Set<BonoBocadillo>()
                 .AsNoTracking()
                 .Include(b => b.TipoBocadillo)
@@ -64,8 +58,8 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible,   // quita si no quieres exponer stock
-                    Pvp = b.PVP,                                 // en la entidad es PVP (mayúsculas)
+                    CantidadDisponible = b.CantidadDisponible, // quítalo si no quieres exponerlo
+                    Pvp = b.PVP,                // en la entidad es PVP
                     IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
