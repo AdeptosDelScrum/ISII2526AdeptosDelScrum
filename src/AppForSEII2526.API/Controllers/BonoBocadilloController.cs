@@ -32,7 +32,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(IList<BonoBocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBonosDisponiblesSelect(string? tipo = null, string? search = null)
         {
-            // Usamos Set<BonoBocadillo>() porque tu ApplicationDbContext no tiene DbSet<BonoBocadillo> público
+            // Usamos Set<BonoBocadillo>() porque tu ApplicationDbContext no tiene DbSet<BonoBocadillo> pÃºblico
             IQueryable<BonoBocadillo> q = _context.Set<BonoBocadillo>()
                 .AsNoTracking()
                 .Include(b => b.TipoBocadillo)
@@ -60,8 +60,8 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible,   // quítalo del DTO si no quieres exponer stock
-                    Pvp = b.PVP,                                  // en la entidad es PVP (mayúsculas)
+                    CantidadDisponible = b.CantidadDisponible,   // quÃ­talo del DTO si no quieres exponer stock
+                    Pvp = b.PVP,                                  // en la entidad es PVP (mayÃºsculas)
                     IdTipo = b.IdTipo,                            // puedes tomarlo de la FK directa
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
