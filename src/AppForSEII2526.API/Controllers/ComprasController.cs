@@ -73,6 +73,8 @@ namespace AppForSEII2526.API.Controllers
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == compraForCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("CompraApplicationUser", "El usuario no está registrado");
+            if (compraForCreate.BocadillosComprados.IsNullOrEmpty())
+                ModelState.AddModelError("NoBocadillos", "Debe de seleccionar al menos un bocadillo para comprar");
 
             if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
@@ -80,6 +82,12 @@ namespace AppForSEII2526.API.Controllers
 
             var nombresBocadillos = compraForCreate.BocadillosComprados.Select(ci => ci.Nombre).ToList<string>();
 
+            var bocadillos = _context.Bocadillo
+                .Include(b => b.ComprasDelBocadillo)
+                .ThenInclude(ci => ci.Compra)
+                .Where(b => nombresBocadillos.Contains(b.Nombre))
+                .ToList();
+            /*
             var bocadillos = _context.Bocadillo.Include(c => c.ComprasDelBocadillo)
                 .ThenInclude(ci => ci.Compra)
                 .Where(c => nombresBocadillos.Contains(c.Nombre))
@@ -87,42 +95,76 @@ namespace AppForSEII2526.API.Controllers
                 .Select(c => new {
                     c.Id,
                     c.Nombre,
-                    c.Stock,
                     c.PVP,
+                    c.Stock,
+                    c.TamanyoBocadillo,
                     NumeroCompras = c.ComprasDelBocadillo.Count()
                 })
-                .ToList();
-            
+                .ToList();*/
+
             float PrecioTotal = 0;
-            
-
-            Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,
-                  DateTime.Now, compraForCreate.BocadillosComprados.Count, PrecioTotal,compraForCreate.MetodoPago, new List<CompraBocadillo>());
-            
-            
-
+            Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente, user,
+                  DateTime.Now, compraForCreate.BocadillosComprados.Count, compraForCreate.MetodoPago, new List<CompraBocadillo>());
+            /*
+            Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,user,
+                  DateTime.Now, compraForCreate.BocadillosComprados.Count,compraForCreate.MetodoPago, new List<CompraBocadillo>());
+            */
 
 
             foreach (var item in compraForCreate.BocadillosComprados)
             {
+                var bocadillo = bocadillos.FirstOrDefault(b => b.Nombre == item.Nombre);
+
+                if (bocadillo == null)
+                {
+                    ModelState.AddModelError("BocadillosComprados", $"El bocadillo '{item.Nombre}' no existe.");
+                    continue;
+                }
+
+                if (item.Cantidad <= 0)
+                {
+                    ModelState.AddModelError("BocadillosComprados",
+                        $"Debe indicar una cantidad mayor que 0 para '{item.Nombre}'.");
+                    continue;
+                }
+
+                
+                if (item.Cantidad > bocadillo.Stock)
+                {
+                    ModelState.AddModelError("BocadillosComprados",
+                        $"No hay stock suficiente de '{item.Nombre}'. Stock disponible: {bocadillo.Stock}.");
+                    continue;
+                }
+
+                
+                var compraBocadillo = new CompraBocadillo(bocadillo, item.Cantidad, compra);
+                compra.BocadillosComprados.Add(compraBocadillo);
+
+                PrecioTotal += bocadillo.PVP * item.Cantidad;
+            }
+            compra.nBocadillos = compra.BocadillosComprados.Sum(cb => cb.Cantidad);
+            compra.PrecioTotal = PrecioTotal;
+            /*
+            foreach (var item in compraForCreate.BocadillosComprados)
+            {
                 var bocadillo = bocadillos.FirstOrDefault(m => m.Nombre == item.Nombre);
-                //we must check that there is enough quantity to be rented in the database
+                
                 if ((bocadillo == null) || (bocadillo.NumeroCompras >= bocadillo.Stock))
                 {
                     ModelState.AddModelError("ItemsCompra", $"El bocadillo '{item.Nombre}' no está disponible");
                 }
                 else
                 {
-                    // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo.Id, bocadillo.NumeroCompras, compra.CompraId, bocadillo.Nombre, bocadillo.PVP, compra));
+                    
+                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo,compra));
                     item.Precio = bocadillo.PVP;
                 }
             }
 
-            compra.PrecioTotal = compra.BocadillosComprados.Sum(ci => (ci.Precio * ci.Cantidad));
+            compra.PrecioTotal = compra.BocadillosComprados.Sum(ci => (ci.Precio * ci.Cantidad));*/
 
 
-            //if there is any problem because of the available quantity of movies or because the movie does not exist
+            
             if (ModelState.ErrorCount > 0)
             {
                 return BadRequest(new ValidationProblemDetails(ModelState));
@@ -132,7 +174,7 @@ namespace AppForSEII2526.API.Controllers
 
             try
             {
-                //we store in the database both rental and its rentalitems
+                
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -143,7 +185,7 @@ namespace AppForSEII2526.API.Controllers
 
             }
 
-            //it returns rentalDetail
+           
             var compraDetail = new CompraBocadilloDetailDTO(compra.CompraId, compra.FechaCompra,
                 compra.PrecioTotal, compra.User.NombreCliente,
                 compra.User.Apellido1_Cliente, compra.User.Apellido2_Cliente, compraForCreate.BocadillosComprados.Count(), compraForCreate.MetodoPago,
