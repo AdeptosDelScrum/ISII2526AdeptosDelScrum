@@ -82,6 +82,8 @@ namespace AppForSEII2526.UT.ResenyasController_test
 
             var resenyaPuntBocadilloNoValida = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos1, "Paco", "Salazar", "Mendoza");
 
+            var resenyaNombreClienteNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", -10, bocadillos, "", "Salazar", "Mendoza");
+
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
                 new object[] { resenyaSinTíitulo, "La reseña tiene que tener un título",  },
@@ -90,6 +92,7 @@ namespace AppForSEII2526.UT.ResenyasController_test
                 new object[] { resenyaRateNoValido, "La valoracuón general tiene que ser entre 1 y 5 estrellas", },
                 new object[] { resenyaBocadilloNoExiste, "Uno de los bocadillos introducidos para reseñar no existe", },
                 new object[] { resenyaPuntBocadilloNoValida, "La puntuación debe ser un valor numérico entre 0 y 10", },
+                new object[] {resenyaNombreClienteNoExiste, ""}
             };
 
             return allTests;
