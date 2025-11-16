@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using AppForSEII2526.API.DTOs;   // BonoBocadilloDTO
 using AppForSEII2526.Models;     // BonoBocadillo, TipoBocadillo
@@ -15,11 +16,11 @@ namespace AppForSEII2526.API.Controllers
     [ApiController]
     public partial class BonosBocadilloController : ControllerBase
     {
-        private readonly DbContext _context;
+        private readonly ApplicationDbContext _context;                 // usa tu DbContext real
         private readonly ILogger<BonosBocadilloController> _logger;
 
         public BonosBocadilloController(
-            DbContext context,                              // <- genérico
+            ApplicationDbContext context,
             ILogger<BonosBocadilloController> logger)
         {
             _context = context;
@@ -57,8 +58,8 @@ namespace AppForSEII2526.API.Controllers
                     BonoId = b.BonoId,
                     Nombre = b.Nombre,
                     NBocadillos = b.NBocadillos,
-                    CantidadDisponible = b.CantidadDisponible,   // quita si no quieres exponer stock
-                    Pvp = b.PVP,                                 // en la entidad es PVP (mayúsculas)
+                    CantidadDisponible = b.CantidadDisponible, // quítalo si no quieres exponerlo
+                    Pvp = b.PVP,                // en la entidad es PVP
                     IdTipo = b.TipoBocadillo != null ? b.TipoBocadillo.IdTipo : 0,
                     NombreTipo = b.TipoBocadillo != null ? b.TipoBocadillo.NombreTipo : null
                 })
