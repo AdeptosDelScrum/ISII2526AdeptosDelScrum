@@ -1,11 +1,11 @@
-﻿using AppForSEII2526.API.DTOs;
-using AppForSEII2526.API.DTOs.CompraDTOs;
+﻿using AppForSEII2526.API.DTOs.CompraDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 namespace AppForSEII2526.API.Controllers
+   
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -77,21 +77,17 @@ namespace AppForSEII2526.API.Controllers
         {
             if (compraForCreate.NombreCliente.IsNullOrEmpty())
                 ModelState.AddModelError("NombreCliente", "El cliente debe ingrsar su nombre");
-
+            
             if (compraForCreate.Apellido1_cliente.IsNullOrEmpty())
                 ModelState.AddModelError("Apellido1Cliente", "El cliente debe ingrsar su primer apellido");
-
-            if (compraForCreate.MetodoPago.Id == 0)
+            
+            if (compraForCreate.MetodoPago is PagoNoSeleccionado)
                 ModelState.AddModelError("MetodoPago", "El cliente debe escoger un método de pago");
 
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == compraForCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("CompraApplicationUser", "El usuario no está registrado");
             if (compraForCreate.BocadillosComprados.IsNullOrEmpty())
-                ModelState.AddModelError("NoBocadillos", "Debe de seleccionar al menos un bocadillo para comprar");
-
-            if (compraForCreate.BocadillosComprados == null ||
-        !compraForCreate.BocadillosComprados.Any())
                 ModelState.AddModelError("NoBocadillos", "Debe de seleccionar al menos un bocadillo para comprar");
 
             if (ModelState.ErrorCount > 0)
@@ -103,8 +99,7 @@ namespace AppForSEII2526.API.Controllers
                 .ToList();
             /*var nombresBocadillos = compraForCreate.BocadillosComprados.Select(ci => ci.Nombre).ToList<string>();*/
 
-            if (compraForCreate.BocadillosComprados.IsNullOrEmpty())
-                ModelState.AddModelError("NoBocadillos", "Debe de seleccionar al menos un bocadillo para comprar");
+            
             var bocadillos = _context.Bocadillo
                 .Include(b => b.ComprasDelBocadillo)
                 .ThenInclude(ci => ci.Compra)
@@ -133,7 +128,7 @@ namespace AppForSEII2526.API.Controllers
                compraForCreate.Apellido1_cliente,
                compraForCreate.Apellido2_cliente,
                user,
-               DateTime.Now,
+               DateTime.Today,
                0,                              
                compraForCreate.MetodoPago,
                new List<CompraBocadillo>());
