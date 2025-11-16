@@ -96,8 +96,8 @@ namespace AppForSEII2526.API.Controllers
             float PrecioTotal = 0;
             
 
-            Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente, user,
-                  DateTime.Now, compraForCreate.BocadillosComprados.Count,compraForCreate.MetodoPago, new List<CompraBocadillo>());
+            Compra compra = new Compra(compraForCreate.NombreCliente, compraForCreate.Apellido1_cliente, compraForCreate.Apellido2_cliente,
+                  DateTime.Now, compraForCreate.BocadillosComprados.Count, PrecioTotal,compraForCreate.MetodoPago, new List<CompraBocadillo>());
             
             
 
@@ -114,7 +114,7 @@ namespace AppForSEII2526.API.Controllers
                 else
                 {
                     // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    compra.BocadillosComprados.Add(new CompraBocadillo());
+                    compra.BocadillosComprados.Add(new CompraBocadillo(bocadillo.Id, bocadillo.NumeroCompras, compra.CompraId, bocadillo.Nombre, bocadillo.PVP, compra));
                     item.Precio = bocadillo.PVP;
                 }
             }
