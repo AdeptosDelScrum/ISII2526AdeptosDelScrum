@@ -43,7 +43,7 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest("La valoracuón general tiene que ser entre 1 y 5 estrellas");
             }
 
-            var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.NombreCliente);
+            var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.Nombre_cliente);
             if (user == null)
                 return BadRequest("Tienes que iniciar sesión para hacer una reseña");
 
