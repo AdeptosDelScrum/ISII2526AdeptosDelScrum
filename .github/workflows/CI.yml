@@ -68,11 +68,11 @@ jobs:
         dotnet-version: 8.x
 
     - name: Restore dependencies        
-        run: |  
-          dotnet restore ${{ env.API }} 
-          dotnet restore ${{ env.WEB }}  
-          dotnet restore ${{ env.UT }}  
-          dotnet restore ${{ env.UIT }}  
+      run: |  
+        dotnet restore ${{ env.API }} 
+        dotnet restore ${{ env.WEB }}  
+        dotnet restore ${{ env.UT }}  
+        dotnet restore ${{ env.UIT }}  
           
       - name: Build the solution
         run: |
