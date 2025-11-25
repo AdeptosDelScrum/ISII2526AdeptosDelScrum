@@ -43,6 +43,7 @@ on:
     branches: [ "development" ]
   pull_request:
     branches: [ "development" ]
+  workflow_dispatch:
 
 jobs:
 
@@ -54,7 +55,7 @@ jobs:
       API: ./src/AppForSEII2526.API/AppForSEII2526.API.csproj
       WEB: ./src/AppForSEII2526.Web/AppForSEII2526.Web.csproj
       UT:  ./test/AppForSEII2526.UT/AppForSEII2526.UT.csproj
-      UIT: ./test/AppForSEII2526.UIT/AppForSEII2526.UIT.csproj                 # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      UIT: ./test/AppForSEII2526.UIT/AppForSEII2526.UIT.csproj                 
 
     steps:
     - name: Checkout
