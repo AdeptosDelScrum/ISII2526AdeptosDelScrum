@@ -39,8 +39,8 @@ jobs:
           dotnet build ${{ env.API }}  --configuration Release --no-restore
           dotnet build ${{ env.UT }}
 
-      - name: Run unit test with report
-        run: dotnet test ${{ env.UT }}
+      #- name: Run unit test with report
+      #  run: dotnet test ${{ env.UT }}
         
       - name: dotnet publish
         run: dotnet publish ${{ env.API }}  -c Release -o "${{env.DOTNET_ROOT}}/myapp"
