@@ -19,6 +19,7 @@ jobs:
       contents: read #This is required for actions/checkout
     env:
       API: ./src/AppForSEII2526.API/AppForSEII2526.API.csproj
+      UT: ./test/AppForSEII2526.UT/AppForSEII2526.UT.csproj
 
     steps:
       - uses: actions/checkout@v4
@@ -31,11 +32,16 @@ jobs:
       - name: Restore dependencies        
         run: |  
           dotnet restore ${{ env.API }} 
+          dotnet restore ${{ env.UT }} 
 
       - name: Build with dotnet
         run: |
           dotnet build ${{ env.API }}  --configuration Release --no-restore
+          dotnet build ${{ env.UT }}
 
+      - name: Run unit test with report
+        run: dotnet test ${{ env.UT }}
+        
       - name: dotnet publish
         run: dotnet publish ${{ env.API }}  -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
@@ -48,22 +54,12 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DCEBD377844041DFAB2E64181F75A30A }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B8D37A77E0EA4DDDB9702995ED87A874 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F10C1B724F674399A949A61B962BF3EF }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -72,3 +68,5 @@ jobs:
           app-name: 'appforseii2526api'
           slot-name: 'Production'
           package: .
+
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D431DCDCED3A4E958AA16992E05EDA40}}
