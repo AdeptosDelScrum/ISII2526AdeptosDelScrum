@@ -10,9 +10,9 @@ namespace AppForSEII2526.API.Controllers
     public class ResenyasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<BocadillosController> _logger;
+        private readonly ILogger<ResenyasController> _logger;
 
-        public ResenyasController(ApplicationDbContext context, ILogger<BocadillosController> logger)
+        public ResenyasController(ApplicationDbContext context, ILogger<ResenyasController> logger)
         {
             _context = context;
             _logger = logger;
@@ -34,10 +34,6 @@ namespace AppForSEII2526.API.Controllers
             {
                 return BadRequest("El campo descripción está vacío");
             }
-            if (resenya.Rate == null)
-            {
-                return BadRequest("Tienes que aportar una valoración general");
-            }
             if (resenya.Lineas.Count == 0)
             {
                 return BadRequest("No se puede crear una reseña sin bocadillos");
@@ -47,7 +43,11 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest("La valoracuón general tiene que ser entre 1 y 5 estrellas");
             }
 
-            var resenyaObj = new Resenya();
+            var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.Nombre_cliente);
+            if (user == null)
+                return BadRequest("Tienes que iniciar sesión para hacer una reseña");
+
+            var resenyaObj = new Resenya(user.NombreCliente, user.Apellido1_Cliente,user.Apellido2_Cliente, user);
             resenyaObj.descripcion = resenya.Description;
             resenyaObj.fechaPublicacion = DateTime.Today;
             resenyaObj.nombreUsuario = resenya.Name;
@@ -116,7 +116,8 @@ namespace AppForSEII2526.API.Controllers
             }
 
             var detailresenya = 
-                new DetailsResenyaDTO(resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, (int)resenyaObj.valoracion, detailsLineasDTOs);
+                new DetailsResenyaDTO(resenyaObj.Id,resenyaObj.nombreUsuario, resenyaObj.titulo, resenyaObj.descripcion, resenyaObj.fechaPublicacion, 
+                    (int)resenyaObj.valoracion + 1, (List<LineasResenyaDTO>)resenya.Lineas, resenyaObj.User.NombreCliente,resenyaObj.User.Apellido1_Cliente,resenyaObj.User.Apellido2_Cliente);
 
 
             return CreatedAtAction("GetResenya", new { id = resenyaObj.Id }, detailresenya);
@@ -138,8 +139,9 @@ namespace AppForSEII2526.API.Controllers
                 .Where(r => r.Id == id)
                 .Include(r => r.ResenyaBocadillo)
                     .ThenInclude(r => r.Bocadillo)
-                .Select(r => new DetailsResenyaDTO(r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion),
-                            r.ResenyaBocadillo.Select( lr => new DetailsLineasResenyaDTO(lr.Bocadillo.Nombre, lr.Bocadillo.PVP, lr.Bocadillo.TamanyoBocadillo, lr.Puntuacion)).ToList()))
+                .Include(r => r.User)
+                .Select(r => new DetailsResenyaDTO(r.Id,r.nombreUsuario,r.titulo,r.descripcion,r.fechaPublicacion,((int)r.valoracion + 1),
+                            r.ResenyaBocadillo.Select( lr => new LineasResenyaDTO(new BocadilloDTO(lr.Bocadillo.Nombre,lr.Bocadillo.TamanyoBocadillo,lr.Bocadillo.TipoPan.Nombre,lr.Bocadillo.PVP),lr.Puntuacion)).ToList(), r.User.NombreCliente, r.User.Apellido1_Cliente, r.User.Apellido2_Cliente))
                 .FirstOrDefaultAsync();
             
             if(resenya == null)

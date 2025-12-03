@@ -4,8 +4,19 @@ namespace AppForSEII2526.API.Models
 {
     public class Resenya
     {
+        public Resenya() { }
+        public Resenya(string nombre, string apellido1, string apellido2, ApplicationUser user) {
+
+            User = user;
+            User.NombreCliente = nombre;
+            User.Apellido1_Cliente = apellido1;
+            User.Apellido2_Cliente = apellido2;
+        }
         [Key]
         public int Id { get; set; }
+
+        [Required]
+        public ApplicationUser User { get; set; }
 
         [Required,StringLength(150,ErrorMessage = "La descripción puede tener como máximo 150 caracteres", MinimumLength = 10)]
         [Display(Name = "Descripción")]
