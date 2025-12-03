@@ -54,7 +54,7 @@
                                         <tr id="BocadilloData_@bocadillo.Name">
                                             <td>@bocadillo.Name</td>
                                             <td>@bocadillo.TipoPan</td>
-                                            <td>@bocadillo.PVP</td>
+                                            <td>@bocadillo.Pvp</td>
                                             <td>@bocadillo.TamanyoBocadillo</td>
                                             <td>
                                                 <button class="btn btn-outline-secondary" id="bocadilloParaResenyar_@bocadillo.Name" @onclick="@(() => AddBocadillo(bocadillo))">Añadir</button>
@@ -73,10 +73,11 @@
             <div class="row">
                 <h3>Reseña Cart</h3>
             </div>
-            @foreach (LineasResenyaDTO item in resenya.resenyaItems)
+            @foreach (LineasResenyaDTO item in resenya.Lineas)
             {
                 <div class="row">
-                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Name" @onclick="@(() => RemoveResenyaItem(item))">x @item.Name - @item.PVP€</button>
+                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Bocadillo.Name" @onclick="@(() => RemoveResenyaItem(item.Bocadillo))">x @item.Bocadillo.Name - @item.Bocadillo.Pvp
+                        €</button>
                 </div>
             }
             <div class="row">
@@ -102,7 +103,7 @@
 
     private void AddBocadillo(BocadilloDTO bocadillo)
     {
-        resenyaState.AddBocadilloAResenya(bocadillo);
+        resenyaState.AddBocadilloParaResenyar(bocadillo);
     }
 
     private void RemoveResenyaItem(BocadilloDTO item)
@@ -118,7 +119,7 @@
         }
         try
         {
-            bocadillos = await apiclient.GetBocadillosParaResenya(bocadilloNombre, bocadilloPVP);
+            bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
             errors = "";
         }
         catch (ApiException ex)
