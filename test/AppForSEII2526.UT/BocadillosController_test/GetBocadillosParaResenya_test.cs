@@ -52,8 +52,8 @@ namespace AppForSEII2526.UT.BocadillosController_test
         public static IEnumerable<Object[]> TestCasesFor_GetBocadillosParaResenya_Ok()
         {
             var resenyasDTOs = new List<BocadilloDTO>() {
-                new BocadilloDTO("Focata",Tamanyo.Normal,"sandwitch",10),
-                new BocadilloDTO("Politecnico", Tamanyo.Normal,"barra",1000)
+                new BocadilloDTO(1,"Focata",Tamanyo.Normal,"sandwitch",10),
+                new BocadilloDTO(2,"Politecnico", Tamanyo.Normal,"barra",1000)
             };
 
             var resenyasDTOsTC1 = new List<BocadilloDTO>() { resenyasDTOs[0], resenyasDTOs[1] };
