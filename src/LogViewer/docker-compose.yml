@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  logvieweri:
+    build: .
+    container_name: logvieweri
+    depends_on:
+      - rabbit
+    environment:
+      - TOPIC="Information"
+  logviewerw:
+    build: .
+    container_name: logviewerw
+    depends_on:
+      - rabbit
+    environment:
+      - TOPIC="Warning"
+  logviewere:
+    build: .
+    container_name: logviewere
+    depends_on:
+      - rabbit
+    environment:
+      - TOPIC="Error"
+

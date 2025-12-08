@@ -32,7 +32,6 @@ public class RabbitMQLogger : ILogger, IDisposable
 
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
-
         _channel.ExchangeDeclare(
              exchange: _config.Exchange,
              type: _config.ExchangeType,
@@ -70,6 +69,7 @@ public class RabbitMQLogger : ILogger, IDisposable
         Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
+
         if (!IsEnabled(logLevel))
             return;
 
@@ -86,12 +86,15 @@ public class RabbitMQLogger : ILogger, IDisposable
                 Exception = exception?.ToString()
             };
             byte[] body = Encoding.UTF8.GetBytes(logEntry.ToString());
-
+            Console.WriteLine(_config.Exchange);
+            Console.WriteLine(_config.ExchangeType);
+            Console.WriteLine(_config.Durable);
             _channel.BasicPublish(
              exchange: _config.Exchange,
-             routingKey: logLevel.ToString(),
+             routingKey: "Information",
              basicProperties: _properties,
              body: body);
+
 
         }
         catch (Exception ex)

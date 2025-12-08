@@ -7,7 +7,15 @@ class Program
 {
     static void Main()
     {
-        using var subscriber = new Subscriber();
+        var topic = Environment.GetEnvironmentVariable("TOPIC");
+
+        if (string.IsNullOrWhiteSpace(topic))
+        {
+            Console.WriteLine("No se ha definido TOPIC.");
+            return;
+        }
+
+        using var subscriber = new Subscriber(RoutingKey: topic);
 
         Console.CancelKeyPress += (s, e) =>
         {

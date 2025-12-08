@@ -25,7 +25,9 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> PostResenya(ResenyaDTO resenya)
         {
-
+            _logger.LogInformation("Esto es un mensaje de información");
+            _logger.LogWarning(message: "Esto es un warning");
+            _logger.LogError(message: "Esto es un error");
             if (resenya.Title.IsNullOrEmpty())
             {
                 return BadRequest("La reseña tiene que tener un título");

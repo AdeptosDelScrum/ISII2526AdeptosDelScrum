@@ -13,11 +13,12 @@ public class Subscriber : IDisposable
     private readonly string _exchangeName;
 
     public Subscriber(
-        string hostName = "localhost",
+        string hostName = "rabbit",
         int port = 5672,
         string user = "guest",
         string pass = "guest",
-        string exchangeName = "logs")
+        string exchangeName = "logs",
+        string RoutingKey = "Information")
     {
         _exchangeName = exchangeName;
 
@@ -33,12 +34,12 @@ public class Subscriber : IDisposable
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 
-        _channel.ExchangeDeclare(_exchangeName, ExchangeType.Fanout);
+        _channel.ExchangeDeclare(_exchangeName, ExchangeType.Topic, durable: true);
 
         var tempQueue = _channel.QueueDeclare("", durable: false, exclusive: true, autoDelete: true);
         var queueName = tempQueue.QueueName;
 
-        _channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: "");
+        _channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: RoutingKey);
 
         Console.WriteLine($"Conectado a RabbitMQ en {hostName}:{port}");
         Console.WriteLine($"Escuchando logs del exchange '{_exchangeName}'\n");
