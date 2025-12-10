@@ -1,0 +1,64 @@
+﻿@page "/Compra/SelectBocadillosParaCompra"
+
+@using AppForSEII2526.Web.API
+@inject AppForMoviesAPIClient apiclient
+@inject ILogger<SelectMoviesForRental> logger
+
+
+
+<h3>Select Bocadillos Para Comprar</h3>
+
+<div class="container-fluid">
+    <div class="row" hidden="@hideErrors">
+        <p>Aquí van los errores</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <p>Aquí se muestran los filtros</p>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchBocadillos id="searchBocadillos">Buscar Bocadillos</button>
+                </div>
+            </div>
+            <div class="row">
+                @if (bocadillos == null)
+                {
+                    <p>Cargando bocadillos....</p>
+                }
+                else
+                {
+                    <p>number of movies @bocadillos.Count</p>
+
+                }
+            </div>
+        </div>
+        <div class="col-2">
+            <p>Aquñi se muestra el carrito</p>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private ICollection<BocadilloDTO> movies;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string movieTitle { get; set; }
+    private string movieGenre { get; set; }
+
+    public async void SearchBocadillos()
+    {
+        try
+        {
+            movies = await apiclient.GetMoviesParaCompraAsync(tipoPan, tamanyo, null, null);
+
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error while connecting to the system";
+        }
+        StateHasChanged();
+    }
+}
