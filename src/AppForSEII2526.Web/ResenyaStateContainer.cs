@@ -33,10 +33,16 @@ namespace AppForSEII2526.Web
         //to delete movies from the list of selected movies
         public void RemoveResenyaItemParaResenyar(BocadilloDTO item)
         {
-            Resenya.Lineas.Remove(new LineasResenyaDTO()
+            /*var result = Resenya.Lineas.Remove(new LineasResenyaDTO()
             {
                 Bocadillo = item,
             });
+            Console.WriteLine(result);*/
+            var linea = Resenya.Lineas.FirstOrDefault(l =>
+                l.Bocadillo.Id == item.Id &&
+                l.Bocadillo.Name == item.Name
+            );
+            Resenya.Lineas.Remove(linea);
 
         }
 

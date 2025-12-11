@@ -16,21 +16,10 @@
     <div class="row">
         <div class="col-8">
             <div class="row">
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Id</span>
-                        <input type="text" id="inputId" @bind=Id class="form-control" placeholder="Id" aria-label="Id" aria-describedby="basic-addon1">
-                    </div>
-                </div>
-                <div class="col">
-                    <button type="button" class="btn btn-primary" @onclick=@SearchResenya id="searchId">Buscar Reseña</button>
-                </div>
-            </div>
-            <div class="row">
                 <div class="row">
                     @if (resenya == null)
                     {
-                        <p>Introduce el id de la reseña para buscar</p>
+                        <p>No se ha encontrado tu reseña</p>
                     }
                     else
                     {
@@ -96,11 +85,12 @@
 </div>
 
 @code {
-
     private bool hideErrors { get { return errors.Length == 0; } }
     private string errors = "";
     private DetailsResenyaDTO resenya;
-    private int Id { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
 
     public async void SearchResenya()
     {
@@ -110,6 +100,8 @@
         }
         try
         {
+            Console.WriteLine("BUSCANDO");
+            Console.WriteLine(Id);
             resenya = await apiclient.GetResenyaAsync(Id);
             errors = "";
         }
@@ -119,5 +111,12 @@
             errors = "No se ha encontrado la reseña";
         }
         StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        SearchResenya();
+
+        return base.OnInitializedAsync();
     }
 }
