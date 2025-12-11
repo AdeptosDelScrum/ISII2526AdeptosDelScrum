@@ -86,9 +86,6 @@ public class RabbitMQLogger : ILogger, IDisposable
                 Exception = exception?.ToString()
             };
             byte[] body = Encoding.UTF8.GetBytes(logEntry.ToString());
-            Console.WriteLine(_config.Exchange);
-            Console.WriteLine(_config.ExchangeType);
-            Console.WriteLine(_config.Durable);
             _channel.BasicPublish(
              exchange: _config.Exchange,
              routingKey: logLevel.ToString(),
