@@ -44,14 +44,34 @@
             </div>
         </div>
     </div>
+    <div class="row g-3">
         <div class="col-md">
-            <div class="form-floating">
-                @*this button will be used to ask the user if he want to proceed to rent the movies*@
-                <button class="btn btn-primary" type="submit" id="Submit">
-                    Reseñar los bocadillos
-                </button>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="resenya.Nombre_cliente" class="form-control" id="NameClient" />
+                <label for="Name">Nombre Cliente</label>
             </div>
         </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="resenya.Apellido1_cliente" class="form-control" id="Apellido1" />
+                <label for="Title">Primer Apellido </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="resenya.Apellido2_cliente" class="form-control" id="Apellido2" />
+                <label for="Description">Segundo Apellido </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="form-floating">
+            @*this button will be used to ask the user if he want to proceed to rent the movies*@
+            <button class="btn btn-primary" type="submit" id="Submit">
+                Reseñar los bocadillos
+            </button>
+        </div>
+    </div>
 
     <h4>Detalles de reseña</h4>
     <p>
@@ -118,6 +138,7 @@
                 {
                     var resenyado = await apiclient.PostResenyaAsync(resenya);
                     resenyaState.ResenyaProcessed();
+                    Console.WriteLine(resenyado);
                     navigation.NavigateTo($"/resenyas/detailsresenya/?Id={resenyado}");
                 }
                 catch (ApiException<ValidationProblemDetails> apiexceptionvalidation)

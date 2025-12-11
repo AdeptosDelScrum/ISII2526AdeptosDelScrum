@@ -17,24 +17,26 @@ namespace AppForSEII2526.Web
 
 
 
-        public void AddBocadilloParaResenyar(LineasResenyaDTO bocadillo)
+        public void AddBocadilloParaResenyar(BocadilloDTO bocadillo)
         {
             //before adding a movie we checked whether it has been already added
-            if (!Resenya.Lineas.Any(ri => ri.Bocadillo.Id == bocadillo.Bocadillo.Id))
+            if (!Resenya.Lineas.Any(ri => ri.Bocadillo.Id == bocadillo.Id))
                 //we add it if it is not in the list
                 Resenya.Lineas.Add(new LineasResenyaDTO()
                 {
-                    Bocadillo = bocadillo.Bocadillo,
-                    Puntuacion = bocadillo.Puntuacion,
+                    Bocadillo = bocadillo,
                 }
             );
 
         }
 
         //to delete movies from the list of selected movies
-        public void RemoveResenyaItemParaResenyar(LineasResenyaDTO item)
+        public void RemoveResenyaItemParaResenyar(BocadilloDTO item)
         {
-            Resenya.Lineas.Remove(item);
+            Resenya.Lineas.Remove(new LineasResenyaDTO()
+            {
+                Bocadillo = item,
+            });
 
         }
 
