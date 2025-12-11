@@ -1,0 +1,137 @@
+@page "/bonos/select"
+@using AppForSEII2526.API.DTOs
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Seleccionar bonos de bocadillo</h3>
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@HideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="row g-2 align-items-end">
+                <div class="col">
+                    <label class="form-label">Tipo (vegano/vegetariano/sin gluten/normal)</label>
+                    <input class="form-control" @bind="tipo" placeholder="normal, vegano..." />
+                </div>
+                <div class="col">
+                    <label class="form-label">Buscar por nombre</label>
+                    <input class="form-control" @bind="search" placeholder="Mixto, Pack..." />
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" @onclick="SearchBonos" id="searchBonos">Buscar</button>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                @if (bonos is null)
+                {
+                    <p>Cargando bonos...</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="TableOfBonos">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>PVP</th>
+                                    <th># Bocadillos</th>
+                                    <th>Stock</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in bonos)
+                                {
+                                    <tr id="BonoData_@b.BonoId">
+                                        <td>@b.Nombre</td>
+                                        <td>@b.NombreTipo</td>
+                                        <td>@b.Pvp</td>
+                                        <td>@b.NBocadillos</td>
+                                        <td>@b.CantidadDisponible</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary"
+                                                    id="bono_add_@b.BonoId"
+                                                    @onclick="(() => Add(b))">
+                                                Añadir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-4" hidden="@HideCarrito">
+            <h5>Seleccionados</h5>
+            @foreach (var item in seleccion)
+            {
+                <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+                    <div>@item.Nombre (@item.Pvp €)</div>
+                    <button class="btn btn-sm btn-light"
+                            id="bono_remove_@item.BonoId"
+                            @onclick="(() => Remove(item))">
+                        Quitar
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    // filtros
+    private string? tipo;
+    private string? search;
+
+    // datos (¡ojo, declaradas una sola vez!)
+    private List<BonoBocadilloDTO>? bonos;
+    private readonly List<BonoBocadilloDTO> seleccion = new();
+
+    private string errors = "";
+    private bool HideErrors => string.IsNullOrEmpty(errors);
+    private bool HideCarrito => seleccion.Count == 0;
+
+    protected override async Task OnInitializedAsync()
+        => await SearchBonos();
+
+    private async Task SearchBonos()
+    {
+        try
+        {
+            var url = "/api/bonosbocadillo/GetBonosDisponiblesSelect";
+
+            // construimos la query sin dependencias externas
+            var qs = new List<string>();
+            if (!string.IsNullOrWhiteSpace(tipo)) qs.Add($"tipo={Uri.EscapeDataString(tipo)}");
+            if (!string.IsNullOrWhiteSpace(search)) qs.Add($"search={Uri.EscapeDataString(search)}");
+            if (qs.Count > 0) url += "?" + string.Join("&", qs);
+
+            bonos = await Http.GetFromJsonAsync<List<BonoBocadilloDTO>>(url) ?? new();
+            errors = "";
+        }
+        catch (Exception ex)
+        {
+            errors = "Error al llamar a la API: " + ex.Message;
+        }
+    }
+
+    private void Add(BonoBocadilloDTO b)
+    {
+        if (!seleccion.Any(x => x.BonoId == b.BonoId))
+            seleccion.Add(b);
+    }
+
+    private void Remove(BonoBocadilloDTO b)
+    {
+        seleccion.RemoveAll(x => x.BonoId == b.BonoId);
+    }
+}
