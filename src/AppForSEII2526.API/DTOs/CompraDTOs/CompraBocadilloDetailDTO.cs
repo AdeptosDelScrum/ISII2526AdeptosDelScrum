@@ -6,7 +6,7 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
 
     public class CompraBocadilloDetailDTO : CompraBocadilloForCreateDTO
     {
-        public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente, int cantidad, MetodoPago metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
+        public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente, int cantidad, int metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
          : base(nombre_cliente,
                    apellido1_cliente,
                    apellido2_cliente,
@@ -35,7 +35,7 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
 
             
             return Id == other.Id
-                && Fecha == other.Fecha
+                && Fecha.Date == other.Fecha.Date
                 && Precio == other.Precio;
         }
 
