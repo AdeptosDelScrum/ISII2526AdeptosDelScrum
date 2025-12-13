@@ -8,6 +8,11 @@ using AppForSEII2526.Web.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient<HttpClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7067"); 
+});
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
