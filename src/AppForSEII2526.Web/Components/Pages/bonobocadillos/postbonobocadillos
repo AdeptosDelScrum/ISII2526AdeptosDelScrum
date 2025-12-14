@@ -1,0 +1,238 @@
+@page "/bonos/createcompra"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using AppForSEII2526.Web.API  @* DTOs del cliente generado (CrearCompraDTO, CrearCompraItemDTO, CompraDetailsDTO) *@
+
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<CreateCompra> logger
+@inject NavigationManager navigation
+
+<h3>Datos de compra de bonos</h3>
+
+<EditForm Model="compra" OnValidSubmit="OpenDialog">
+    <div class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </div>
+
+    <div class="row alert alert-danger" role="alert" hidden="@HideErrors">
+        <p id="ErrorsShown">Errors: @messageError</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="compra.NombreCompleto" class="form-control" id="NombreCompleto" />
+                <label for="NombreCompleto">Nombre completo</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="compra.Apellidos" class="form-control" id="Apellidos" />
+                <label for="Apellidos">Apellidos</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="compra.MetodoPagoId" class="form-control" id="MetodoPagoId" />
+                <label for="MetodoPagoId">MetodoPagoId</label>
+            </div>
+        </div>
+    </div>
+
+    <h4>Lineas de compra</h4>
+
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="nuevoBonoId" class="form-control" id="NuevoBonoId" />
+                <label for="NuevoBonoId">BonoId</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="nuevaCantidad" class="form-control" id="NuevaCantidad" />
+                <label for="NuevaCantidad">Cantidad</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-outline-primary" @onclick="AddLinea" id="AddLinea">
+                Agregar linea
+            </button>
+        </div>
+    </div>
+
+    <div class="mh-100 table-responsive">
+        <table class="table table-condensed table-hover" id="TablaLineasCompra">
+            <thead>
+                <tr>
+                    <th>BonoId</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var it in compra.Items)
+                {
+                    <tr id="Linea_@it.BonoId">
+                        <td>@it.BonoId</td>
+                        <td>
+                            <InputNumber @bind-Value="it.Cantidad" class="form-control"
+                                         id="@($"Cant_{it.BonoId}")" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    @onclick="@(()=>RemoveLinea(it.BonoId))">
+                                Quitar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md">
+            <button class="btn btn-primary" type="submit" id="Submit">
+                Crear compra
+            </button>
+            <button class="btn btn-outline-secondary ms-2" type="button" @onclick="IrASeleccionBonos" id="ModificarBonos">
+                Seleccionar bonos (vista de seleccion)
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@if (DialogIsOpen)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <h5 class="modal-title">Confirmar compra</h5>
+                <div class="modal-body">
+                    <p>¿Deseas crear la compra con @compra.Items.Count linea(s)?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="(()=>OnDialogClose(false))">Cancelar</button>
+                    <button class="btn btn-primary" @onclick="(()=>OnDialogClose(true))">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    // Modelo ligado al formulario
+    private CrearCompraDTO compra = new()
+    {
+        NombreCompleto = "",
+        Apellidos = "",
+        MetodoPagoId = 0,
+        Items = new List<CrearCompraItemDTO>()
+    };
+
+    // ui state
+    private string messageError = "";
+    private bool HideErrors => string.IsNullOrEmpty(messageError);
+    private bool DialogIsOpen;
+
+    // campos para agregar lineas rapidamente
+    private int nuevoBonoId;
+    private int nuevaCantidad = 1;
+
+    private void OpenDialog()
+    {
+        DialogIsOpen = true;
+    }
+
+    private async Task OnDialogClose(bool isOk)
+    {
+        DialogIsOpen = false;
+        if (!isOk) return;
+
+        if (compra.Items == null || compra.Items.Count == 0)
+        {
+            messageError = "Debes agregar al menos una linea (BonoId + Cantidad).";
+            StateHasChanged();
+            return;
+        }
+
+        try
+        {
+            var created = await apiclient.PostCompraAsync(compra);
+            // Navega a la vista de detalles de compra
+            navigation.NavigateTo($"/bonos/compra/details?id={created.CompraId}");
+        }
+        catch (ApiException<ValidationProblemDetails> apival)
+        {
+            // muestra errores de validacion del backend
+            var errores = apival.Result?.Errors?.Values?.SelectMany(v => v) ?? Enumerable.Empty<string>();
+            messageError = string.Join(" | ", errores);
+        }
+        catch (ApiException apiEx)
+        {
+            logger.LogError(apiEx, "Error de API al crear la compra");
+            messageError = "Error procesando tu solicitud. Intentalo mas tarde.";
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error inesperado");
+            messageError = "Error inesperado. Revisa consola/servidor.";
+        }
+
+        StateHasChanged();
+    }
+
+    private void AddLinea()
+    {
+        if (nuevoBonoId <= 0)
+        {
+            messageError = "BonoId debe ser > 0.";
+            return;
+        }
+        if (nuevaCantidad <= 0)
+        {
+            messageError = "Cantidad debe ser > 0.";
+            return;
+        }
+
+        messageError = "";
+
+        // si ya existe el bono en la lista, acumula cantidad
+        var existente = compra.Items.FirstOrDefault(x => x.BonoId == nuevoBonoId);
+        if (existente != null)
+        {
+            existente.Cantidad += nuevaCantidad;
+        }
+        else
+        {
+            compra.Items.Add(new CrearCompraItemDTO
+            {
+                BonoId = nuevoBonoId,
+                Cantidad = nuevaCantidad
+            });
+        }
+
+        // resetea inputs de alta rapida
+        nuevaCantidad = 1;
+        StateHasChanged();
+    }
+
+    private void RemoveLinea(int bonoId)
+    {
+        var it = compra.Items.FirstOrDefault(x => x.BonoId == bonoId);
+        if (it != null)
+        {
+            compra.Items.Remove(it);
+            StateHasChanged();
+        }
+    }
+
+    private void IrASeleccionBonos()
+    {
+        // ajusta la ruta si tu pagina de seleccion se llama de otra forma
+        navigation.NavigateTo("/bonos/select");
+    }
+}
