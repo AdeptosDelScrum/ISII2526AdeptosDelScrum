@@ -77,7 +77,7 @@ namespace AppForSEII2526.API.Controllers
             List<DetailsLineasResenyaDTO> detailsLineasDTOs = new List<DetailsLineasResenyaDTO>();
             foreach (var linea in resenya.Lineas)
             {
-                var bocadillo = bocadillos.FirstOrDefault(b => b.Id==linea.bocadillo.Id);
+                var bocadillo = bocadillos.FirstOrDefault(b => b.Nombre==linea.bocadillo.Name);
                 if (bocadillo == null) {
                     return BadRequest("Uno de los bocadillos introducidos para reseñar no existe");
                 }
