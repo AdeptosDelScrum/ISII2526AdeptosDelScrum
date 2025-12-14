@@ -29,7 +29,7 @@ namespace AppForSEII2526.UT.ComprasController_test
                 new Bocadillo(3, "Americano", (float)2.5, 30, Tamanyo.Normal, tiposPan[2]),
             };
 
-            ApplicationUser user = new ApplicationUser(0, "Paco", "Olivares", "Alonso");
+            ApplicationUser user = new ApplicationUser(1, "Paco", "Olivares", "Alonso");
 
             var compra = new Compra("Paco", "Olivares", "Alonso", user, _fechaCompra, 1, new Tarjeta(), new List<CompraBocadillo>());
 
@@ -75,7 +75,7 @@ namespace AppForSEII2526.UT.ComprasController_test
 
 
             var compraEsperada = new CompraBocadilloDetailDTO(1, _fechaCompra, 3,"Paco", "Olivares", "Alonso",
-                        1, new Tarjeta(),
+                        1, 1,
                         new List<CompraBocadilloItemDTO>());
             compraEsperada.BocadillosComprados.Add(new CompraBocadilloItemDTO("Completo", 3, "Normal", 1));
 

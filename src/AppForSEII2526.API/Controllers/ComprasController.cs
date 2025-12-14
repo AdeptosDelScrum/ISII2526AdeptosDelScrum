@@ -44,7 +44,7 @@ namespace AppForSEII2526.API.Controllers
             c.User.Apellido1_Cliente,
             c.User.Apellido2_Cliente,
             c.BocadillosComprados.Sum(ci => ci.Cantidad),
-            c.MetodoPago,
+            c.MetodoPago.Id,
             c.BocadillosComprados
                 .Select(ci => new CompraBocadilloItemDTO(
                     ci.Bocadillo.Nombre,            
@@ -81,7 +81,7 @@ namespace AppForSEII2526.API.Controllers
             if (compraForCreate.Apellido1_cliente.IsNullOrEmpty())
                 ModelState.AddModelError("Apellido1Cliente", "El cliente debe ingrsar su primer apellido");
             
-            if (compraForCreate.MetodoPago is PagoNoSeleccionado)
+            if (compraForCreate.MetodoPagoId<0)
                 ModelState.AddModelError("MetodoPago", "El cliente debe escoger un método de pago");
 
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == compraForCreate.NombreCliente);
@@ -121,7 +121,7 @@ namespace AppForSEII2526.API.Controllers
                 .ToList();*/
 
             float precioTotal = 0;
-
+            var metodoPago = _context.MetodoPago.FirstOrDefault(m => m.Id == compraForCreate.MetodoPagoId);
 
             var compra = new Compra(
                compraForCreate.NombreCliente,
@@ -130,14 +130,16 @@ namespace AppForSEII2526.API.Controllers
                user,
                DateTime.Today,
                0,                              
-               compraForCreate.MetodoPago,
+               metodoPago,
                new List<CompraBocadillo>());
 
 
 
             foreach (var item in compraForCreate.BocadillosComprados)
             {
-                var bocadillo = bocadillos.FirstOrDefault(b => b.Nombre == item.Nombre);
+                var bocadillo = await _context.Bocadillo
+                    .Include(b => b.TipoPan)
+                    .FirstOrDefaultAsync(b => b.Nombre == item.Nombre);
 
                 if (bocadillo == null)
                 {
@@ -201,13 +203,30 @@ namespace AppForSEII2526.API.Controllers
 
             try
             {
+                Console.WriteLine("MetodoPago en BD: " + _context.MetodoPago.Count());
+                Console.WriteLine("Bocadillos en BD: " + _context.Bocadillo.Count());
+                Console.WriteLine("Users en BD: " + _context.ApplicationUser.Count()); 
+                Console.WriteLine("MetodoPago dentro de compra:");
+                Console.WriteLine(compra.MetodoPago == null ? "NULL" : $"Id={compra.MetodoPago.Id}");
+                Console.WriteLine("MetodoPagoId enviado por DTO: " + compraForCreate.MetodoPagoId);
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al guardar la compra");
                 ModelState.AddModelError("Compra", "Error al guardar la compra.");
-                return Conflict("Error: " + ex.Message);
+                //return Conflict("Error: " + ex.Message);
+                Console.WriteLine("---- ERROR COMPLETO ----");
+                Console.WriteLine(ex.ToString());
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("---- INNER ----");
+                    Console.WriteLine(ex.InnerException.ToString());
+                }
+
+                throw;
             }
 
 
@@ -229,7 +248,7 @@ namespace AppForSEII2526.API.Controllers
                 compra.User.Apellido1_Cliente,
                 compra.User.Apellido2_Cliente,
                 compra.nBocadillos,
-                compra.MetodoPago,
+                compra.MetodoPago.Id,
                 bocadillosDto
             );
 

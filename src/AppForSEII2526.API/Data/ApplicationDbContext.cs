@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using AppForSEII2526.Models; // ✅ apunta al namespace correcto de tus modelos
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using AppForSEII2526.Models; // ✅ apunta al namespace correcto de tus modelos
+using System.Reflection.Emit;
 
 namespace AppForSEII2526.API.Data
 {
@@ -25,6 +26,30 @@ namespace AppForSEII2526.API.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.Entity<MetodoPago>()
+            .HasDiscriminator<string>("Tipo")
+            .HasValue<Tarjeta>("Tarjeta")
+            .HasValue<Paypal>("Paypal")
+            .HasValue<GPay>("GPay");
+
+            builder.Entity<MetodoPago>(e =>
+            {
+                e.HasKey(t => t.Id);
+                e.Property(t => t.Id).ValueGeneratedOnAdd(); 
+            });
+
+            builder.Entity<Compra>(e =>
+            {
+                e.HasOne(c => c.MetodoPago)
+                 .WithMany()
+                 .HasForeignKey("MetodoPagoId")     
+                 .IsRequired();
+            });
+            builder.Entity<MetodoPago>()
+            .Property(mp => mp.Id)
+            .ValueGeneratedNever();
+
             // --------- Relaciones CU Bonos ---------
             builder.Entity<BonoBocadillo>()
                 .HasOne(b => b.TipoBocadillo)

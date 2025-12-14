@@ -2,5 +2,6 @@
 {
     public class GPay: MetodoPago
     {
+        public GPay() { }
     }
 }

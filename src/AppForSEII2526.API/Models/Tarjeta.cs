@@ -2,5 +2,7 @@
 {
     public class Tarjeta: MetodoPago
     {
+        public Tarjeta() { }
+
     }
 }
