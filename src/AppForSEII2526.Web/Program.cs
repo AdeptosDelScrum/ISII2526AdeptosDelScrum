@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AppForSEII2526.Web;
 using AppForSEII2526.Web.API;
+using AppForSEII2526.Web;
 using AppForSEII2526.Web.Components;
 using AppForSEII2526.Web.Components.Account;
 using AppForSEII2526.Web.Data;
@@ -39,6 +40,7 @@ builder.Services.AddSingleton<IEmailSender<AppForSEII2526.Web.Data.ApplicationUs
 
 //this variable obtains the url where the API has been deployed
 string? URI2API = builder.Configuration.GetValue(typeof(string), "AppForSEII2526_API") as string;
+
 
 //We create the service for accessing the API from where .WEB project
 builder.Services.AddScoped<AppForSEII2526APIClient>(sp => new AppForSEII2526APIClient(URI2API, new HttpClient()));
