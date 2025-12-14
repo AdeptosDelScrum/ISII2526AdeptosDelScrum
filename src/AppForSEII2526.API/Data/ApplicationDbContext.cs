@@ -1,6 +1,7 @@
 ﻿using AppForSEII2526.Models; // ✅ apunta al namespace correcto de tus modelos
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace AppForSEII2526.API.Data
 {
@@ -32,14 +33,20 @@ namespace AppForSEII2526.API.Data
             .HasValue<Paypal>("Paypal")
             .HasValue<GPay>("GPay");
 
-            builder.Entity<Compra>()
-            .HasOne(c => c.User)
-            .WithMany()
-            .HasForeignKey("UserId");
+            builder.Entity<MetodoPago>(e =>
+            {
+                e.HasKey(t => t.Id);
+                e.Property(t => t.Id).ValueGeneratedOnAdd(); // importante para que EF genere Id
+            });
 
-            builder.Entity<MetodoPago>()
-            .Property(mp => mp.Id)
-            .ValueGeneratedNever();
+            builder.Entity<Compra>(e =>
+            {
+                e.HasOne(c => c.MetodoPago)
+                 .WithMany()
+                 .HasForeignKey("MetodoPagoId")     // FK shadow
+                 .IsRequired();
+            });
+
 
             // --------- Relaciones CU Bonos ---------
             builder.Entity<BonoBocadillo>()
