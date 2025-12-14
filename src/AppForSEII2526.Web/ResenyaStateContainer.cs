@@ -20,7 +20,7 @@ namespace AppForSEII2526.Web
         public void AddBocadilloParaResenyar(BocadilloDTO bocadillo)
         {
             //before adding a movie we checked whether it has been already added
-            if (!Resenya.Lineas.Any(ri => ri.Bocadillo.Id == bocadillo.Id))
+            if (!Resenya.Lineas.Any(ri => ri.Bocadillo.Name == bocadillo.Name))
                 //we add it if it is not in the list
                 Resenya.Lineas.Add(new LineasResenyaDTO()
                 {
@@ -39,7 +39,6 @@ namespace AppForSEII2526.Web
             });
             Console.WriteLine(result);*/
             var linea = Resenya.Lineas.FirstOrDefault(l =>
-                l.Bocadillo.Id == item.Id &&
                 l.Bocadillo.Name == item.Name
             );
             Resenya.Lineas.Remove(linea);
