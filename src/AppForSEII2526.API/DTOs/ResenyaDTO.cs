@@ -11,7 +11,7 @@ namespace AppForSEII2526.API.DTOs
             Description = description;
             Rate = rate;
             Lineas = lineas;
-            Nombre_cliente = nombre_cliente ?? throw new ArgumentNullException(nameof(nombre_cliente)); ;
+            Nombre_cliente = nombre_cliente ?? throw new ArgumentNullException(nameof(nombre_cliente)); 
             Apellido1_cliente = apellido1_cliente ?? throw new ArgumentNullException(nameof(apellido1_cliente)); ;
             Apellido2_cliente = apellido2_cliente;
         }

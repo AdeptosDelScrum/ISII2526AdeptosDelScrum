@@ -1,0 +1,122 @@
+﻿@page "/resenyas/detailsresenya"
+
+<h3>Datos de tu reseña creada</h3>
+
+
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<DetailsResenya> logger
+@inject NavigationManager navigation
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="row">
+                    @if (resenya == null)
+                    {
+                        <p>No se ha encontrado tu reseña</p>
+                    }
+                    else
+                    {
+                        <div class="mh-100 table-responsive">
+                            <table class="table table-condensed table-hover" id="Tablederesenya">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Título</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="ResenyaData_@resenya.Title">
+                                        <td>@resenya.Name</td>
+                                        <td>@resenya.Title</td>
+                                        <td>@resenya.Fecha</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed table-hover" id="Tablederesenya">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="ResenyaData_@resenya.Id">
+                                        <td>@resenya.Description</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed table-hover" id="TableOfBocadillos">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Bocadillo</th>
+                                        <th>Precio</th>
+                                        <th>Tamaño</th>
+                                        <th>Puntuación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var linea in resenya.Lineas)
+                                    {
+                                        <tr id="ResenyaData_@linea.Bocadillo.Name">
+                                            <td>@linea.Bocadillo.Name</td>
+                                            <td>@linea.Bocadillo.Pvp</td>
+                                            <td>@linea.Bocadillo.TamanyoBocadillo</td>
+                                            <td>@linea.Puntuacion</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private DetailsResenyaDTO resenya;
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    public async void SearchResenya()
+    {
+        if (Id == null)
+        {
+            errors = "Tienes que introducir un ID de resenya";
+        }
+        try
+        {
+            Console.WriteLine("BUSCANDO");
+            Console.WriteLine(Id);
+            resenya = await apiclient.GetResenyaAsync(Id);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "No se ha encontrado la reseña";
+        }
+        StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        SearchResenya();
+
+        return base.OnInitializedAsync();
+    }
+}

@@ -17,11 +17,11 @@ namespace AppForSEII2526.API.Models
             Bocadillo = bocadillo;
             Compra = compra;
         }
-        public CompraBocadillo(Bocadillo bocadillo, int cantidad, Compra compra) : this(bocadillo, compra)
+        public CompraBocadillo(Bocadillo bocadillo, int cantidad, Compra compra)
         {
-            BocadilloId = bocadillo.Id;
+            Bocadillo = bocadillo;
             Cantidad = cantidad;
-            CompraId = compra.CompraId;
+            Compra = compra;
             NombreBocadillo = bocadillo.Nombre;
             Precio = bocadillo.PVP;
             TipoPan = bocadillo.TipoPan.Nombre;
@@ -37,7 +37,7 @@ namespace AppForSEII2526.API.Models
         public int CompraId {  get; set; }
 
         [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
+        //[RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public string NombreBocadillo { get; set; }
 
         [DataType(DataType.Currency)]
@@ -45,7 +45,7 @@ namespace AppForSEII2526.API.Models
         public float Precio {  get; set; }
 
         [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
+        //[RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
         public string TipoPan {  get; set; }
         
         

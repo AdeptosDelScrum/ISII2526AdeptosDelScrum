@@ -197,12 +197,9 @@ namespace AppForSEII2526.API.Migrations
             modelBuilder.Entity("AppForSEII2526.API.Models.MetodoPago", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("Tipo")
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
@@ -211,7 +208,7 @@ namespace AppForSEII2526.API.Migrations
 
                     b.ToTable("MetodoPago");
 
-                    b.HasDiscriminator().HasValue("MetodoPago");
+                    b.HasDiscriminator<string>("Tipo").HasValue("MetodoPago");
 
                     b.UseTphMappingStrategy();
                 });
