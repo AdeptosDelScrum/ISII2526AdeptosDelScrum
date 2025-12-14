@@ -36,17 +36,19 @@ namespace AppForSEII2526.API.Data
             builder.Entity<MetodoPago>(e =>
             {
                 e.HasKey(t => t.Id);
-                e.Property(t => t.Id).ValueGeneratedOnAdd(); // importante para que EF genere Id
+                e.Property(t => t.Id).ValueGeneratedOnAdd(); 
             });
 
             builder.Entity<Compra>(e =>
             {
                 e.HasOne(c => c.MetodoPago)
                  .WithMany()
-                 .HasForeignKey("MetodoPagoId")     // FK shadow
+                 .HasForeignKey("MetodoPagoId")     
                  .IsRequired();
             });
-
+            builder.Entity<MetodoPago>()
+            .Property(mp => mp.Id)
+            .ValueGeneratedNever();
 
             // --------- Relaciones CU Bonos ---------
             builder.Entity<BonoBocadillo>()
