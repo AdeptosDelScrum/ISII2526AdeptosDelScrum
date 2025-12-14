@@ -2,6 +2,6 @@
 {
     public class Paypal: MetodoPago
     {
-        
+        public Paypal() { }
     }
 }

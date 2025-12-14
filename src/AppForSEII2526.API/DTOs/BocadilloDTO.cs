@@ -23,6 +23,7 @@ namespace AppForSEII2526.API.DTOs
             PVP = precio;
 
         }
+        [JsonIgnore]
         public int Id { get; set; }
 
         [StringLength(30, ErrorMessage = "El nombre no puede tener más de 30 caracteres.")]
