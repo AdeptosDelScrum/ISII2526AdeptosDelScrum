@@ -47,6 +47,8 @@ namespace AppForMovies.UIT.Shared {
 
             //maximize the window browser
             _driver.Manage().Window.Maximize();
+
+            Initial_step_opening_the_web_page();
         }
 
 

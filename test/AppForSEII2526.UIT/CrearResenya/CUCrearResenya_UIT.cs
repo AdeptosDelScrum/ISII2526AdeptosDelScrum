@@ -12,11 +12,11 @@ namespace AppForSEII2526.UIT.CrearResenya
         private SelectBocadillosParaResenyarPO selectBocadillosParaResenyar;
         private const string bocadilloNombre1 = "Politecnico";
         private const string bocadilloPVP1 = "10000";
-        private const string tipoPan1 = "sandwitch";
+        private const string tipoPan1 = "sandwich";
         private const string tamanyo1 = "Pequenyo";
         private const string bocadilloNombre2 = "Focata";
         private const string bocadilloPVP2 = "10";
-        private const string tipoPan2 = "sandwitch";
+        private const string tipoPan2 = "sandwich";
         private const string tamanyo2 = "Normal";
 
 
@@ -35,7 +35,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         }
 
         [Theory]
-        [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "")]
+        [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "0")]
         [InlineData(bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "", "10")]
         [Trait("LevelTesting", "Funcional Testing")]
         public void UC2_FA1_2_filtros(string name, string tipopan, string pvp, string tamanyo,
@@ -43,7 +43,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         {
             //Arrange
             InitialStepsForResenyaBocadillo();
-            var expectedBocadillos = new List<string[]> { new string[] { name, tipopan, pvp, tamanyo }, };
+            var expectedBocadillos = new List<string[]> { new string[] { name, tipopan, pvp, tamanyo, "Añadir" }, };
 
             //Act
             selectBocadillosParaResenyar.SearchBocadillos(filtroName, filtroPVP);
@@ -58,8 +58,8 @@ namespace AppForSEII2526.UIT.CrearResenya
         {
             //Arrange
             InitialStepsForResenyaBocadillo();
-            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2 }, 
-                                                          new string[] { bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1 }, };
+            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "Añadir" }, 
+                                                          new string[] { bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Añadir" }, };
             //Act
             selectBocadillosParaResenyar.SearchBocadillos("", "");
 

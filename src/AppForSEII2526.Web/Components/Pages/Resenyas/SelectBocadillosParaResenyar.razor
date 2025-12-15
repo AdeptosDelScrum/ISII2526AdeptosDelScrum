@@ -119,22 +119,15 @@
         }
         try
         {
-            bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
-            errors = "";
-        }
-        catch (ApiException ex)
-        {
-            logger.LogError($"{DateTime.Now} Error: {ex}");
-            errors = "Error while connecting to the system";
-        }
-        StateHasChanged();
-    }
-
-    public async void SearchBocadillosIni()
-    {
-        try
-        {
-            bocadillos = await apiclient.GetBocadillosParaResenyaAsync("", float.MaxValue);
+            if (bocadilloPVP == 0)
+            {
+                bocadillos = await apiclient.GetBocadillosParaResenyaAsync("", float.MaxValue);
+            }
+            else
+            {
+                bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
+            }
+            
             errors = "";
         }
         catch (ApiException ex)
@@ -147,7 +140,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        SearchBocadillosIni();
+        SearchBocadillos();
 
         return base.OnInitializedAsync();
     }
