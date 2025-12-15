@@ -75,7 +75,7 @@ namespace AppForSEII2526.UT.ComprasController_test
 
 
             var compraEsperada = new CompraBocadilloDetailDTO(1, _fechaCompra, 3,"Paco", "Olivares", "Alonso",
-                        1, 1,
+                        1, 0,
                         new List<CompraBocadilloItemDTO>());
             compraEsperada.BocadillosComprados.Add(new CompraBocadilloItemDTO("Completo", 3, "Normal", 1));
 
