@@ -54,8 +54,6 @@ namespace AppForSEII2526.UT.ComprasController_test
             compra.BocadillosComprados.Add(new CompraBocadillo(bocadillos[0], 1, compra));
 
             
-
-
             _context.ApplicationUser.Add(user);
             _context.AddRange(tiposPan);
             _context.AddRange(bocadillos);
@@ -84,6 +82,8 @@ namespace AppForSEII2526.UT.ComprasController_test
             var bocadilloNoExiste = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0,
                 new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO("Americano", 3, _bocadillo1tipoPan, 1) });
 
+            var compraItemSprint = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0,
+                new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 6) });
 
             var allTests = new List<object[]>
             { 
@@ -95,6 +95,7 @@ namespace AppForSEII2526.UT.ComprasController_test
                 new object[] { compraItemCero, $"Debe indicar una cantidad mayor que 0 para '{_bocadillo1Nombre}'.", },
                 new object[] { bocadilloNoExiste, $"El bocadillo 'Americano' no existe.", },
                 new object[] { CompraNoMetodoPago, "El cliente debe escoger un método de pago", },
+                new object[] { compraItemSprint, $"Error! no nos quedan panes para realizar tu pedido", },
             };
 
             return allTests;
