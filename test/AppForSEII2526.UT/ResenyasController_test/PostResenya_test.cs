@@ -62,32 +62,32 @@ namespace AppForSEII2526.UT.ResenyasController_test
             bocadillos.Add(new LineasResenyaDTO(bocadillo0, 3));
 
 
-            var resenyaSinTíitulo= new ResenyaDTO(1,"Pedro","","Descripcion",3,bocadillos, "Paco", "Salazar", "Mendoza");
+            var resenyaSinTíitulo= new ResenyaDTO(1,"Pedro","","Me gustaría que",3,bocadillos, "Paco", "Salazar", "Mendoza");
 
             var resenyaSinDescripcion = new ResenyaDTO(1, "Pedro", "Titulo", "", 3, bocadillos, "Paco", "Salazar", "Mendoza");
 
-            var resenyaSinBocadillos = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, new List<LineasResenyaDTO>(), "Paco", "Salazar", "Mendoza");
+            var resenyaSinBocadillos = new ResenyaDTO(1, "Pedro", "Titulo", "Me gustaría que", 3, new List<LineasResenyaDTO>(), "Paco", "Salazar", "Mendoza");
 
-            var resenyaRateNoValido = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", -10, bocadillos, "Paco", "Salazar", "Mendoza");
+            var resenyaRateNoValido = new ResenyaDTO(1, "Pedro", "Titulo", "Me gustaría que", -10, bocadillos, "Paco", "Salazar", "Mendoza");
 
-            var bocadillo1= new BocadilloDTO("Focata", Tamanyo.Normal, "sandwitch", 10);
+            var bocadillo1= new BocadilloDTO("Merluzo", Tamanyo.Normal, "sandwitch", 10);
             bocadillo1.Id = 100;
             var bocadillos0 = new List<LineasResenyaDTO>();
             bocadillos0.Add(new LineasResenyaDTO(bocadillo1, 3));
 
-            var resenyaBocadilloNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos0, "Paco", "Salazar", "Mendoza");
+            var resenyaBocadilloNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Me gustaría que", 3, bocadillos0, "Paco", "Salazar", "Mendoza");
 
             var bocadillos1 = new List<LineasResenyaDTO>();
             bocadillos1.Add(new LineasResenyaDTO(bocadillo0, -10));
 
-            var resenyaPuntBocadilloNoValida = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos1, "Paco", "Salazar", "Mendoza");
+            var resenyaPuntBocadilloNoValida = new ResenyaDTO(1, "Pedro", "Titulo", "Me gustaría que", 3, bocadillos1, "Paco", "Salazar", "Mendoza");
 
-            var resenyaNombreClienteNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Descripcion", 3, bocadillos, "", "Salazar", "Mendoza");
+            var resenyaNombreClienteNoExiste = new ResenyaDTO(1, "Pedro", "Titulo", "Me gustaría que", 3, bocadillos, "", "Salazar", "Mendoza");
 
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
                 new object[] { resenyaSinTíitulo, "La reseña tiene que tener un título",  },
-                new object[] { resenyaSinDescripcion, "El campo descripción está vacío", },
+                new object[] { resenyaSinDescripcion, "Error!, la descripción debe empezar por me gustaría que", },
                 new object[] { resenyaSinBocadillos, "No se puede crear una reseña sin bocadillos", },
                 new object[] { resenyaRateNoValido, "La valoracuón general tiene que ser entre 1 y 5 estrellas", },
                 new object[] { resenyaBocadilloNoExiste, "Uno de los bocadillos introducidos para reseñar no existe", },
@@ -143,10 +143,10 @@ namespace AppForSEII2526.UT.ResenyasController_test
 
             var detailsLineasResenyaDTO = new List<LineasResenyaDTO>();
             detailsLineasResenyaDTO.Add(new LineasResenyaDTO(bocadillo,3));
-            var resenyaDetailsExpected = new DetailsResenyaDTO(1 ,"Paco","resenya1","Me ha gustado",DateTime.Today,3,detailsLineasResenyaDTO, "Paco", "Salazar", "Mendoza");
+            var resenyaDetailsExpected = new DetailsResenyaDTO(1 ,"Paco","resenya1", "Me gustaría que", DateTime.Today,3,detailsLineasResenyaDTO, "Paco", "Salazar", "Mendoza");
 
             // Act
-            var result = await controller.PostResenya(new ResenyaDTO(3,"Paco","resenya1","Me ha gustado",3,lineasResenyaDTOs, "Paco", "Salazar", "Mendoza"));
+            var result = await controller.PostResenya(new ResenyaDTO(3,"Paco","resenya1", "Me gustaría que", 3,lineasResenyaDTOs, "Paco", "Salazar", "Mendoza"));
 
             //Assert
             //we check that the response type is OK and obtain the list of movies

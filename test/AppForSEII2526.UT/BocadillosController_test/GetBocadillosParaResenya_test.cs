@@ -60,7 +60,7 @@ namespace AppForSEII2526.UT.BocadillosController_test
 
             var resenyasDTOsTC2 = new List<BocadilloDTO>() { resenyasDTOs[0] };
 
-            var resenyasDTOsTC3 = new List<BocadilloDTO>() { resenyasDTOs[1] };
+            var resenyasDTOsTC3 = new List<BocadilloDTO>() { resenyasDTOs[0], resenyasDTOs[1] };
 
             var resenyasDTOsTC4 = new List<BocadilloDTO>() { };
 

@@ -30,9 +30,9 @@ namespace AppForSEII2526.API.Controllers
             {
                 return BadRequest("La reseña tiene que tener un título");
             }
-            if (resenya.Description.IsNullOrEmpty())
+            if (resenya.Description.IsNullOrEmpty() || !resenya.Description.StartsWith("Me gustaría que"))
             {
-                return BadRequest("El campo descripción está vacío");
+                return BadRequest("Error!, la descripción debe empezar por me gustaría que");
             }
             if (resenya.Lineas.Count == 0)
             {
