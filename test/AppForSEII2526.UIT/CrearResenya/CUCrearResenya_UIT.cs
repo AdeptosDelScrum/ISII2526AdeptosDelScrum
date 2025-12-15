@@ -23,6 +23,7 @@ namespace AppForSEII2526.UIT.CrearResenya
 
         public CUCrearResenya_UIT(ITestOutputHelper output) : base(output)
         {
+            selectBocadillosParaResenyar = new SelectBocadillosParaResenyarPO(_driver, _output);
         }
 
         private void InitialStepsForResenyaBocadillo()
@@ -37,7 +38,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "")]
         [InlineData(bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "", "10")]
         [Trait("LevelTesting", "Funcional Testing")]
-        public void UC2_FA1_3_4(string name, string tipopan, string pvp, string tamanyo,
+        public void UC2_FA1_2_filtros(string name, string tipopan, string pvp, string tamanyo,
             string filtroName, string filtroPVP)
         {
             //Arrange
@@ -53,7 +54,7 @@ namespace AppForSEII2526.UIT.CrearResenya
 
         [Fact(Skip = "Ejecutar ")]
         [Trait("LevelTesting", "Funcional Testing")]
-        public void UC2_FB_1()
+        public void UC2_FB_2_Bocadillos()
         {
             //Arrange
             InitialStepsForResenyaBocadillo();
@@ -78,10 +79,10 @@ namespace AppForSEII2526.UIT.CrearResenya
             //Act
 
             InitialStepsForResenyaBocadillo();
-            selectBocadillosParaResenyar.SearchBocadillos("Nobocata", "");
+            selectBocadillosParaResenyar.SearchBocadillos("", "");
 
             //Assert
-            Assert.True(selectBocadillosParaResenyar.CheckNotFound("No  se ha encontrado ningún bocadillo"), $"No  se ha encontrado ningún bocadillo");
+            Assert.True(selectBocadillosParaResenyar.CheckNotFound("No se ha encontrado ningún bocadillo"), $"No  se ha encontrado ningún bocadillo");
         }
     }
 }

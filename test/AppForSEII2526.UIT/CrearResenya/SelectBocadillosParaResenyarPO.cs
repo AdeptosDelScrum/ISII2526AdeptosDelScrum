@@ -7,7 +7,7 @@ using Xunit.Sdk;
 
 namespace AppForSEII2526.UIT.CrearResenya
 {
-    internal class SelectBocadillosParaResenyarPO : PageObject
+    public class SelectBocadillosParaResenyarPO : PageObject
     {
         private By inputNombre = By.Id("inputNombre");
         private By inputpvp = By.Id("inputPVP");
@@ -15,7 +15,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
         By errorShownBy = By.Id("ErrorsShown");
         By messageShownBy = By.Id("notFound");
-        protected SelectBocadillosParaResenyarPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
+        public SelectBocadillosParaResenyarPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
         {
         }
         public void SearchBocadillos(string nombre, string? pvp)
