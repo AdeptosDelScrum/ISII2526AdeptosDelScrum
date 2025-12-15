@@ -32,9 +32,9 @@
             </div>
             <div class="row">
                 <div class="row">
-                    @if (bocadillos == null)
+                    @if (bocadillos == null || bocadillos.Count() == 0)
                     {
-                        <p>Cargando Bocadillos....</p>
+                        <p id="notFound">No  se ha encontrado ningún bocadillo</p>
                     }
                     else
                     {
@@ -130,9 +130,24 @@
         StateHasChanged();
     }
 
+    public async void SearchBocadillosIni()
+    {
+        try
+        {
+            bocadillos = await apiclient.GetBocadillosParaResenyaAsync("", float.MaxValue);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error while connecting to the system";
+        }
+        StateHasChanged();
+    }
+
     protected override Task OnInitializedAsync()
     {
-        SearchBocadillos();
+        SearchBocadillosIni();
 
         return base.OnInitializedAsync();
     }

@@ -37,7 +37,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "")]
         [InlineData(bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "", "10")]
         [Trait("LevelTesting", "Funcional Testing")]
-        public void UC2_AF1_UC2_4_5_6_filtering(string name, string tipopan, string pvp, string tamanyo,
+        public void UC2_FA1_3_4(string name, string tipopan, string pvp, string tamanyo,
             string filtroName, string filtroPVP)
         {
             //Arrange
@@ -46,7 +46,42 @@ namespace AppForSEII2526.UIT.CrearResenya
 
             //Act
             selectBocadillosParaResenyar.SearchBocadillos(filtroName, filtroPVP);
+            //Assert
+            Assert.True(selectBocadillosParaResenyar.CheckListOfBocadillos(expectedBocadillos));
 
+        }
+
+        [Fact(Skip = "Ejecutar ")]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC2_FB_1()
+        {
+            //Arrange
+            InitialStepsForResenyaBocadillo();
+            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2 }, 
+                                                          new string[] { bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1 }, };
+            //Act
+            selectBocadillosParaResenyar.SearchBocadillos("", "");
+
+            //Assert
+
+            Assert.True(selectBocadillosParaResenyar.CheckListOfBocadillos(expectedBocadillos));
+
+        }
+
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC2_FB_2_NoBocadillo()
+        {
+            //Arrange
+
+
+            //Act
+
+            InitialStepsForResenyaBocadillo();
+            selectBocadillosParaResenyar.SearchBocadillos("Nobocata", "");
+
+            //Assert
+            Assert.True(selectBocadillosParaResenyar.CheckNotFound("No  se ha encontrado ningún bocadillo"), $"No  se ha encontrado ningún bocadillo");
         }
     }
 }

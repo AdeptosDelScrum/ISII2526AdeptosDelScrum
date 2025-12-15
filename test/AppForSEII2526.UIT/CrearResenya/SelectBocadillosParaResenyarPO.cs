@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Sdk;
 
 namespace AppForSEII2526.UIT.CrearResenya
 {
@@ -13,6 +14,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By buscar = By.Id("searchBocadillo");
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
         By errorShownBy = By.Id("ErrorsShown");
+        By messageShownBy = By.Id("notFound");
         protected SelectBocadillosParaResenyarPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
         {
         }
@@ -40,6 +42,13 @@ namespace AppForSEII2526.UIT.CrearResenya
             IWebElement actualErrorShown = _driver.FindElement(errorShownBy);
             _output.WriteLine($"actual Message shown:{actualErrorShown.Text}");
             return actualErrorShown.Text.Contains(errorMessage);
+        }
+
+        public bool CheckNotFound(string NotFoundMessage)
+        {
+            IWebElement actualMessageShown = _driver.FindElement(messageShownBy);
+            _output.WriteLine($"actual Message shown:{actualMessageShown.Text}");
+            return actualMessageShown.Text.Contains(NotFoundMessage);
         }
 
     }
