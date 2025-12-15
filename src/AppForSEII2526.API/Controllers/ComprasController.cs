@@ -154,6 +154,13 @@ namespace AppForSEII2526.API.Controllers
                     continue;
                 }
 
+                if(item.Cantidad > 5)
+                {
+                    ModelState.AddModelError("BocadillosComprados",
+                        $"Error! no nos quedan panes para realizar tu pedido");
+                    continue;
+                }
+
 
                 if (item.Cantidad > bocadillo.Stock)
                 {
