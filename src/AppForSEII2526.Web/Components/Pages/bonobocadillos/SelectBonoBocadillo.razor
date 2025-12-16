@@ -1,10 +1,9 @@
 @page "/bonos/select"
 
-@using AppForSEII2526.API.DTOs
-@using System.Net.Http.Json
-@inject HttpClient Http
+@using AppForSEII2526.Web.API
+
+@inject AppForSEII2526APIClient apiclient
 @inject ILogger<SelectBonoBocadillo> logger
-@inject NavigationManager nav
 
 <h3>Bonos disponibles</h3>
 
@@ -15,15 +14,15 @@
 
     <div class="row g-2 mb-3">
         <div class="col">
-            <label class="form-label">tipo (vegano | vegetariano | sin gluten | normal)</label>
+            <label class="form-label">Tipo</label>
             <input class="form-control" @bind="tipo" placeholder="normal" />
         </div>
         <div class="col">
-            <label class="form-label">search (nombre)</label>
+            <label class="form-label">Search (nombre)</label>
             <input class="form-control" @bind="search" placeholder="Mixto" />
         </div>
         <div class="col-auto align-self-end">
-            <button class="btn btn-primary" @onclick="SearchBonos">Buscar</button>
+            <button class="btn btn-primary" @onclick="SearchBonos" id="BuscarBonos">Buscar</button>
         </div>
     </div>
 
@@ -39,10 +38,9 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Tipo</th>
-                        <th>nBocadillos</th>
+                        <th>NBocadillos</th>
                         <th>PVP</th>
                         <th>Stock</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,9 +52,6 @@
                             <td>@b.NBocadillos</td>
                             <td>@b.Pvp</td>
                             <td>@b.CantidadDisponible</td>
-                            <td>
-                                <button class="btn btn-outline-secondary" @onclick="@(() => Add(b))">Añadir</button>
-                            </td>
                         </tr>
                     }
                 </tbody>
@@ -66,8 +61,7 @@
 </div>
 
 @code {
-    private List<BonoBocadilloDTO>? bonos;
-    private readonly List<BonoBocadilloDTO> seleccion = new();
+    private ICollection<BonoBocadilloDTO>? bonos;
 
     private string? tipo;
     private string? search;
@@ -82,29 +76,22 @@
     {
         try
         {
-            var url = "/api/bonosbocadillo/GetBonosDisponiblesSelect";
-            var qs = new List<string>();
-            if (!string.IsNullOrWhiteSpace(tipo))   qs.Add($"tipo={Uri.EscapeDataString(tipo)}");
-            if (!string.IsNullOrWhiteSpace(search)) qs.Add($"search={Uri.EscapeDataString(search)}");
-            if (qs.Count > 0) url += "?" + string.Join("&", qs);
-
-            bonos = await Http.GetFromJsonAsync<List<BonoBocadilloDTO>>(url) ?? new();
+            // OJO: el nombre del metodo en el cliente generado suele ser EXACTAMENTE este
+            // porque tu action se llama GetBonosDisponiblesSelect
+            bonos = await apiclient.GetBonosDisponiblesSelectAsync(tipo, search);
             errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Error llamando a GetBonosDisponiblesSelect");
+            errors = "Error llamando a la API";
+            bonos = new List<BonoBocadilloDTO>();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "error llamando a GetBonosDisponiblesSelect");
-            errors = "Error llamando a la API";
-            bonos = new();
+            logger.LogError(ex, "Error inesperado");
+            errors = "Error inesperado";
+            bonos = new List<BonoBocadilloDTO>();
         }
     }
-
-    private void Add(BonoBocadilloDTO b)
-    {
-        if (!seleccion.Any(x => x.BonoId == b.BonoId))
-            seleccion.Add(b);
-        // aqui puedes navegar o mostrar un carrito
-        // nav.NavigateTo("/otra-ruta");
-    }
 }
-
