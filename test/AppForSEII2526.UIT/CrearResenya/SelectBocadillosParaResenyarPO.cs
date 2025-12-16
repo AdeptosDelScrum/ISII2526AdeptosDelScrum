@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit.Sdk;
 
 namespace AppForSEII2526.UIT.CrearResenya
@@ -64,6 +65,12 @@ namespace AppForSEII2526.UIT.CrearResenya
         {
             WaitForBeingClickable(continueButtonBy);
             _driver.FindElement(continueButtonBy).Click();
+        }
+
+        public bool checkHideCart()
+        {
+            IWebElement boton = _driver.FindElement(continueButtonBy);
+            return boton.Displayed;
         }
 
     }

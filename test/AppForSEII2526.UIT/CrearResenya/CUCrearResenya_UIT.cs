@@ -50,7 +50,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "0")]
         [InlineData(bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "", "10")]
         [Trait("LevelTesting", "Funcional Testing")]
-        public void UC2_FB_FA1_2_filtros(string name, string tipopan, string pvp, string tamanyo,
+        public void UC2_FB_FA0_2_filtros(string name, string tipopan, string pvp, string tamanyo,
             string filtroName, string filtroPVP)
         {
             //Arrange
@@ -153,6 +153,74 @@ namespace AppForSEII2526.UIT.CrearResenya
             //Assert
 
             Assert.True(createResenya.checkErrors(expectedError));
+
+        }
+
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC2_FB_FA1_3()
+        {
+            //Arrange
+            InitialStepsForResenyaBocadillo();
+
+            //Act
+
+            selectBocadillosParaResenyar.SearchBocadillos("", "0");
+
+            //Assert
+
+            Assert.True(selectBocadillosParaResenyar.checkHideCart());
+
+        }
+
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC2_FB_FA2_4()
+        {
+            //Arrange
+            InitialStepsForResenyaBocadillo();
+            selectBocadillosParaResenyar.SearchBocadillos("", "0");
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre1);
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre2);
+
+            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "Añadir" }, };
+
+            //Act
+
+            selectBocadillosParaResenyar.removeBocadillo(bocadilloNombre1);
+
+            //Assert
+
+            Assert.True(selectBocadillosParaResenyar.CheckListOfBocadillos(expectedBocadillos));
+
+        }
+
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC2_FB_FA4_5()
+        {
+            //Arrange
+            InitialStepsForResenyaBocadillo();
+            selectBocadillosParaResenyar.SearchBocadillos("", "0");
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre1);
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre2);
+
+            selectBocadillosParaResenyar.continueToResenyar();
+
+            var lineas = new List<List<string>> {
+                new List<string> { bocadilloNombre2, "10" },
+            };
+
+            //Act
+
+            createResenya.soloRellenar(nombreU, title, descripcion, rate, nombreC, apellido1C, apellido2C, lineas);
+            selectBocadillosParaResenyar.removeBocadillo(bocadilloNombre1);
+            selectBocadillosParaResenyar.continueToResenyar();
+            
+
+            //Assert
+
+            Assert.True(createResenya.checkData(nombreU, title, descripcion, rate, nombreC, apellido1C, apellido2C, lineas));
 
         }
 
