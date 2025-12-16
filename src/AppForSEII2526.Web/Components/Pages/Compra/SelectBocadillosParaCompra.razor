@@ -88,7 +88,7 @@
             @foreach (CompraBocadilloItemDTO item in compra.BocadillosComprados)
             {
                 <div class="row">
-                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Nombre" @onclick="@(() => RemoveCompraItem(item))">x @item.Nombre - @item.Precio€</button>
+                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Nombre" @onclick="@(() => RemoveCompraItem(item))">x @item.Cantidad @item.Nombre - @item.Precio€</button>
                 </div>
             }
             <div class="row">
@@ -136,7 +136,6 @@
             bocadillos = await apiclient
                 .GetBocadillosParaCompraAsync(tamanyo, bocadilloTipoPan);
 
-            errors = "";
         }
         catch (ApiException ex)
         {
