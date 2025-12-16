@@ -1,5 +1,5 @@
 ﻿@page "/Compra/CreateCompra"
-<!--
+
 @inject NavigationManager navigation
 @using AppForSEII2526.Web.Components.Shared
 @using AppForSEII2526.Web.API
@@ -22,50 +22,53 @@
     <div class="row g-3">
         <div class="col-md">
             <div class="form-floating mb-3">
-                <InputText @bind-Value="compra.NameCustomer" class="form-control" id="Nombre" />
+                <InputText @bind-Value="compra.NombreCliente" class="form-control" id="Nombre" />
                 <label for="Nombre">Nombre </label>
             </div>
         </div>
         <div class="col-md">
             <div class="form-floating mb-3">
-                <InputText @bind-Value="rental.SurnameCustomer" class="form-control" id="Surname" />
-                <label for="Name">Name </label>
+                <InputText @bind-Value="compra.Apellido1_cliente" class="form-control" id="Apellido1" />
+                <label for="Name">Primer Apellido </label>
             </div>
         </div>
         <div class="col-md">
             <div class="form-floating mb-3">
-                <InputText @bind-Value="rental.DeliveryAddress" class="form-control" id="DeliveryAddress" />
-                <label for="DeliveryAddress">Delivery Address</label>
+                <InputText @bind-Value="compra.Apellido2_cliente" class="form-control" id="Apellido2" />
+                <label for="Name">Segundo Apellido </label>
             </div>
         </div>
+        
     </div>
     <div class="row g-2">
         <div class="col-md">
             <div class="form-floating">
                 @*a dropdown for selecting the payment method*@
-                <InputSelect class="form-select" @bind-Value="@rental.PaymentMethod" id="PaymentMethod">
-                    <option value="@PaymentMethodType.CreditCard" default> CreditCard</option>
-                    <option value="@PaymentMethodType.PayPal"> PayPal</option>
-                    <option value="@PaymentMethodType.Cash"> Cash</option>
+                <InputSelect class="form-select"
+                             id="MetodoPago"
+                             @bind-Value="compra.MetodoPagoId">
+                    <option value="0">Seleccione un método</option>
+                    <option value="1">Tarjeta</option>
+                    <option value="2">PayPal</option>
+                    <option value="3">GPay</option>
                 </InputSelect>
-                <label for="PaymentMethod">Payment Method</label>
+                <label for="MetodoPago">Método de Pago</label>
             </div>
         </div>
         <div class="col-md">
             <div class="form-floating">
                 @*this button will be used to ask the user if he want to proceed to rent the movies*@
                 <button class="btn btn-primary" type="submit" id="Submit" disabled="@compraButtonDisabled">
-                    Rent your movies
+                    Comprar Bocadillos
                 </button>
             </div>
         </div>
     </div>
-    <h4>Rental detail</h4>
-    <p><b>Date from:</b> @rental.RentalDateFrom.ToString("dd/MM/yyyy") <b>to:</b> @rental.RentalDateTo.ToString("dd/MM/yyyy")</p>
+    <h4>Compra detail</h4>
     <p>
-        <b>Total price:</b> @TotalCost €
-        <button class="btn btn-outline-primary" type="submit" @onclick="ModifyRentalItems" id="ModifyMovies">
-            Modify movies
+        <b>Precio Total:</b> @TotalCost €
+        <button class="btn btn-outline-primary" type="submit" @onclick="ModifyCompraItems" id="ModifyBocadillos">
+            Modificar Bocadillos
         </button>
     </p>
     
@@ -81,7 +84,7 @@
             </thead>
             <tbody>
                 @foreach (var item in compra.BocadillosComprados) {
-                    <tr id="MovieData_@item.Nombre">
+                    <tr id="BocadillosData_@item.Nombre">
                         <td>@item.Nombre</td>
                         <td>@item.TipoPan</td>
                         <td>@item.Precio</td>
@@ -109,8 +112,17 @@
     //rentalbutton will be disabled if there are not movies in the renting cart
     private bool compraButtonDisabled { get { return (compra.BocadillosComprados == null || compra.BocadillosComprados.Count == 0); } }
     private bool DialogIsOpen;
-    
-    private void ModifyRentalItems() {
+    private int metodoPagoSeleccionado = 0;
+    private decimal TotalCost
+    {
+        get
+        {
+            
+            double price = compra.BocadillosComprados.Sum(ci => ci.Precio * ci.Cantidad);
+            return Convert.ToDecimal(price);
+        }
+    }
+    private void ModifyCompraItems() {
         navigation.NavigateTo("/Compra/SelectBocadillosParaCompra");
     }
     private CompraBocadilloForCreateDTO compra => compraState.Compra;
@@ -119,7 +131,11 @@
     {
         DialogIsOpen = true;
     }
+    private void ActualizarDatos()
+    {
+        compraState.Compra.MetodoPagoId = metodoPagoSeleccionado;
 
+    }
     private async Task OnDialogClose(bool isOk) {
 
         DialogIsOpen = false;
@@ -127,9 +143,10 @@
             // Process the data introduced by the user if they are valid
             if (compra.BocadillosComprados.Count > 0) {
                 try {
-                    var comprados = await apiclient.CrearCompraAsync(compra);
+                {
+                    var compraCreada = await apiclient.CrearCompraAsync(compraState.Compra);
                     compraState.RentalProcessed();
-                    navigation.NavigateTo($"/rental/detailrental/?RentalID={compra.Id}");
+                    navigation.NavigateTo($"/Compra/DetalleCompra/?CompraId={compraCreada.MetodoPagoId}");
                 }
                 catch (ApiException<ValidationProblemDetails> apiexceptionvalidation) {
 
@@ -158,12 +175,11 @@
 
             if (user is not null) {
                 if (user.Identity is not null && user.Identity.IsAuthenticated) {
-                    rental.UserNameCustomer = user.Identity.Name;
+                    compra.NombreCliente = user.Identity.Name;
                 }
             }
-            rental.NameCustomer = rental.NameCustomer == null ? "" : rental.NameCustomer;
-            rental.SurnameCustomer = rental.SurnameCustomer == null ? "" : rental.SurnameCustomer;
-            rental.DeliveryAddress = rental.DeliveryAddress == null ? "" : rental.DeliveryAddress;
+            compra.NombreCliente = compra.NombreCliente == null ? "" : compra.NombreCliente;
+            compra.Apellido1_cliente = compra.Apellido1_cliente == null ? "" : compra.Apellido1_cliente;
 
         }
     }
@@ -171,4 +187,4 @@
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
- }}-->
+ }}
