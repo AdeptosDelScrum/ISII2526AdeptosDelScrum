@@ -73,15 +73,38 @@ namespace AppForMovies.UIT.Shared {
         }
 
 
-        protected void SetUp_Chrome4UIT() {
-            var optionsc = new ChromeOptions {
+        protected void SetUp_Chrome4UIT()
+        {
+            var options = new ChromeOptions
+            {
                 PageLoadStrategy = PageLoadStrategy.Normal,
                 AcceptInsecureCertificates = true
             };
-            //For pipelines use this option for hiding the browser
-            if (_pipeline) optionsc.AddArgument("--headless");
 
-            _driver = new ChromeDriver(optionsc);
+            // 🔹 Buscar Chrome en Program Files
+            var chromePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                @"Google\Chrome\Application\chrome.exe"
+            );
+
+            if (!File.Exists(chromePath))
+            {
+                // fallback 32 bits
+                chromePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                    @"Google\Chrome\Application\chrome.exe"
+                );
+            }
+
+            if (!File.Exists(chromePath))
+                throw new InvalidOperationException("Chrome no encontrado en el sistema");
+
+            options.BinaryLocation = chromePath;
+
+            if (_pipeline)
+                options.AddArgument("--headless=new");
+
+            _driver = new ChromeDriver(options);
 
         }
 
