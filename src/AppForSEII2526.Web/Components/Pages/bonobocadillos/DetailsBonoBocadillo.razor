@@ -1,0 +1,115 @@
+@page "/bonos/compra/details"
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<DetailsBonoBocadillo> logger
+@inject NavigationManager navigation
+
+<h3>Detalles de la compra</h3>
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@HideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @if (compra == null)
+            {
+                <p>No se ha encontrado la compra</p>
+            }
+            else
+            {
+                <div class="mh-100 table-responsive">
+                    <table class="table table-condensed table-hover" id="TablaCompraCabecera">
+                        <thead>
+                            <tr>
+                                <th>CompraId</th>
+                                <th>Cliente</th>
+                                <th>Metodo de pago</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="CompraData_@compra.CompraId">
+                                <td>@compra.CompraId</td>
+                                <td>@($"{compra.NombreCompleto} {compra.Apellidos}")</td>
+                                <td>@compra.MetodoPago</td>
+                                <td>@compra.Fecha</td>
+                                <td>@compra.PrecioTotal</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-condensed table-hover" id="TablaCompraLineas">
+                        <thead>
+                            <tr>
+                                <th>BonoId</th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>PVP</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in compra.Items)
+                            {
+                                <tr id="CompraLinea_@item.BonoId">
+                                    <td>@item.BonoId</td>
+                                    <td>@item.Nombre</td>
+                                    <td>@item.Tipo</td>
+                                    <td>@item.Pvp</td>
+                                    <td>@item.Cantidad</td>
+                                    <td>@(item.Pvp * item.Cantidad)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public long Id { get; set; }
+
+    private string errors = "";
+    private bool HideErrors => string.IsNullOrEmpty(errors);
+
+    private CompraDetailsDTO? compra;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCompraAsync();
+    }
+
+    private async Task LoadCompraAsync()
+    {
+        if (Id <= 0)
+        {
+            errors = "Debes indicar un id de compra valido en la query (?id=...).";
+            return;
+        }
+
+        try
+        {
+            compra = await apiclient.GetCompraDetailsAsync(Id);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Error obteniendo detalles de compra {Id}", Id);
+            errors = "No se ha encontrado la compra o hubo un error en la API.";
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error inesperado");
+            errors = "Error inesperado. Revisa consola/servidor.";
+        }
+    }
+}
