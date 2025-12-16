@@ -1,10 +1,12 @@
 @page "/bonos/createcompra"
 
+@using System.Linq
 @using Microsoft.AspNetCore.Components.Forms
-@using AppForSEII2526.Web.API  @* DTOs del cliente generado (CrearCompraDTO, CrearCompraItemDTO, CompraDetailsDTO) *@
+@using Microsoft.AspNetCore.Mvc
+@using AppForSEII2526.Web.API
 
 @inject AppForSEII2526APIClient apiclient
-@inject ILogger<CreateCompra> logger
+@inject ILogger<PostBonoBocadillos> logger
 @inject NavigationManager navigation
 
 <h3>Datos de compra de bonos</h3>
@@ -77,12 +79,14 @@
                     <tr id="Linea_@it.BonoId">
                         <td>@it.BonoId</td>
                         <td>
-                            <InputNumber @bind-Value="it.Cantidad" class="form-control"
+                            <InputNumber @bind-Value="it.Cantidad"
+                                         class="form-control"
                                          id="@($"Cant_{it.BonoId}")" />
                         </td>
                         <td>
-                            <button type="button" class="btn btn-outline-secondary"
-                                    @onclick="@(()=>RemoveLinea(it.BonoId))">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    @onclick="@(() => RemoveLinea(it.BonoId))">
                                 Quitar
                             </button>
                         </td>
@@ -97,7 +101,10 @@
             <button class="btn btn-primary" type="submit" id="Submit">
                 Crear compra
             </button>
-            <button class="btn btn-outline-secondary ms-2" type="button" @onclick="IrASeleccionBonos" id="ModificarBonos">
+            <button class="btn btn-outline-secondary ms-2"
+                    type="button"
+                    @onclick="IrASeleccionBonos"
+                    id="ModificarBonos">
                 Seleccionar bonos (vista de seleccion)
             </button>
         </div>
@@ -112,11 +119,11 @@
             <div class="modal-content p-3">
                 <h5 class="modal-title">Confirmar compra</h5>
                 <div class="modal-body">
-                    <p>¿Deseas crear la compra con @compra.Items.Count linea(s)?</p>
+                    <p>Quieres crear la compra con @compra.Items.Count linea(s)?</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="(()=>OnDialogClose(false))">Cancelar</button>
-                    <button class="btn btn-primary" @onclick="(()=>OnDialogClose(true))">Confirmar</button>
+                    <button class="btn btn-secondary" @onclick="@(() => OnDialogClose(false))">Cancelar</button>
+                    <button class="btn btn-primary" @onclick="@(() => OnDialogClose(true))">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -124,7 +131,6 @@
 }
 
 @code {
-    // Modelo ligado al formulario
     private CrearCompraDTO compra = new()
     {
         NombreCompleto = "",
@@ -133,12 +139,10 @@
         Items = new List<CrearCompraItemDTO>()
     };
 
-    // ui state
     private string messageError = "";
     private bool HideErrors => string.IsNullOrEmpty(messageError);
     private bool DialogIsOpen;
 
-    // campos para agregar lineas rapidamente
     private int nuevoBonoId;
     private int nuevaCantidad = 1;
 
@@ -162,12 +166,11 @@
         try
         {
             var created = await apiclient.PostCompraAsync(compra);
-            // Navega a la vista de detalles de compra
             navigation.NavigateTo($"/bonos/compra/details?id={created.CompraId}");
+            messageError = "";
         }
         catch (ApiException<ValidationProblemDetails> apival)
         {
-            // muestra errores de validacion del backend
             var errores = apival.Result?.Errors?.Values?.SelectMany(v => v) ?? Enumerable.Empty<string>();
             messageError = string.Join(" | ", errores);
         }
@@ -200,7 +203,6 @@
 
         messageError = "";
 
-        // si ya existe el bono en la lista, acumula cantidad
         var existente = compra.Items.FirstOrDefault(x => x.BonoId == nuevoBonoId);
         if (existente != null)
         {
@@ -215,7 +217,6 @@
             });
         }
 
-        // resetea inputs de alta rapida
         nuevaCantidad = 1;
         StateHasChanged();
     }
@@ -232,7 +233,10 @@
 
     private void IrASeleccionBonos()
     {
-        // ajusta la ruta si tu pagina de seleccion se llama de otra forma
         navigation.NavigateTo("/bonos/select");
     }
+
+    // Solo para que el ILogger<PostBonoBocadillos> exista como tipo de componente
+    private sealed class PostBonoBocadillos { }
 }
+
