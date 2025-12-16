@@ -71,29 +71,34 @@
             Modificar Bocadillos
         </button>
     </p>
-    
     <div class="mh-100 table-responsive">
-        <table class="table table-condensed table-hover" id="TableOfRentalItems">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Tipo de Pan</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
+    <table class="table table-condensed table-hover" id="TableOfRentalItems">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo de Pan</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in compra.BocadillosComprados)
+            {
+                <tr id="BocadillosData_@item.Nombre">
+                    <td>@item.Nombre</td>
+                    <td>@item.TipoPan</td>
+                    <td>@item.Precio €</td>
+                    <td style="width:120px">
+                            <InputNumber TValue="int"
+                                         class="form-control"
+                                         @bind-Value="item.Cantidad"
+                                         min="1" />
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in compra.BocadillosComprados) {
-                    <tr id="BocadillosData_@item.Nombre">
-                        <td>@item.Nombre</td>
-                        <td>@item.TipoPan</td>
-                        <td>@item.Precio</td>
-                        <td>@item.Cantidad</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
+</div>
 </EditForm>
 
 @*a modal popup dialog for checking if user wants to proceed to rent*@
@@ -117,7 +122,7 @@
     {
         get
         {
-            
+
             double price = compra.BocadillosComprados.Sum(ci => ci.Precio * ci.Cantidad);
             return Convert.ToDecimal(price);
         }
@@ -142,22 +147,27 @@
         if (isOk) {
             // Process the data introduced by the user if they are valid
             if (compra.BocadillosComprados.Count > 0) {
-                try {
+                try
                 {
-                    var compraCreada = await apiclient.CrearCompraAsync(compraState.Compra);
-                    compraState.RentalProcessed();
-                    navigation.NavigateTo($"/Compra/DetalleCompra/?CompraId={compraCreada.MetodoPagoId}");
+                    {
+                        var compraCreada = await apiclient.CrearCompraAsync(compraState.Compra);
+                        compraState.RentalProcessed();
+                        navigation.NavigateTo($"/Compra/DetalleCompra/?CompraId={compraCreada.Id}");
+                    }
                 }
-                catch (ApiException<ValidationProblemDetails> apiexceptionvalidation) {
+                catch (ApiException<ValidationProblemDetails> apiexceptionvalidation)
+                {
 
-                    if (apiexceptionvalidation.Result.Errors.Values != null) {
+                    if (apiexceptionvalidation.Result.Errors.Values != null)
+                    {
                         messageError = "";
                         foreach (var errors in apiexceptionvalidation.Result.Errors.Values)
                             //https://learn.microsoft.com/en-us/dotnet/api/system.string.join?view=net-7.0
                             messageError = string.Join("(*) ", messageError, string.Join(" (*) ", errors));
                     }
                 }
-                catch (ApiException apiexception) {
+                catch (ApiException apiexception)
+                {
                     //we need to inform user that there was some other error while processing the request
                     messageError = "Error while processing your request, please try again later!";
 
