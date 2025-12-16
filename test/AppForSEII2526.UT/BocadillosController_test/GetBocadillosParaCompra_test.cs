@@ -26,7 +26,7 @@ namespace AppForSEII2526.UT.BocadillosController_test
                 new Bocadillo(3, "Americano", (float)2.5, 30, Tamanyo.Normal, tiposPan[2])
             };
 
-            ApplicationUser user = new ApplicationUser(0, "Paco", "Olivares", "Alonso");
+            ApplicationUser user = new ApplicationUser(1,"Paco", "Olivares", "Alonso");
 
             var compra = new Compra("Paco", "Olivares", "Alonso", user,DateTime.Today, 1, new Tarjeta(), new List<CompraBocadillo>());
 

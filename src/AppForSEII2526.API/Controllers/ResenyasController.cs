@@ -20,9 +20,9 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(DetailsResenyaDTO), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> PostResenya(ResenyaDTO resenya)
         {
 
@@ -77,7 +77,7 @@ namespace AppForSEII2526.API.Controllers
             List<DetailsLineasResenyaDTO> detailsLineasDTOs = new List<DetailsLineasResenyaDTO>();
             foreach (var linea in resenya.Lineas)
             {
-                var bocadillo = bocadillos.FirstOrDefault(b => b.Id==linea.bocadillo.Id);
+                var bocadillo = bocadillos.FirstOrDefault(b => b.Nombre==linea.bocadillo.Name);
                 if (bocadillo == null) {
                     return BadRequest("Uno de los bocadillos introducidos para reseñar no existe");
                 }

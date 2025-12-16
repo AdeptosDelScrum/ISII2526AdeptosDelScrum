@@ -1,0 +1,143 @@
+﻿@page "/resenyas/selectbocadillospararesenyar"
+<h3>Selecciona bocadillos para tu reseña</h3>
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectBocadillosParaResenyar> logger
+@inject ResenyaStateContainer resenyaState
+@inject NavigationManager navigation
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Nombre</span>
+                        <input type="text" id="inputNombre" @bind=bocadilloNombre class="form-control" placeholder="Nombre" aria-label="Nombre" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">PVP máximo</span>
+                        <input type="float" id="inputPVP" @bind=bocadilloPVP class="form-control" placeholder="PVP" aria-label="PVP" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchBocadillos id="searchMovies">Buscar Bocadillos</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row">
+                    @if (bocadillos == null)
+                    {
+                        <p>Cargando Bocadillos....</p>
+                    }
+                    else
+                    {
+                        <div class="mh-100 table-responsive">
+                            <table class="table table-condensed table-hover" id="TableOfBocadillos">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Tipo de pan</th>
+                                        <th>PVP</th>
+                                        <th>Tamaño</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bocadillo in bocadillos)
+                                    {
+                                        <tr id="BocadilloData_@bocadillo.Name">
+                                            <td>@bocadillo.Name</td>
+                                            <td>@bocadillo.TipoPan</td>
+                                            <td>@bocadillo.Pvp</td>
+                                            <td>@bocadillo.TamanyoBocadillo</td>
+                                            <td>
+                                                <button class="btn btn-outline-secondary" id="bocadilloParaResenyar_@bocadillo.Name" @onclick="@(() => AddBocadillo(bocadillo))">Añadir</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-2" hidden="@hideResenyaCart">
+            <div class="row">
+                <h3>Reseña Cart</h3>
+            </div>
+            @foreach (LineasResenyaDTO item in resenya.Lineas)
+            {
+                <div class="row">
+                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Bocadillo.Name" @onclick="@(() => RemoveResenyaItem(item.Bocadillo))">x @item.Bocadillo.Name - @item.Bocadillo.Pvp
+                        €</button>
+                </div>
+            }
+            <div class="row">
+                <button type="button" class="btn btn-primary" id="ResenyarBocadilloButton" @onclick=@ResenyarBocadillos>Reseñar Bocadillos</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool hideResenyaCart { get { return resenya.Lineas.Count == 0; } }
+    private ICollection<BocadilloDTO> bocadillos;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string bocadilloNombre { get; set; }
+    private float bocadilloPVP { get; set; }
+
+    private ResenyaDTO resenya => resenyaState.Resenya;
+
+    private bool hiddenBocadillosCart = true;
+
+    private void AddBocadillo(BocadilloDTO bocadillo)
+    {
+        resenyaState.AddBocadilloParaResenyar(bocadillo);
+    }
+
+    private void RemoveResenyaItem(BocadilloDTO item)
+    {
+        resenyaState.RemoveResenyaItemParaResenyar(item);
+        if (resenya.Lineas.Count == 0) hiddenBocadillosCart = true;
+    }
+
+    public async void SearchBocadillos()
+    {
+        if(bocadilloPVP != null && bocadilloPVP < 0 ) {
+            errors = "El PVP del bocadillo no puede ser negativo";
+        }
+        try
+        {
+            bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error while connecting to the system";
+        }
+        StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        SearchBocadillos();
+
+        return base.OnInitializedAsync();
+    }
+    private void ResenyarBocadillos()
+    {
+        navigation.NavigateTo("/resenyas/createresenya");
+    }
+}

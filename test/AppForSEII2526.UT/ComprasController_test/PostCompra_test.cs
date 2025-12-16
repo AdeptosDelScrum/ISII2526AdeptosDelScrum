@@ -3,6 +3,7 @@ using AppForSEII2526.API.DTOs;
 using AppForSEII2526.API.DTOs.CompraDTOs;
 using AppForSEII2526.API.Models;
 using Humanizer.Localisation;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace AppForSEII2526.UT.ComprasController_test
         private const string _bocadillo2Nombre = "Politecnico";
         private const string _bocadillo2tipoPan = "Integral";
 
-        public PostCompra_test()
+        public PostCompra_test():base()
         {
 
             var tiposPan = new List<TipoPan>() {
@@ -35,38 +36,54 @@ namespace AppForSEII2526.UT.ComprasController_test
                 new Bocadillo(2,_bocadillo2Nombre, 2,1,Tamanyo.Pequenyo, tiposPan[1]),
             };
 
-            ApplicationUser user = new ApplicationUser(1, "Paco", "Olivares", "Alonso");
+            var user = new ApplicationUser
+            {
+                Id =1,
+                NombreCliente = "Paco",
+                Apellido1_Cliente = "Olivares",
+                Apellido2_Cliente = "Alonso",
+            };
 
-            var compra = new Compra(_nombre,_apellido1, _apellido2, user, DateTime.Today, 1, new Tarjeta(),new List<CompraBocadillo>());
+
+
+            var tarjeta = new Tarjeta();
+            tarjeta.Id = 0;
+            _context.MetodoPago.Add(tarjeta);
+
+            var compra = new Compra(_nombre,_apellido1, _apellido2, user, DateTime.Today, 1, tarjeta,new List<CompraBocadillo>());
             compra.BocadillosComprados.Add(new CompraBocadillo(bocadillos[0], 1, compra));
 
+            
             _context.ApplicationUser.Add(user);
             _context.AddRange(tiposPan);
             _context.AddRange(bocadillos);
             _context.Add(compra);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
+
         }
 
         public static IEnumerable<object[]> TestCasesFor_CrearCompra()
         {
 
 
-            var compraNoItem = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, new Tarjeta(), new List<CompraBocadilloItemDTO>());
+            var compraNoItem = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0, new List<CompraBocadilloItemDTO>());
             
 
             var compraItems = new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 1) };
-            var UserNoNombre = new CompraBocadilloForCreateDTO("", _apellido1, _apellido2, new Tarjeta(), compraItems);
-            var CompraNoMetodoPago = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, new PagoNoSeleccionado(), compraItems);
-            var CompraApplicationUser = new CompraBocadilloForCreateDTO("Luis", _apellido1, _apellido2, new Tarjeta(),compraItems);
-            var CompraApplicationUserApellido = new CompraBocadilloForCreateDTO(_nombre, "", _apellido2, new Tarjeta(), compraItems);
+            var UserNoNombre = new CompraBocadilloForCreateDTO("", _apellido1, _apellido2, 0, compraItems);
+            var CompraNoMetodoPago = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, -1, compraItems);
+            var CompraApplicationUser = new CompraBocadilloForCreateDTO("Luis", _apellido1, _apellido2, 0,compraItems);
+            var CompraApplicationUserApellido = new CompraBocadilloForCreateDTO(_nombre, "", _apellido2, 0, compraItems);
 
-            var compraItemNoDisponible = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, new Tarjeta(), 
+            var compraItemNoDisponible = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0, 
                 new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 2) });
-            var compraItemCero = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, new Tarjeta(),
+            var compraItemCero = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0,
                 new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 0) });
-            var bocadilloNoExiste = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, new Tarjeta(),
+            var bocadilloNoExiste = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0,
                 new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO("Americano", 3, _bocadillo1tipoPan, 1) });
 
+            var compraItemSprint = new CompraBocadilloForCreateDTO(_nombre, _apellido1, _apellido2, 0,
+                new List<CompraBocadilloItemDTO>() { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 6) });
 
             var allTests = new List<object[]>
             { 
@@ -78,6 +95,7 @@ namespace AppForSEII2526.UT.ComprasController_test
                 new object[] { compraItemCero, $"Debe indicar una cantidad mayor que 0 para '{_bocadillo1Nombre}'.", },
                 new object[] { bocadilloNoExiste, $"El bocadillo 'Americano' no existe.", },
                 new object[] { CompraNoMetodoPago, "El cliente debe escoger un método de pago", },
+                new object[] { compraItemSprint, $"Error! no nos quedan panes para realizar tu pedido", },
             };
 
             return allTests;
@@ -87,7 +105,7 @@ namespace AppForSEII2526.UT.ComprasController_test
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
         [MemberData(nameof(TestCasesFor_CrearCompra))]
-        public async Task CreateRental_Error_test(CompraBocadilloForCreateDTO compraDTO, string errorExpected)
+        public async Task CreateCompra_Error_test(CompraBocadilloForCreateDTO compraDTO, string errorExpected)
         {
             // Arrange
             var mock = new Mock<ILogger<ComprasController>>();
@@ -109,12 +127,13 @@ namespace AppForSEII2526.UT.ComprasController_test
             Assert.StartsWith(errorExpected, errorActual);
 
         }
-
+        
         [Fact]
         [Trait("LevelTesting", "Unit Testing")]
         [Trait("Database", "WithoutFixture")]
-        public async Task CreateRental_Success_test()
+        public async Task CreateCompra_Success_test()
         {
+            
             // Arrange
             var mock = new Mock<ILogger<ComprasController>>();
             ILogger<ComprasController> logger = mock.Object;
@@ -124,11 +143,21 @@ namespace AppForSEII2526.UT.ComprasController_test
             DateTime to = DateTime.Today.AddDays(6);
             DateTime from = DateTime.Today.AddDays(7);
 
-            var compraDTO = new CompraBocadilloDetailDTO(0,DateTime.Today,3,_nombre, _apellido1, _apellido2,1,new Tarjeta(),
-                new List<CompraBocadilloItemDTO>()
-                { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 1) });
+            var compraDTO = new CompraBocadilloForCreateDTO
+            {
+                NombreCliente = _nombre,
+                Apellido1_cliente = _apellido1,
+                Apellido2_cliente = _apellido2,
+                MetodoPagoId = 0,
+                BocadillosComprados = new List<CompraBocadilloItemDTO> {
+        new CompraBocadilloItemDTO {
+            Nombre = _bocadillo1Nombre,
+            Cantidad = 1
+        }
+    }
+            };
 
-            var expectedCompraDetailDTO = new CompraBocadilloDetailDTO(2, DateTime.Today, 3, _nombre, _apellido1, _apellido2, 1, new Tarjeta(),
+            var expectedCompraDetailDTO = new CompraBocadilloDetailDTO(2, DateTime.Today, 3, _nombre, _apellido1, _apellido2, 1, 0,
                 new List<CompraBocadilloItemDTO>()
                 { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 1) });
 
