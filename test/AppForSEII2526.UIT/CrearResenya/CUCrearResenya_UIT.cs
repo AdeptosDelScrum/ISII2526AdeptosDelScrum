@@ -21,13 +21,13 @@ namespace AppForSEII2526.UIT.CrearResenya
         private const string tipoPan2 = "sandwich";
         private const string tamanyo2 = "Normal";
         private const string nombreU = "Pedro";
-        private const string nombreC = "Pedro";
-        private const string apellido1C = "Pascal";
-        private const string apellido2C = "No se";
         private const string title = "Mi primera reseña";
         private const string descripcion = "Me gustaría que tuviera más lechuga";
         private const string rate = "5";
         private const string puntuacion = "10";
+        private const string nombreC = "Pedro";
+        private const string apellido1C = "Pascal";
+        private const string apellido2C = "No se";
 
 
 
@@ -50,7 +50,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         [InlineData(bocadilloNombre1, tipoPan1, bocadilloPVP1, tamanyo1, "Pol", "0")]
         [InlineData(bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "", "10")]
         [Trait("LevelTesting", "Funcional Testing")]
-        public void UC2_FA1_2_filtros(string name, string tipopan, string pvp, string tamanyo,
+        public void UC2_FB_FA1_2_filtros(string name, string tipopan, string pvp, string tamanyo,
             string filtroName, string filtroPVP)
         {
             //Arrange

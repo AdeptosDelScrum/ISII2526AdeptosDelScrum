@@ -38,13 +38,6 @@ namespace AppForSEII2526.UIT.CrearResenya
             return CheckBodyTable(expectedBocadillos, tableOfBocadillosBy);
         }
 
-        public bool CheckMessageError(string errorMessage)
-        {
-            IWebElement actualErrorShown = _driver.FindElement(errorShownBy);
-            _output.WriteLine($"actual Message shown:{actualErrorShown.Text}");
-            return actualErrorShown.Text.Contains(errorMessage);
-        }
-
         public bool CheckNotFound(string NotFoundMessage)
         {
             WaitForBeingVisible(By.Id("notFound"));
