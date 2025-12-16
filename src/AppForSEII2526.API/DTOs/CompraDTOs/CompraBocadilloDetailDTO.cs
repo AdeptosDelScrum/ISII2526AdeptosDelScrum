@@ -3,42 +3,86 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppForSEII2526.API.DTOs.CompraDTOs
 {
-
-    public class CompraBocadilloDetailDTO : CompraBocadilloForCreateDTO
+    public class CompraBocadilloDetailDTO
     {
-        public CompraBocadilloDetailDTO(int id, DateTime fecha, float precio, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente, int cantidad, int metodoPago, IList<CompraBocadilloItemDTO> bocadillosComprados)
-         : base(nombre_cliente,
-                   apellido1_cliente,
-                   apellido2_cliente,
-                   metodoPago,
-                   bocadillosComprados
-                   )
-        {
-            Id = id;
-            Fecha = fecha;
-            Precio = precio;
-        }
+        public CompraBocadilloDetailDTO() { }
+
+        public CompraBocadilloDetailDTO(
+            int id,
+            DateTime fecha,
+            float precio,
+            string nombreCliente,
+            string apellido1Cliente,
+            string? apellido2Cliente,
+            int metodoPagoId,
+            int cantidadTotal,
+            IList<CompraBocadilloItemDTO> bocadillosComprados)
+                {
+                    Id = id;
+                    Fecha = fecha;
+                    Precio = precio;
+                    NombreCliente = nombreCliente;
+                    Apellido1_cliente = apellido1Cliente;
+                    Apellido2_cliente = apellido2Cliente;
+                    
+                    MetodoPagoId = metodoPagoId;
+                    CantidadTotal = cantidadTotal;
+                    BocadillosComprados = bocadillosComprados;
+                }
+
+
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
         public float Precio { get; set; }
 
-        public override bool Equals(object? obj) => Equals(obj as CompraBocadilloDetailDTO);
+        public string NombreCliente { get; set; }
+        public string Apellido1_cliente { get; set; }
+        public string? Apellido2_cliente { get; set; }
+
+        public int MetodoPagoId { get; set; }
+        public int CantidadTotal { get; set; }
+
+        public IList<CompraBocadilloItemDTO> BocadillosComprados { get; set; }
+            = new List<CompraBocadilloItemDTO>();
+
+        public override bool Equals(object? obj)
+    => Equals(obj as CompraBocadilloDetailDTO);
 
         public bool Equals(CompraBocadilloDetailDTO? other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            
-            if (!base.Equals(other)) return false;
-
-            
             return Id == other.Id
                 && Fecha.Date == other.Fecha.Date
-                && Precio == other.Precio;
+                && Precio == other.Precio
+                && NombreCliente == other.NombreCliente
+                && Apellido1_cliente == other.Apellido1_cliente
+                && Apellido2_cliente == other.Apellido2_cliente
+                && MetodoPagoId == other.MetodoPagoId
+                && CantidadTotal == other.CantidadTotal
+                && BocadillosComprados.SequenceEqual(other.BocadillosComprados);
         }
 
+
         public override int GetHashCode()
-            => HashCode.Combine(base.GetHashCode(), Id, Fecha, Precio);
+        {
+            var hash = new HashCode();
+
+            hash.Add(Id);
+            hash.Add(Fecha.Date);
+            hash.Add(Precio);
+            hash.Add(NombreCliente);
+            hash.Add(Apellido1_cliente);
+            hash.Add(Apellido2_cliente);
+            hash.Add(MetodoPagoId);
+            hash.Add(CantidadTotal);
+
+            foreach (var item in BocadillosComprados)
+                hash.Add(item);
+
+            return hash.ToHashCode();
+        }
+
     }
 }

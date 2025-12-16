@@ -47,13 +47,25 @@ namespace AppForSEII2526.UT.ComprasController_test
 
 
             var tarjeta = new Tarjeta();
-            tarjeta.Id = 0;
             _context.MetodoPago.Add(tarjeta);
 
-            var compra = new Compra(_nombre,_apellido1, _apellido2, user, DateTime.Today, 1, tarjeta,new List<CompraBocadillo>());
-            compra.BocadillosComprados.Add(new CompraBocadillo(bocadillos[0], 1, compra));
+            var compra = new Compra(
+                _nombre,
+                _apellido1,
+                _apellido2,
+                user,
+                DateTime.Today,
+                0,              
+                tarjeta,
+                new List<CompraBocadillo>()
+            );
 
-            
+            compra.BocadillosComprados.Add(
+                new CompraBocadillo(bocadillos[0], 1, compra)
+            );
+
+            compra.nBocadillos = compra.BocadillosComprados.Sum(cb => cb.Cantidad);
+
             _context.ApplicationUser.Add(user);
             _context.AddRange(tiposPan);
             _context.AddRange(bocadillos);
@@ -157,7 +169,7 @@ namespace AppForSEII2526.UT.ComprasController_test
     }
             };
 
-            var expectedCompraDetailDTO = new CompraBocadilloDetailDTO(2, DateTime.Today, 3, _nombre, _apellido1, _apellido2, 1, 0,
+            var expectedCompraDetailDTO = new CompraBocadilloDetailDTO(2, DateTime.Today, 3, _nombre, _apellido1, _apellido2, 0 , 1,
                 new List<CompraBocadilloItemDTO>()
                 { new CompraBocadilloItemDTO(_bocadillo1Nombre, 3, _bocadillo1tipoPan, 1) });
 

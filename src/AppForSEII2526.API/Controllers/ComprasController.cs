@@ -22,7 +22,7 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(CompraBocadilloForCreateDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CompraBocadilloDetailDTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> GetCompra(int id)
         {
@@ -35,27 +35,26 @@ namespace AppForSEII2526.API.Controllers
             var compra = await _context.Compra
         .Where(c => c.CompraId == id)
         .Select(c => new CompraBocadilloDetailDTO(
-            c.CompraId,
-            c.FechaCompra,
-            
-            c.BocadillosComprados
-                .Sum(ci => ci.Bocadillo.PVP * ci.Cantidad),
-            c.User.NombreCliente,
-            c.User.Apellido1_Cliente,
-            c.User.Apellido2_Cliente,
-            c.BocadillosComprados.Sum(ci => ci.Cantidad),
-            c.MetodoPago.Id,
-            c.BocadillosComprados
-                .Select(ci => new CompraBocadilloItemDTO(
-                    ci.Bocadillo.Nombre,            
-                    ci.Bocadillo.PVP,               
-                    ci.Bocadillo.TipoPan.Nombre,    
+    c.CompraId,
+    c.FechaCompra,
+    c.BocadillosComprados.Sum(ci => ci.Bocadillo.PVP * ci.Cantidad),
+    c.User.NombreCliente,
+    c.User.Apellido1_Cliente,
+    c.User.Apellido2_Cliente,
 
-                    ci.Cantidad                     
+    c.MetodoPago.Id,                               
+    c.BocadillosComprados.Sum(ci => ci.Cantidad), 
 
-                ))
-                .ToList()
+    c.BocadillosComprados
+        .Select(ci => new CompraBocadilloItemDTO(
+            ci.Bocadillo.Nombre,
+            ci.Bocadillo.PVP,
+            ci.Bocadillo.TipoPan.Nombre,
+            ci.Cantidad
         ))
+        .ToList()
+)
+)
         .FirstOrDefaultAsync();
 
 
@@ -73,7 +72,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(CompraBocadilloDetailDTO), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
-        public async Task<ActionResult<CompraBocadilloDetailDTO>> CrearCompra(CompraBocadilloForCreateDTO compraForCreate)
+        public async Task<ActionResult> CrearCompra(CompraBocadilloForCreateDTO compraForCreate)
         {
             if (compraForCreate.NombreCliente.IsNullOrEmpty())
                 ModelState.AddModelError("NombreCliente", "El cliente debe ingrsar su nombre");
@@ -246,6 +245,7 @@ namespace AppForSEII2526.API.Controllers
                     Cantidad = cb.Cantidad
                 })
                 .ToList();
+            var cantidadTotal = compra.BocadillosComprados.Sum(cb => cb.Cantidad);
 
             var compraDetail = new CompraBocadilloDetailDTO(
                 compra.CompraId,
@@ -254,10 +254,10 @@ namespace AppForSEII2526.API.Controllers
                 compra.User.NombreCliente,
                 compra.User.Apellido1_Cliente,
                 compra.User.Apellido2_Cliente,
-                compra.nBocadillos,
                 compra.MetodoPago.Id,
+                cantidadTotal,
                 bocadillosDto
-            );
+                        );
 
             return CreatedAtAction("GetCompra", new { id = compra.CompraId }, compraDetail);
         }
