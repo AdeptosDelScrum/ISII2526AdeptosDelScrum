@@ -20,7 +20,7 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof (IList<Bocadillo>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof (IList<BocadilloDTO>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> GetBocadillosParaCompra(Tamanyo? TamanyoBocadillo, string?TipoPanBocadillo)
         {
 
@@ -32,7 +32,7 @@ namespace AppForSEII2526.API.Controllers
                 //return BadRequest("No se ha encontrado ese tipo de pan");
             }
 
-            IList<BocadilloDTO> bocadillos = await _context.Bocadillo
+            var bocadillos = await _context.Bocadillo
             .Where(b =>
                 (TipoPanBocadillo == null || b.TipoPan.Nombre.Contains(TipoPanBocadillo)) &&
                 (TamanyoBocadillo == null || b.TamanyoBocadillo == TamanyoBocadillo)
