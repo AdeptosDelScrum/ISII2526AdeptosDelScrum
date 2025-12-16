@@ -2,7 +2,7 @@
 
 @using AppForSEII2526.Web.API
 @inject AppForSEII2526APIClient apiclient
-@inject ILogger<BonosCompraDetails> logger
+@inject ILogger<DetailsBonoBocadillo> logger
 @inject NavigationManager navigation
 
 <h3>Detalles de la compra</h3>
@@ -26,7 +26,7 @@
                             <tr>
                                 <th>CompraId</th>
                                 <th>Cliente</th>
-                                <th>Método de pago</th>
+                                <th>Metodo de pago</th>
                                 <th>Fecha</th>
                                 <th>Total</th>
                             </tr>
@@ -74,13 +74,13 @@
 </div>
 
 @code {
-    // query: /bonos/compra/details?id=123
     [Parameter]
     [SupplyParameterFromQuery]
     public long Id { get; set; }
 
     private string errors = "";
     private bool HideErrors => string.IsNullOrEmpty(errors);
+
     private CompraDetailsDTO? compra;
 
     protected override async Task OnInitializedAsync()
@@ -93,7 +93,6 @@
         if (Id <= 0)
         {
             errors = "Debes indicar un id de compra valido en la query (?id=...).";
-            StateHasChanged();
             return;
         }
 
@@ -112,7 +111,5 @@
             logger.LogError(ex, "Error inesperado");
             errors = "Error inesperado. Revisa consola/servidor.";
         }
-
-        StateHasChanged();
     }
 }
