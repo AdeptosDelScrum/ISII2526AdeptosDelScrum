@@ -85,7 +85,7 @@
                         <td>
                             <button type="button"
                                     class="btn btn-outline-secondary"
-                                    @onclick="@(() => RemoveLinea(it.BonoId))">
+                                    @onclick="() => RemoveLinea(it.BonoId)">
                                 Quitar
                             </button>
                         </td>
@@ -121,8 +121,8 @@
                     <p>Quieres crear la compra con @compra.Items.Count linea(s)?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="@(() => OnDialogClose(false))">Cancelar</button>
-                    <button type="button" class="btn btn-primary" @onclick="@(() => OnDialogClose(true))">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" @onclick="async () => await OnDialogClose(false)">Cancelar</button>
+                    <button type="button" class="btn btn-primary" @onclick="async () => await OnDialogClose(true)">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -141,7 +141,8 @@
     private string messageError = "";
     private bool DialogIsOpen;
 
-    private int nuevoBonoId;
+    // BonoId del DTO es long -> aqui tambien
+    private long nuevoBonoId;
     private int nuevaCantidad = 1;
 
     private void OpenDialog()
@@ -157,6 +158,7 @@
         if (compra.Items == null || compra.Items.Count == 0)
         {
             messageError = "Debes agregar al menos una linea (BonoId + Cantidad).";
+            StateHasChanged();
             return;
         }
 
@@ -181,6 +183,8 @@
             logger.LogError(ex, "Error inesperado");
             messageError = "Error inesperado. Revisa consola/servidor.";
         }
+
+        StateHasChanged();
     }
 
     private void AddLinea()
@@ -188,11 +192,13 @@
         if (nuevoBonoId <= 0)
         {
             messageError = "BonoId debe ser > 0.";
+            StateHasChanged();
             return;
         }
         if (nuevaCantidad <= 0)
         {
             messageError = "Cantidad debe ser > 0.";
+            StateHasChanged();
             return;
         }
 
@@ -205,17 +211,22 @@
             compra.Items.Add(new CrearCompraItemDTO { BonoId = nuevoBonoId, Cantidad = nuevaCantidad });
 
         nuevaCantidad = 1;
+        StateHasChanged();
     }
 
-    private void RemoveLinea(int bonoId)
+    private void RemoveLinea(long bonoId)
     {
         var it = compra.Items.FirstOrDefault(x => x.BonoId == bonoId);
         if (it != null) compra.Items.Remove(it);
+        StateHasChanged();
     }
 
     private void IrASeleccionBonos()
     {
         navigation.NavigateTo("/bonos/select");
     }
+
+    // Para que exista el tipo del logger
+    private sealed class PostBonoBocadillos { }
 }
 
