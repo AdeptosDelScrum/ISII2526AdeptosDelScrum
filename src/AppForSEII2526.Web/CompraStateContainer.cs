@@ -42,7 +42,7 @@ namespace AppForSEII2526.Web
                 }
 
                 NotifyStateChanged();
-        }
+            }
 
             //to delete movies from the list of selected movies
             public void RemoveItemParaCompra(CompraBocadilloItemDTO item)

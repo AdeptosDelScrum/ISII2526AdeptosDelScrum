@@ -71,22 +71,23 @@
             Modificar Bocadillos
         </button>
     </p>
+    
     <div class="mh-100 table-responsive">
-    <table class="table table-condensed table-hover" id="TableOfRentalItems">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Tipo de Pan</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-            </tr>
-        </thead>
-        <tbody>
+        <table class="table table-condensed table-hover" id="TableOfRentalItems">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo de Pan</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach (var item in compra.BocadillosComprados)
             {
                 <tr id="BocadillosData_@item.Nombre">
-                    <td>@item.Nombre</td>
-                    <td>@item.TipoPan</td>
+                        <td>@item.Nombre</td>
+                        <td>@item.TipoPan</td>
                     <td>@item.Precio €</td>
                     <td style="width:120px">
                             <InputNumber TValue="int"
@@ -94,11 +95,11 @@
                                          @bind-Value="item.Cantidad"
                                          min="1" />
                     </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </EditForm>
 
 @*a modal popup dialog for checking if user wants to proceed to rent*@
@@ -122,7 +123,7 @@
     {
         get
         {
-
+    
             double price = compra.BocadillosComprados.Sum(ci => ci.Precio * ci.Cantidad);
             return Convert.ToDecimal(price);
         }
@@ -151,7 +152,7 @@
                 {
                     {
                         var compraCreada = await apiclient.CrearCompraAsync(compraState.Compra);
-                        compraState.RentalProcessed();
+                    compraState.RentalProcessed();
                         navigation.NavigateTo($"/Compra/DetalleCompra/?CompraId={compraCreada.Id}");
                     }
                 }
