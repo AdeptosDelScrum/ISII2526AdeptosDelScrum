@@ -3,7 +3,7 @@ namespace AppForSEII2526.API.DTOs
 {
     public class ResenyaDTO
     {
-        public ResenyaDTO(int id, string name, string title, string description, int rate, IList<LineasResenyaDTO> lineas, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente)
+        public ResenyaDTO(int id, string? name, string title, string description, int rate, IList<LineasResenyaDTO> lineas, string nombre_cliente, string apellido1_cliente, string? apellido2_cliente)
         {
             Id = id;
             Name = name;
@@ -21,7 +21,7 @@ namespace AppForSEII2526.API.DTOs
 
         public string Apellido1_cliente { get; set; }
         public string? Apellido2_cliente { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int Rate { get; set; }

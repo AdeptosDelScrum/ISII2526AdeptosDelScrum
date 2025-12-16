@@ -1,0 +1,97 @@
+@page "/bonos/select"
+
+@using AppForSEII2526.Web.API
+
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectBonoBocadillo> logger
+
+<h3>Bonos disponibles</h3>
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@string.IsNullOrEmpty(errors)">
+        <p>@errors</p>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col">
+            <label class="form-label">Tipo</label>
+            <input class="form-control" @bind="tipo" placeholder="normal" />
+        </div>
+        <div class="col">
+            <label class="form-label">Search (nombre)</label>
+            <input class="form-control" @bind="search" placeholder="Mixto" />
+        </div>
+        <div class="col-auto align-self-end">
+            <button class="btn btn-primary" @onclick="SearchBonos" id="BuscarBonos">Buscar</button>
+        </div>
+    </div>
+
+    @if (bonos is null)
+    {
+        <p>Cargando...</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover" id="TableOfBonos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>NBocadillos</th>
+                        <th>PVP</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in bonos)
+                    {
+                        <tr id="Bono_@b.BonoId">
+                            <td>@b.Nombre</td>
+                            <td>@b.NombreTipo</td>
+                            <td>@b.NBocadillos</td>
+                            <td>@b.Pvp</td>
+                            <td>@b.CantidadDisponible</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private ICollection<BonoBocadilloDTO>? bonos;
+
+    private string? tipo;
+    private string? search;
+    private string errors = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchBonos();
+    }
+
+    private async Task SearchBonos()
+    {
+        try
+        {
+            // OJO: el nombre del metodo en el cliente generado suele ser EXACTAMENTE este
+            // porque tu action se llama GetBonosDisponiblesSelect
+            bonos = await apiclient.GetBonosDisponiblesSelectAsync(tipo, search);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Error llamando a GetBonosDisponiblesSelect");
+            errors = "Error llamando a la API";
+            bonos = new List<BonoBocadilloDTO>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error inesperado");
+            errors = "Error inesperado";
+            bonos = new List<BonoBocadilloDTO>();
+        }
+    }
+}

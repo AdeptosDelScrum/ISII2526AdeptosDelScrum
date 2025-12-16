@@ -66,6 +66,11 @@ builder.Services.AddSwaggerGen(options => {
 
 });
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 
 var app = builder.Build();
 

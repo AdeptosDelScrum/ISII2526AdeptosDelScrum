@@ -81,7 +81,7 @@
     </p>
 
     <div class="mh-100 table-responsive">
-        <table class="table table-condensed table-hover" id="TableOfRentalItems">
+        <table class="table table-condensed table-hover" id="TableOfBocadillos">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -138,8 +138,6 @@
                 {
                     var resenyado = await apiclient.PostResenyaAsync(resenya);
                     resenyaState.ResenyaProcessed();
-                    Console.WriteLine("ID DEL CREATE");
-                    Console.WriteLine(resenyado.Id);
                     navigation.NavigateTo($"/resenyas/detailsresenya/?Id={resenyado.Id}");
                 }
                 catch (ApiException<ValidationProblemDetails> apiexceptionvalidation)
