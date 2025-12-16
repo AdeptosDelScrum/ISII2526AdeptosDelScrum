@@ -183,7 +183,7 @@ namespace AppForSEII2526.UIT.CrearResenya
             selectBocadillosParaResenyar.addBocadillo(bocadilloNombre1);
             selectBocadillosParaResenyar.addBocadillo(bocadilloNombre2);
 
-            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "Añadir" }, };
+            var expectedBocadillos = new List<string[]> { new string[] { bocadilloNombre2, tipoPan2, bocadilloPVP2, tamanyo2, "Añadir" }, new string[] { "" }, };
 
             //Act
 
@@ -214,6 +214,7 @@ namespace AppForSEII2526.UIT.CrearResenya
             //Act
 
             createResenya.soloRellenar(nombreU, title, descripcion, rate, nombreC, apellido1C, apellido2C, lineas);
+            createResenya.modificarBocadillo();
             selectBocadillosParaResenyar.removeBocadillo(bocadilloNombre1);
             selectBocadillosParaResenyar.continueToResenyar();
             

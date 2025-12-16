@@ -59,6 +59,7 @@ namespace AppForSEII2526.UIT.CrearResenya
             By removeButtonBy = By.Id("removeBocadillo_" + name);
             WaitForBeingClickable(removeButtonBy);
             _driver.FindElement(removeButtonBy).Click();
+            ImplicitWait(2);
         }
 
         public void continueToResenyar()
@@ -70,7 +71,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         public bool checkHideCart()
         {
             IWebElement boton = _driver.FindElement(continueButtonBy);
-            return boton.Displayed;
+            return !boton.Displayed;
         }
 
     }

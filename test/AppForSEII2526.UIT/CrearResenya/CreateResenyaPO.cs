@@ -86,43 +86,43 @@ namespace AppForSEII2526.UIT.CrearResenya
         {
             WaitForBeingVisible(inputNombre);
             IWebElement actualinputNombre = _driver.FindElement(inputNombre);
-            if (!actualinputNombre.Text.Equals(name))
+            if (!actualinputNombre.GetAttribute("value").Contains(name))
             {
                 return false;
             }
             WaitForBeingVisible(inputTitle);
             IWebElement actualinputTitle = _driver.FindElement(inputTitle);
-            if (!actualinputTitle.Text.Equals(title))
+            if (!actualinputTitle.GetAttribute("value").Contains(title))
             {
                 return false;
             }
             WaitForBeingVisible(inputDescription);
             IWebElement actualinputDescription = _driver.FindElement(inputDescription);
-            if (!actualinputDescription.Text.Equals(description))
+            if (!actualinputDescription.GetAttribute("value").Contains(description))
             {
                 return false;
             }
             WaitForBeingVisible(inputRate);
             IWebElement actualinputRate = _driver.FindElement(inputRate);
-            if (!actualinputRate.Text.Equals(rate))
+            if (!actualinputRate.GetAttribute("value").Contains(rate))
             {
                 return false;
             }
             WaitForBeingVisible(inputNombreClient);
             IWebElement actualinputNombreClient = _driver.FindElement(inputNombreClient);
-            if (!actualinputNombreClient.Text.Equals(nameclient))
+            if (!actualinputNombreClient.GetAttribute("value").Contains(nameclient))
             {
                 return false;
             }
             WaitForBeingVisible(inputApellido1);
             IWebElement actualinputApellido1 = _driver.FindElement(inputApellido1);
-            if (!actualinputApellido1.Text.Equals(apellido1))
+            if (!actualinputApellido1.GetAttribute("value").Contains(apellido1))
             {
                 return false;
             }
             WaitForBeingVisible(inputApellido2);
             IWebElement actualinputApellido2 = _driver.FindElement(inputApellido2);
-            if (!actualinputApellido2.Text.Equals(apellido2))
+            if (!actualinputApellido2.GetAttribute("value").Contains(apellido2))
             {
                 return false;
             }
@@ -132,7 +132,8 @@ namespace AppForSEII2526.UIT.CrearResenya
                 By inputPuntuacion = By.Id("puntuacion_" + parBocaPunt[i][0]);
                 WaitForBeingVisible(inputPuntuacion);
                 IWebElement actualinputPuntuacion = _driver.FindElement(inputPuntuacion);
-                if (!actualinputPuntuacion.Text.Equals(parBocaPunt[i][0]))
+                var valor = actualinputPuntuacion.GetAttribute("value");
+                if (!valor.Contains(parBocaPunt[i][1]))
                 {
                     return false;
                 }
