@@ -87,9 +87,9 @@ namespace AppForSEII2526.UT.ResenyasController_test
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
                 new object[] { resenyaSinTíitulo, "La reseña tiene que tener un título",  },
-                new object[] { resenyaSinDescripcion, "Error!, la descripción debe empezar por me gustaría que", },
-                new object[] { resenyaSinBocadillos, "No se puede crear una reseña sin bocadillos", },
-                new object[] { resenyaRateNoValido, "La valoracuón general tiene que ser entre 1 y 5 estrellas", },
+                new object[] { resenyaSinDescripcion, "La descripción debe empezar por me gustaría que", },
+                new object[] { resenyaSinBocadillos, "No se puede hacer una reseña sin líneas.", },
+                new object[] { resenyaRateNoValido, "La valoración general tiene que ser entre 1 y 5 estrellas", },
                 new object[] { resenyaBocadilloNoExiste, "Uno de los bocadillos introducidos para reseñar no existe", },
                 new object[] { resenyaPuntBocadilloNoValida, "La puntuación debe ser un valor numérico entre 0 y 10", },
                 new object[] { resenyaNombreClienteNoExiste, "Tienes que iniciar sesión para hacer una reseña", },
@@ -116,12 +116,15 @@ namespace AppForSEII2526.UT.ResenyasController_test
             //Assert
             //we check that the response type is BadRequest and obtain the error returned
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            var problemDetails = Assert.IsType<String>(badRequestResult.Value);
+            var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
 
             var errorActual = problemDetails;
 
             //we check that the expected error message and actual are the same
-            Assert.StartsWith(errorExpected, errorActual);
+            var allErrors = problemDetails.Errors
+                                   .SelectMany(e => e.Value);
+
+            Assert.Contains(allErrors, e => e.StartsWith(errorExpected));
 
         }
 
