@@ -6,8 +6,10 @@ namespace AppForSEII2526.Web
         {
 
             //we create an instance of Rental when an instance of RentalStateContainer is created
-            public CompraBocadilloForCreateDTO Compra { get; private set; } = new CompraBocadilloForCreateDTO()
+            public CompraBocadilloForCreateDTO Compra { get; private set; }
+                = new CompraBocadilloForCreateDTO
             {
+                MetodoPagoId = -1,
                 BocadillosComprados = new List<CompraBocadilloItemDTO>()
             };
 

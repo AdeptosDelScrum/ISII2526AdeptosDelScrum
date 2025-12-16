@@ -1,0 +1,99 @@
+﻿@page "/Compra/DetailsCompra"
+
+@inject NavigationManager navigation
+@using AppForSEII2526.Web.Components.Shared
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<CreateCompra> logger
+@inject CompraStateContainer compraState
+
+
+
+@if (compra == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Nombre y Apellidos</th>
+            <td id="NombreApellidos">@compra.NombreCliente @compra.Apellido1_cliente @compra.Apellido2_cliente</td>
+        </tr>
+        <tr>
+            <th>Método de Pago</th>
+            <td id="MetodoPago">@MetodoPagoTexto(compra.MetodoPagoId)</td>
+        </tr>
+        <tr>
+            <th>Fecha de Compra</th>
+            <td id="RentalDate">@compra.Fecha.ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+
+    <h4>Bocadillos Comprados</h4>
+
+    <table class="table" id="BocadillosComprados">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Tipo de Pan</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (CompraBocadilloItemDTO item in compra.BocadillosComprados)
+            {
+                <tr id="ItemCompra_@item.Nombre">
+                    <td>@item.Nombre</td>
+                    <td>@item.TipoPan</td>
+                    <td>@item.Cantidad</td>
+                    <td>@item.Precio €</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            @*colspan is used to state that TWO columns are collapsed*@
+        <th scope="row" colspan="2" class="text-end">Precio Total</th>
+        <td id="TotalPrice">@compra.Precio €</td>
+        </tfoot>
+
+    </table>
+
+}
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int CompraId { get; set; }
+
+    private CompraBocadilloDetailDTO compra;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            compra = await apiclient.GetCompraAsync(CompraId);
+        }
+        catch (ApiException)
+        {
+            compra = null;
+        }
+
+        if (compra == null)
+        {
+            error = $"Error! No existe una compra con id={CompraId}";
+        }
+    }
+
+    private string MetodoPagoTexto(int metodoPagoId)
+    {
+        return metodoPagoId switch
+        {
+            1 => "Tarjeta",
+            2 => "PayPal",
+            3 => "GPay"
+        };
+    }
+}

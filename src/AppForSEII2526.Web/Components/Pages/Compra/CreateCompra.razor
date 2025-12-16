@@ -47,7 +47,7 @@
                 <InputSelect class="form-select"
                              id="MetodoPago"
                              @bind-Value="compra.MetodoPagoId">
-                    <option value="0">Seleccione un método</option>
+                    <option value="-1">Seleccione un método</option>
                     <option value="1">Tarjeta</option>
                     <option value="2">PayPal</option>
                     <option value="3">GPay</option>
@@ -93,7 +93,7 @@
                             <InputNumber TValue="int"
                                          class="form-control"
                                          @bind-Value="item.Cantidad"
-                                         min="1" />
+                                         min="0" />
                     </td>
                     </tr>
                 }
@@ -153,7 +153,7 @@
                     {
                         var compraCreada = await apiclient.CrearCompraAsync(compraState.Compra);
                     compraState.RentalProcessed();
-                        navigation.NavigateTo($"/Compra/DetalleCompra/?CompraId={compraCreada.Id}");
+                        navigation.NavigateTo($"/Compra/DetailsCompra/?CompraId={compraCreada.Id}");
                     }
                 }
                 catch (ApiException<ValidationProblemDetails> apiexceptionvalidation)
