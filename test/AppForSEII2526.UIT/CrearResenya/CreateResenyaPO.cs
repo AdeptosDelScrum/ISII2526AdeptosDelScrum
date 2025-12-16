@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Sdk;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppForSEII2526.UIT.CrearResenya
@@ -20,6 +21,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
         private By okButtonBy = By.Id("Button_DialogOK");
         private By modificarButtonBy = By.Id("ModifyBocadillos");
+        private By errorShownBy = By.Id("ErrorsShown");
 
 
 
@@ -64,6 +66,13 @@ namespace AppForSEII2526.UIT.CrearResenya
         public void modificarBocadillo()
         {
             _driver.FindElement(modificarButtonBy).Click();
+        }
+
+        public bool checkErrors(string errorMessage)
+        {
+            IWebElement actualErrorShown = _driver.FindElement(errorShownBy);
+            _output.WriteLine($"actual Message shown:{actualErrorShown.Text}");
+            return actualErrorShown.Text.Contains(errorMessage);
         }
 
     }
