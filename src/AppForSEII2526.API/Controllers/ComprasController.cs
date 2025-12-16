@@ -72,7 +72,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(CompraBocadilloDetailDTO), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
-        public async Task<ActionResult<CompraBocadilloDetailDTO>> CrearCompra(CompraBocadilloForCreateDTO compraForCreate)
+        public async Task<ActionResult> CrearCompra(CompraBocadilloForCreateDTO compraForCreate)
         {
             if (compraForCreate.NombreCliente.IsNullOrEmpty())
                 ModelState.AddModelError("NombreCliente", "El cliente debe ingrsar su nombre");
