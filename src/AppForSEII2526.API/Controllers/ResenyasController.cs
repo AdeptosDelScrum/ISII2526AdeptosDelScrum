@@ -49,7 +49,10 @@ namespace AppForSEII2526.API.Controllers
 
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.Nombre_cliente);
             if (user == null)
-                return BadRequest("Tienes que iniciar sesión para hacer una reseña");
+            {
+                ModelState.AddModelError("Rate", "Tienes que iniciar sesión para hacer una reseña");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
 
             var resenyaObj = new Resenya(user.NombreCliente, user.Apellido1_Cliente,user.Apellido2_Cliente, user);
             resenyaObj.descripcion = resenya.Description;
@@ -83,7 +86,8 @@ namespace AppForSEII2526.API.Controllers
             {
                 var bocadillo = bocadillos.FirstOrDefault(b => b.Nombre==linea.bocadillo.Name);
                 if (bocadillo == null) {
-                    return BadRequest("Uno de los bocadillos introducidos para reseñar no existe");
+                    ModelState.AddModelError("Rate", "Uno de los bocadillos introducidos para reseñar no existe");
+                    return BadRequest(new ValidationProblemDetails(ModelState));
                 }
                 if (linea.Puntuacion > 10 || linea.Puntuacion < 0) {
                     ModelState.AddModelError("Rate", "La puntuación debe ser un valor numérico entre 0 y 10");
