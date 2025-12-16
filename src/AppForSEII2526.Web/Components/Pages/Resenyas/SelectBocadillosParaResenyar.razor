@@ -121,7 +121,7 @@
         {
             if (bocadilloPVP == 0)
             {
-                bocadillos = await apiclient.GetBocadillosParaResenyaAsync("", float.MaxValue);
+                bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, float.MaxValue);
             }
             else
             {

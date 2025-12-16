@@ -13,8 +13,9 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By inputpvp = By.Id("inputPVP");
         private By buscar = By.Id("searchBocadillo");
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
-        By errorShownBy = By.Id("ErrorsShown");
-        By messageShownBy = By.Id("notFound");
+        private By errorShownBy = By.Id("ErrorsShown");
+        private By messageShownBy = By.Id("notFound");
+        private By continueButtonBy = By.Id("ResenyarBocadilloButton");
         public SelectBocadillosParaResenyarPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
         {
         }
@@ -46,9 +47,30 @@ namespace AppForSEII2526.UIT.CrearResenya
 
         public bool CheckNotFound(string NotFoundMessage)
         {
+            WaitForBeingVisible(By.Id("notFound"));
             IWebElement actualMessageShown = _driver.FindElement(messageShownBy);
             _output.WriteLine($"actual Message shown:{actualMessageShown.Text}");
             return actualMessageShown.Text.Contains(NotFoundMessage);
+        }
+
+        public void addBocadillo(string name)
+        {
+            By addButtonBy = By.Id("bocadilloParaResenyar_" + name);
+            WaitForBeingClickable(addButtonBy);
+            _driver.FindElement(addButtonBy).Click();
+        }
+
+        public void removeBocadillo(string name)
+        {
+            By removeButtonBy = By.Id("removeBocadillo_" + name);
+            WaitForBeingClickable(removeButtonBy);
+            _driver.FindElement(removeButtonBy).Click();
+        }
+
+        public void continueToResenyar()
+        {
+            WaitForBeingClickable(continueButtonBy);
+            _driver.FindElement(continueButtonBy).Click();
         }
 
     }

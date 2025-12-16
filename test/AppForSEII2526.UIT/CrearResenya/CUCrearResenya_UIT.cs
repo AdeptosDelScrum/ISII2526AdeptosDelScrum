@@ -52,7 +52,7 @@ namespace AppForSEII2526.UIT.CrearResenya
 
         }
 
-        [Fact(Skip = "Ejecutar ")]
+        [Fact]
         [Trait("LevelTesting", "Funcional Testing")]
         public void UC2_FB_2_Bocadillos()
         {
@@ -79,10 +79,12 @@ namespace AppForSEII2526.UIT.CrearResenya
             //Act
 
             InitialStepsForResenyaBocadillo();
-            selectBocadillosParaResenyar.SearchBocadillos("", "");
+            selectBocadillosParaResenyar.SearchBocadillos("", "1");
 
             //Assert
             Assert.True(selectBocadillosParaResenyar.CheckNotFound("No se ha encontrado ningún bocadillo"), $"No  se ha encontrado ningún bocadillo");
         }
+
+
     }
 }
