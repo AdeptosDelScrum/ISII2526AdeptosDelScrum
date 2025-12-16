@@ -121,8 +121,8 @@
                     <p>Quieres crear la compra con @compra.Items.Count linea(s)?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="async () => await OnDialogClose(false)">Cancelar</button>
-                    <button type="button" class="btn btn-primary" @onclick="async () => await OnDialogClose(true)">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CancelDialog">Cancelar</button>
+                    <button type="button" class="btn btn-primary" @onclick="ConfirmDialog">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -141,13 +141,24 @@
     private string messageError = "";
     private bool DialogIsOpen;
 
-    // BonoId del DTO es long -> aqui tambien
+    // BonoId es long en el DTO
     private long nuevoBonoId;
     private int nuevaCantidad = 1;
 
     private void OpenDialog()
     {
         DialogIsOpen = true;
+    }
+
+    // handlers "seguros" (sin lambdas async en el markup)
+    private void CancelDialog()
+    {
+        DialogIsOpen = false;
+    }
+
+    private async Task ConfirmDialog()
+    {
+        await OnDialogClose(true);
     }
 
     private async Task OnDialogClose(bool isOk)
@@ -225,8 +236,6 @@
     {
         navigation.NavigateTo("/bonos/select");
     }
-
-    // Para que exista el tipo del logger
-    private sealed class PostBonoBocadillos { }
 }
+
 
