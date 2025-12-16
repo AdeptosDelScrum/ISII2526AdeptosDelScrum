@@ -138,8 +138,6 @@
                 {
                     var resenyado = await apiclient.PostResenyaAsync(resenya);
                     resenyaState.ResenyaProcessed();
-                    Console.WriteLine("ID DEL CREATE");
-                    Console.WriteLine(resenyado.Id);
                     navigation.NavigateTo($"/resenyas/detailsresenya/?Id={resenyado.Id}");
                 }
                 catch (ApiException<ValidationProblemDetails> apiexceptionvalidation)

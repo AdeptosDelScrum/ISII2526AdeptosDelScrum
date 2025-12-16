@@ -21,8 +21,8 @@ namespace AppForSEII2526.API.Controllers
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(DetailsResenyaDTO), (int)HttpStatusCode.Created)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> PostResenya(ResenyaDTO resenya)
         {
 

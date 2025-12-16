@@ -11,7 +11,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By tableOfResenya0By = By.Id("Tablederesenya0");
         private By tableOfResenya1By = By.Id("Tablederesenya1");
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
-        protected DetailsResenyaPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
+        public DetailsResenyaPO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
         {
         }
 

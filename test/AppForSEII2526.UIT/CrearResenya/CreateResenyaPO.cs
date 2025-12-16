@@ -16,7 +16,6 @@ namespace AppForSEII2526.UIT.CrearResenya
         private By inputNombreClient = By.Id("NameClient");
         private By inputApellido1 = By.Id("Apellido1");
         private By inputApellido2 = By.Id("Apellido2");
-        private By inputPuntuacion = By.Id("puntuacion_Focata");
         private By resenyarButton = By.Id("Submit");
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
         private By okButtonBy = By.Id("Button_DialogOK");
@@ -28,7 +27,7 @@ namespace AppForSEII2526.UIT.CrearResenya
         {
         }
 
-        public void resenyar(string name, string title, string description, string rate, string nameclient, string apellido1, string apellido2, string puntuacion)
+        public void resenyar(string name, string title, string description, string rate, string nameclient, string apellido1, string apellido2, List<List<string>> parBocaPunt)
         {
             WaitForBeingClickable(inputNombre);
             _driver.FindElement(inputNombre).SendKeys(name);
@@ -44,17 +43,15 @@ namespace AppForSEII2526.UIT.CrearResenya
             _driver.FindElement(inputApellido1).SendKeys(apellido1);
             WaitForBeingClickable(inputApellido2);
             _driver.FindElement(inputApellido2).SendKeys(apellido2);
-            WaitForBeingClickable(inputPuntuacion);
-            _driver.FindElement(inputPuntuacion).SendKeys(puntuacion);
 
-
-            _driver.FindElement(resenyarButton).Click();
-        }
-
-        public bool CheckListOfBocadillos(List<string[]> expectedBocadillos)
-        {
-
-            return CheckBodyTable(expectedBocadillos, tableOfBocadillosBy);
+            for (int i = 0; i < parBocaPunt.Count; i++)
+            {
+                By inputPuntuacion = By.Id("puntuacion_" + parBocaPunt[i][0]);
+                WaitForBeingClickable(inputPuntuacion);
+                _driver.FindElement(inputPuntuacion).SendKeys(parBocaPunt[i][1]);
+            }
+            
+            createResenya();
         }
 
         public void createResenya()
