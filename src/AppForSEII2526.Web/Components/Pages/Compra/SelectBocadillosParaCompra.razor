@@ -133,8 +133,7 @@
                 ? (Tamanyo?)null
                 : Enum.Parse<Tamanyo>(tamanyoBocadilloSelected);
 
-            bocadillos = await apiclient
-                .GetBocadillosParaCompraAsync(tamanyo, bocadilloTipoPan);
+            bocadillos = await apiclient.GetBocadillosParaCompraAsync(tamanyo, bocadilloTipoPan);
 
         }
         catch (ApiException ex)
