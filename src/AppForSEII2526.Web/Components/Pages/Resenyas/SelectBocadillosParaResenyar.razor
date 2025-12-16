@@ -27,14 +27,14 @@
                     </div>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-primary" @onclick=@SearchBocadillos id="searchMovies">Buscar Bocadillos</button>
+                    <button type="button" class="btn btn-primary" @onclick=@SearchBocadillos id="searchBocadillo">Buscar Bocadillos</button>
                 </div>
             </div>
             <div class="row">
                 <div class="row">
-                    @if (bocadillos == null)
+                    @if (bocadillos == null || bocadillos.Count() == 0)
                     {
-                        <p>Cargando Bocadillos....</p>
+                        <p id="notFound">No se ha encontrado ningún bocadillo</p>
                     }
                     else
                     {
@@ -119,7 +119,15 @@
         }
         try
         {
-            bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
+            if (bocadilloPVP == 0)
+            {
+                bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, float.MaxValue);
+            }
+            else
+            {
+                bocadillos = await apiclient.GetBocadillosParaResenyaAsync(bocadilloNombre, bocadilloPVP);
+            }
+            
             errors = "";
         }
         catch (ApiException ex)

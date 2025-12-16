@@ -21,26 +21,30 @@ namespace AppForSEII2526.API.Controllers
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(DetailsResenyaDTO), (int)HttpStatusCode.Created)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> PostResenya(ResenyaDTO resenya)
         {
-
+            ModelState.Clear();
             if (resenya.Title.IsNullOrEmpty())
             {
-                return BadRequest("La reseña tiene que tener un título");
+                ModelState.AddModelError("Rate", "La reseña tiene que tener un título.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
             }
             if (resenya.Description.IsNullOrEmpty() || !resenya.Description.StartsWith("Me gustaría que"))
             {
-                return BadRequest("Error!, la descripción debe empezar por me gustaría que");
+                ModelState.AddModelError("Rate", "La descripción debe empezar por me gustaría que.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
             }
             if (resenya.Lineas.Count == 0)
             {
-                return BadRequest("No se puede crear una reseña sin bocadillos");
+                ModelState.AddModelError("Rate", "No se puede hacer una reseña sin líneas.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
             }
             if(resenya.Rate < 0 || resenya.Rate > 5)
             {
-                return BadRequest("La valoracuón general tiene que ser entre 1 y 5 estrellas");
+                ModelState.AddModelError("Rate", "La valoración general tiene que ser entre 1 y 5 estrellas.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
             var user = _context.ApplicationUser.FirstOrDefault(au => au.NombreCliente == resenya.Nombre_cliente);
@@ -82,7 +86,8 @@ namespace AppForSEII2526.API.Controllers
                     return BadRequest("Uno de los bocadillos introducidos para reseñar no existe");
                 }
                 if (linea.Puntuacion > 10 || linea.Puntuacion < 0) {
-                    return BadRequest("La puntuación debe ser un valor numérico entre 0 y 10");
+                    ModelState.AddModelError("Rate", "La puntuación debe ser un valor numérico entre 0 y 10");
+                    return BadRequest(new ValidationProblemDetails(ModelState));
                 }
                 var lineaResenyaObj = new ResenyaBocadillo();
                 var detailsLineasDTO = new DetailsLineasResenyaDTO();
