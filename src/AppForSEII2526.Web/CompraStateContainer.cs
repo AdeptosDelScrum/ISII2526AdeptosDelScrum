@@ -28,10 +28,7 @@ namespace AppForSEII2526.Web
 
             public void AddBocadilloParaCompra(BocadilloDTO bocadillo)
             {
-                var item = Compra.BocadillosComprados
-                    .FirstOrDefault(b => b.Nombre == bocadillo.Name);
-
-                if (item == null)
+                if (!Compra.BocadillosComprados.Any(b => b.Nombre == bocadillo.Name))
                 {
                     Compra.BocadillosComprados.Add(
                         new CompraBocadilloItemDTO
@@ -43,10 +40,8 @@ namespace AppForSEII2526.Web
                         }
                     );
                 }
-                else
-                {
-                    item.Cantidad++;
-                }
+
+                NotifyStateChanged();
             }
 
             //to delete movies from the list of selected movies

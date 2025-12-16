@@ -749,6 +749,10 @@
             },
             "nullable": true
           },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "fecha": {
             "type": "string",
             "format": "date-time"
