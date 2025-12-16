@@ -31,7 +31,7 @@ namespace AppForSEII2526.API.Controllers
                 ModelState.AddModelError("Rate", "La reseña tiene que tener un título.");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
-            if (resenya.Description.IsNullOrEmpty())
+            if (resenya.Description.IsNullOrEmpty() || !resenya.Description.StartsWith("Me gustaría que"))
             {
                 ModelState.AddModelError("Rate", "La descripción debe empezar por me gustaría que.");
                 return BadRequest(new ValidationProblemDetails(ModelState));

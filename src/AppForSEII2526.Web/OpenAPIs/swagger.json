@@ -44,7 +44,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Bocadillo"
+                    "$ref": "#/components/schemas/BocadilloDTO"
                   }
                 }
               },
@@ -52,7 +52,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Bocadillo"
+                    "$ref": "#/components/schemas/BocadilloDTO"
                   }
                 }
               },
@@ -60,7 +60,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Bocadillo"
+                    "$ref": "#/components/schemas/BocadilloDTO"
                   }
                 }
               }
@@ -651,129 +651,6 @@
   },
   "components": {
     "schemas": {
-      "ApplicationUser": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedUserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "emailConfirmed": {
-            "type": "boolean"
-          },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "securityStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "twoFactorEnabled": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombreCliente": {
-            "type": "string",
-            "nullable": true
-          },
-          "apellido1_Cliente": {
-            "type": "string",
-            "nullable": true
-          },
-          "apellido2_Cliente": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "Bocadillo": {
-        "required": [
-          "stock"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombre": {
-            "maxLength": 30,
-            "minLength": 0,
-            "pattern": "^[A-Z]+[a-zA-Z''-'\\s]*$",
-            "type": "string",
-            "nullable": true
-          },
-          "pvp": {
-            "type": "number",
-            "format": "currency"
-          },
-          "stock": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tamanyoBocadillo": {
-            "$ref": "#/components/schemas/Tamanyo"
-          },
-          "tipoPan": {
-            "$ref": "#/components/schemas/TipoPan"
-          },
-          "comprasDelBocadillo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompraBocadillo"
-            },
-            "nullable": true
-          },
-          "resenyaBocadillo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResenyaBocadillo"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "BocadilloDTO": {
         "type": "object",
         "properties": {
@@ -846,85 +723,6 @@
         },
         "additionalProperties": false
       },
-      "Compra": {
-        "required": [
-          "metodoPago",
-          "user"
-        ],
-        "type": "object",
-        "properties": {
-          "compraId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "user": {
-            "$ref": "#/components/schemas/ApplicationUser"
-          },
-          "fechaCompra": {
-            "type": "string",
-            "format": "date"
-          },
-          "nBocadillos": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "precioTotal": {
-            "type": "number",
-            "format": "currency"
-          },
-          "metodoPago": {
-            "$ref": "#/components/schemas/MetodoPago"
-          },
-          "bocadillosComprados": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompraBocadillo"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CompraBocadillo": {
-        "type": "object",
-        "properties": {
-          "bocadilloId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "cantidad": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "compraId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombreBocadillo": {
-            "maxLength": 30,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "precio": {
-            "type": "number",
-            "format": "currency"
-          },
-          "tipoPan": {
-            "maxLength": 30,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "bocadillo": {
-            "$ref": "#/components/schemas/Bocadillo"
-          },
-          "compra": {
-            "$ref": "#/components/schemas/Compra"
-          }
-        },
-        "additionalProperties": false
-      },
       "CompraBocadilloDetailDTO": {
         "type": "object",
         "properties": {
@@ -950,6 +748,10 @@
               "$ref": "#/components/schemas/CompraBocadilloItemDTO"
             },
             "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
           },
           "fecha": {
             "type": "string",
@@ -1190,16 +992,6 @@
         },
         "additionalProperties": false
       },
-      "MetodoPago": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -1226,85 +1018,6 @@
           }
         },
         "additionalProperties": { }
-      },
-      "Resenya": {
-        "required": [
-          "descripcion",
-          "resenyaBocadillo",
-          "titulo",
-          "user",
-          "valoracion"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "user": {
-            "$ref": "#/components/schemas/ApplicationUser"
-          },
-          "descripcion": {
-            "maxLength": 150,
-            "minLength": 10,
-            "type": "string"
-          },
-          "fechaPublicacion": {
-            "type": "string",
-            "format": "date"
-          },
-          "nombreUsuario": {
-            "maxLength": 20,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "titulo": {
-            "maxLength": 25,
-            "minLength": 1,
-            "pattern": "^[A-Z]+[a-zA-Z''-'\\s]*$",
-            "type": "string"
-          },
-          "valoracion": {
-            "$ref": "#/components/schemas/rate"
-          },
-          "resenyaBocadillo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResenyaBocadillo"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResenyaBocadillo": {
-        "required": [
-          "puntuacion"
-        ],
-        "type": "object",
-        "properties": {
-          "bocadilloId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "resenyaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "puntuacion": {
-            "maximum": 10,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "resenya": {
-            "$ref": "#/components/schemas/Resenya"
-          },
-          "bocadillo": {
-            "$ref": "#/components/schemas/Bocadillo"
-          }
-        },
-        "additionalProperties": false
       },
       "ResenyaDTO": {
         "type": "object",
@@ -1358,30 +1071,6 @@
         ],
         "type": "string"
       },
-      "TipoPan": {
-        "type": "object",
-        "properties": {
-          "panId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombre": {
-            "maxLength": 30,
-            "minLength": 0,
-            "pattern": "^[A-Z]+[a-zA-Z''-'\\s]*$",
-            "type": "string",
-            "nullable": true
-          },
-          "bocadillos": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Bocadillo"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "ValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -1418,16 +1107,6 @@
           }
         },
         "additionalProperties": { }
-      },
-      "rate": {
-        "enum": [
-          "Una",
-          "Dos",
-          "Tres",
-          "Cuatro",
-          "Cinco"
-        ],
-        "type": "string"
       }
     }
   }

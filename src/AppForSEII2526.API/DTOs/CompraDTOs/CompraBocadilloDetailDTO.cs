@@ -18,7 +18,6 @@ namespace AppForSEII2526.API.DTOs.CompraDTOs
             Fecha = fecha;
             Precio = precio;
         }
-        [JsonIgnore]
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
         public float Precio { get; set; }

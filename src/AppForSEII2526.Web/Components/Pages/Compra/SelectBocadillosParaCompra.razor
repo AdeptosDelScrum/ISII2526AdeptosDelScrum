@@ -1,0 +1,164 @@
+﻿@page "/Compra/SelectBocadillosParaCompra"
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectBocadillosParaCompra> logger
+@inject CompraStateContainer compraState
+@inject NavigationManager navigation
+
+<h3>Select Bocadillos Para Comprar</h3>
+
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Tipo de Pan</span>
+                        <input type="text" id="inputTitle" @bind=bocadilloTipoPan class="form-control" placeholder="Tipo de Pan" aria-label="Tipo de Pan" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Tamanyo</span>
+                        <select class="form-select"
+                                aria-label="Default select"
+                                @bind="tamanyoBocadilloSelected"
+                                id="selectTamanyo">
+
+                            <option value="All" selected>All</option>
+
+                            @foreach (string t in tamanyosBocadillos)
+                            {
+                                <option value="@t" id="tamanyoSelected_@t">@t</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchBocadillos id="searchBocadillos">Buscar Bocadillos</button>
+                </div>
+            </div>
+            <div class="row">
+                @if (bocadillos == null)
+                {
+                    <p>Cargando bocadillos....</p>
+                }
+                else
+                {
+
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="TableOfBocadillos">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tamaño</th>
+                                    <th>Tipo de Pan</th>
+                                    <th>Precio</th>
+                                    <th>Comprar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bocadillo in bocadillos)
+                                {
+                                    <tr id="BocadilloData_@bocadillo.Name">
+                                        <td>@bocadillo.Name</td>
+                                        <td>@bocadillo.TamanyoBocadillo</td>
+                                        <td>@bocadillo.TipoPan</td>
+                                        <td>@bocadillo.Pvp</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" id="bocadilloParaComprar_@bocadillo.Name" @onclick="@(() => AddBocadillo(bocadillo))">Añadir</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+            </div>
+        </div>
+        <div class="col-2" hidden="@hideRentingCart">
+            <div class="row">
+                <h3>Shopping Cart</h3>
+            </div>
+            @foreach (CompraBocadilloItemDTO item in compra.BocadillosComprados)
+            {
+                <div class="row">
+                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Nombre" @onclick="@(() => RemoveCompraItem(item))">x @item.Cantidad @item.Nombre - @item.Precio€</button>
+                </div>
+            }
+            <div class="row">
+                <button type="button" class="btn btn-primary" id="purchaseMovieButton" @onclick=@ComprarBocadillos>ComprarBocadillos</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private ICollection<BocadilloDTO> bocadillos;
+    private ICollection<string>? tamanyosBocadillos = new List<string>();
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private bool hideRentingCart { get { return compra.BocadillosComprados.Count == 0; } }
+    private string tamanyoBocadilloSelected = "All";
+    private string errors = "";
+    private string bocadilloTipoPan { get; set; }
+    private Tamanyo bocadilloTamanyo { get; set; }
+
+    private CompraBocadilloForCreateDTO compra => compraState.Compra;
+
+    private bool hiddenRentingCart = true;
+
+    private void AddBocadillo(BocadilloDTO bocadillo)
+    {
+        compraState.AddBocadilloParaCompra(bocadillo);
+    }
+
+    private void RemoveCompraItem(CompraBocadilloItemDTO item)
+    {
+        compraState.RemoveItemParaCompra(item);
+        if (compra.BocadillosComprados.Count == 0) hiddenRentingCart = true;
+    }
+
+    public async void SearchBocadillos()
+    {
+        try
+        {
+            var tamanyo = tamanyoBocadilloSelected == "All"
+                ? (Tamanyo?)null
+                : Enum.Parse<Tamanyo>(tamanyoBocadilloSelected);
+
+            bocadillos = await apiclient.GetBocadillosParaCompraAsync(tamanyo, bocadilloTipoPan);
+
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex.ToString());
+            errors = "Error while connecting to the system";
+        }
+
+        StateHasChanged();
+    }
+    protected override Task OnInitializedAsync()
+    {
+        tamanyosBocadillos = Enum
+            .GetNames(typeof(Tamanyo))
+            .ToList();
+
+        SearchBocadillos();
+        return Task.CompletedTask;
+    }
+
+
+    
+
+    private void ComprarBocadillos()
+    {
+        navigation.NavigateTo("/Compra/CreateCompra");
+    }
+}
