@@ -2,7 +2,6 @@
 
 @using System.Linq
 @using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Mvc
 @using AppForSEII2526.Web.API
 
 @inject AppForSEII2526APIClient apiclient
@@ -17,7 +16,7 @@
         <ValidationSummary />
     </div>
 
-    <div class="row alert alert-danger" role="alert" hidden="@HideErrors">
+    <div class="row alert alert-danger" role="alert" hidden="@string.IsNullOrEmpty(messageError)">
         <p id="ErrorsShown">Errors: @messageError</p>
     </div>
 
@@ -122,8 +121,8 @@
                     <p>Quieres crear la compra con @compra.Items.Count linea(s)?</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="@(() => OnDialogClose(false))">Cancelar</button>
-                    <button class="btn btn-primary" @onclick="@(() => OnDialogClose(true))">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" @onclick="@(() => OnDialogClose(false))">Cancelar</button>
+                    <button type="button" class="btn btn-primary" @onclick="@(() => OnDialogClose(true))">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -140,7 +139,6 @@
     };
 
     private string messageError = "";
-    private bool HideErrors => string.IsNullOrEmpty(messageError);
     private bool DialogIsOpen;
 
     private int nuevoBonoId;
@@ -159,17 +157,16 @@
         if (compra.Items == null || compra.Items.Count == 0)
         {
             messageError = "Debes agregar al menos una linea (BonoId + Cantidad).";
-            StateHasChanged();
             return;
         }
 
         try
         {
             var created = await apiclient.PostCompraAsync(compra);
-            navigation.NavigateTo($"/bonos/compra/details?id={created.CompraId}");
             messageError = "";
+            navigation.NavigateTo($"/bonos/compra/details?id={created.CompraId}");
         }
-        catch (ApiException<ValidationProblemDetails> apival)
+        catch (ApiException<Microsoft.AspNetCore.Mvc.ValidationProblemDetails> apival)
         {
             var errores = apival.Result?.Errors?.Values?.SelectMany(v => v) ?? Enumerable.Empty<string>();
             messageError = string.Join(" | ", errores);
@@ -184,8 +181,6 @@
             logger.LogError(ex, "Error inesperado");
             messageError = "Error inesperado. Revisa consola/servidor.";
         }
-
-        StateHasChanged();
     }
 
     private void AddLinea()
@@ -205,38 +200,22 @@
 
         var existente = compra.Items.FirstOrDefault(x => x.BonoId == nuevoBonoId);
         if (existente != null)
-        {
             existente.Cantidad += nuevaCantidad;
-        }
         else
-        {
-            compra.Items.Add(new CrearCompraItemDTO
-            {
-                BonoId = nuevoBonoId,
-                Cantidad = nuevaCantidad
-            });
-        }
+            compra.Items.Add(new CrearCompraItemDTO { BonoId = nuevoBonoId, Cantidad = nuevaCantidad });
 
         nuevaCantidad = 1;
-        StateHasChanged();
     }
 
     private void RemoveLinea(int bonoId)
     {
         var it = compra.Items.FirstOrDefault(x => x.BonoId == bonoId);
-        if (it != null)
-        {
-            compra.Items.Remove(it);
-            StateHasChanged();
-        }
+        if (it != null) compra.Items.Remove(it);
     }
 
     private void IrASeleccionBonos()
     {
         navigation.NavigateTo("/bonos/select");
     }
-
-    // Solo para que el ILogger<PostBonoBocadillos> exista como tipo de componente
-    private sealed class PostBonoBocadillos { }
 }
 
