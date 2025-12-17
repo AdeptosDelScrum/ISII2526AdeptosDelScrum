@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppForSEII2526.UIT.CrearCompra
 {
@@ -54,6 +55,8 @@ namespace AppForSEII2526.UIT.CrearCompra
 
             Assert.True(selectBocadillosParaCompra.CheckListOfBocadillos(expectedBocadillos));
         }
+
+        
         [Fact]
         [Trait("LevelTesting", "Funcional Testing")]
         public void UC_Compra_FB_ListadoBocadillos()
@@ -68,6 +71,31 @@ namespace AppForSEII2526.UIT.CrearCompra
             selectBocadillosParaCompra.SearchBocadillos("", "");
 
             Assert.True(selectBocadillosParaCompra.CheckListOfBocadillos(expectedBocadillos));
+        }
+
+
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC_Compra_Examen()
+        {
+            InitialStepsForCompra();
+
+            var expectedBocadillos = new List<string[]> {
+                new string[] { "x", "1", "Completo","-","3€" },
+                new string[] { "x", "1", "Politecnico", "-", "2€" }
+            };
+            selectBocadillosParaCompra.SearchBocadillos("", "");
+            selectBocadillosParaCompra.AddBocadillo("Completo");
+
+            selectBocadillosParaCompra.SearchBocadillos("Baguette", "");
+            selectBocadillosParaCompra.AddBocadillo("Politecnico");
+
+            string b1 = "x"+"1"+ "Completo"+"-"+"3€";
+            string b2 = "x"+ "1"+ "Politecnico"+ "-"+ "2€";
+
+            Assert.True(selectBocadillosParaCompra.CheckCarrito(b1));
+            Assert.True(selectBocadillosParaCompra.CheckCarrito(b2));
+
         }
         [Fact]
         [Trait("LevelTesting", "Funcional Testing")]

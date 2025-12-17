@@ -85,12 +85,15 @@
             <div class="row">
                 <h3>Shopping Cart</h3>
             </div>
-            @foreach (CompraBocadilloItemDTO item in compra.BocadillosComprados)
-            {
-                <div class="row">
-                    <button type="button" class="btn btn-light" id="removeBocadillo_@item.Nombre" @onclick="@(() => RemoveCompraItem(item))">x @item.Cantidad @item.Nombre - @item.Precio€</button>
-                </div>
-            }
+            <div id="cosasCarrito">
+                @foreach (CompraBocadilloItemDTO item in compra.BocadillosComprados)
+                {
+                    <div class="row">
+                        <button type="button" class="btn btn-light" id="removeBocadillo_@item.Nombre" @onclick="@(() => RemoveCompraItem(item))">x @item.Cantidad @item.Nombre - @item.Precio€</button>
+                    </div>
+                }
+            </div>
+            
             <div class="row">
                 <button type="button" class="btn btn-primary" id="purchaseMovieButton" @onclick=@ComprarBocadillos>ComprarBocadillos</button>
             </div>
