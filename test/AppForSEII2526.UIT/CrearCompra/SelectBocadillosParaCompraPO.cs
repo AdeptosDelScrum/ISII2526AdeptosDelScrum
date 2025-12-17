@@ -1,7 +1,8 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
-using OpenQA.Selenium;
 using Xunit.Abstractions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppForSEII2526.UIT.Compras
 {
@@ -16,8 +17,10 @@ namespace AppForSEII2526.UIT.Compras
         private By tableOfBocadillosBy = By.Id("TableOfBocadillos");
         private By errorShownBy = By.Id("ErrorsShown");
         private By notFoundBy = By.Id("notFound");
+        private By carritoBy = By.Id("cosasCarrito");
 
-        
+
+
         private By continueButtonBy = By.Id("purchaseMovieButton");
 
         public SelectBocadillosParaCompraPO(
@@ -53,7 +56,11 @@ namespace AppForSEII2526.UIT.Compras
             WaitForBeingClickable(addButtonBy);
             _driver.FindElement(addButtonBy).Click();
         }
-
+        public bool CheckCarrito(string expectedBocadillos)
+        {
+            WaitForTextToBePresentInElement(carritoBy, expectedBocadillos);
+            return true;
+        }
         public void RemoveBocadillo(string nombre)
         {
             By removeButtonBy = By.Id("removeBocadillo_" + nombre);
