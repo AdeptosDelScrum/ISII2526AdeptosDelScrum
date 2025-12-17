@@ -225,5 +225,40 @@ namespace AppForSEII2526.UIT.CrearResenya
 
         }
 
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void EXAMENSP3()
+        {
+            //Arrange
+            InitialStepsForResenyaBocadillo();
+
+            var lineas = new List<List<string>> {
+                new List<string> { bocadilloNombre2, "10" },
+            };
+
+            var expectedResenyaLine0 = new List<string[]> { new string[] { nombreU, title, DateTime.Today.ToString() + " +01:00" }, };
+            var expectedResenyaLine1 = new List<string[]> { new string[] { descripcion }, };
+            var expectedResenyaBocadillos = new List<string[]> { new string[] { bocadilloNombre2, bocadilloPVP2, tamanyo2, lineas[0][1] }, };
+
+            //Act
+
+
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre1);
+            selectBocadillosParaResenyar.SearchBocadillos("", "10");
+            selectBocadillosParaResenyar.addBocadillo(bocadilloNombre2);
+            selectBocadillosParaResenyar.removeBocadillo(bocadilloNombre1);
+
+            selectBocadillosParaResenyar.continueToResenyar();
+
+
+            createResenya.resenyar(nombreU, title, descripcion, rate, nombreC, apellido1C, apellido2C, lineas);
+
+
+            //Assert
+
+            Assert.True(detailsResenya.CheckResenyaData(expectedResenyaLine0, expectedResenyaLine1, expectedResenyaBocadillos));
+
+        }
+
     }
 }
